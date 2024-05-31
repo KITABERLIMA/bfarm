@@ -11,6 +11,16 @@ class EditPersonal extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context); // Kembali ke halaman sebelumnya
+            },
+          ),
+          backgroundColor: Color(0xFF6EBF45), // Warna latar belakang AppBar
+          title: Text("Edit Profil"), // Judul AppBar
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),

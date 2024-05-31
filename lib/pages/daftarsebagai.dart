@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'signup_personal.dart';
+import '../pembayaran/pembayaran_berhasil.dart';
+import 'signup_personal1.dart';
+//import 'signup_personal.dart';
 
 void main() {
   runApp(const DaftarSebagai());
@@ -16,25 +18,23 @@ class DaftarSebagai extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
       ),
       home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white, // Warna latar belakang AppBar
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black), // Tombol Back
+            onPressed: () {
+              Navigator.pop(context); // Kembali ke halaman sebelumnya
+            },
+          ),
+
+          elevation: 0, // Menghilangkan bayangan AppBar
+        ),
         body: Center(
           child: Stack(
-            // Mengubah Column menjadi Stack
             children: [
-              Positioned(
-                top: 5,
-                left: 5,
-                child: ClipRRect(
-                  child: Image.asset(
-                    'assets/images/5.png',
-                    width: 100,
-                    height: 100,
-                  ),
-                ),
-              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 50),
                   Text(
                     'Daftar Sebagai?',
                     textAlign: TextAlign.center,
@@ -54,8 +54,10 @@ class DaftarSebagai extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SignUpPage(),
-                        ),
+                            builder: (context) => RegisterForm(
+                                  apiKey:
+                                      '2ed019ca673ef08cc29666f0af5faa5cc30d16ddb4882770297948bed8e54452',
+                                )),
                       );
                     },
                   ),
@@ -64,7 +66,14 @@ class DaftarSebagai extends StatelessWidget {
                     'assets/images/9.png',
                     'assets/images/10.png',
                     'Perusahaan',
-                    () {},
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PembayaranBerhasil(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -133,4 +142,6 @@ class DaftarSebagai extends StatelessWidget {
       ],
     );
   }
+
+  ConcreteRegisterForm() {}
 }

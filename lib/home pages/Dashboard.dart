@@ -1,10 +1,10 @@
-// ignore_for_file: unused_field
-
-import 'package:bfarm_mobileapp/home%20pages/akun.dart';
+import 'package:bfarm_mobileapp/home%20pages/profile.dart';
 import 'package:flutter/material.dart';
+import 'deskripsi.dart';
 import 'lahan.dart';
 import 'langganan.dart';
-import 'riwayat.dart';
+import 'history.dart';
+import 'lihat_daftarlahan.dart';
 
 void main() {
   runApp(Dashboard());
@@ -35,7 +35,7 @@ class _BFarmHomePageState extends State<BFarmHomePage> {
   static final List<Widget> _widgetOptions = <Widget>[
     BerandaPage(),
     LahanPage(),
-    RiwayatPage(),
+    riwayat(),
     Langganan(),
     Profile(),
   ];
@@ -186,7 +186,520 @@ class BerandaPage extends StatelessWidget {
               ],
             ),
           ),
+          SizedBox(height: 16), // Tambahkan jarak sebelum rekomendasi
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Lahan Terpetakan',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // Implementasi aksi untuk tombol "Lihat Semua"
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FigmaToCodeApp(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Lihat Semua',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16), // Tambahkan jarak sebelum rekomendasi
+                Recommended(), // Tambahkan widget Recommended di sini
+              ],
+            ),
+          ),
+          SizedBox(height: 16), // Tambahkan jarak sebelum rekomendasi
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Lahan Belum Terpetakan',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // Implementasi aksi untuk tombol "Lihat Semua"
+                      },
+                      child: Text(
+                        'Lihat Semua',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16), // Tambahkan jarak sebelum rekomendasi
+                Recommended1(), // Tambahkan widget Recommended di sini
+              ],
+            ),
+          ),
+          SizedBox(height: 16), // Tambahkan jarak sebelum rekomendasi
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Produk B-Farm',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // Implementasi aksi untuk tombol "Lihat Semua"
+                      },
+                      child: Text(
+                        'Lihat Semua',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16), // Tambahkan jarak sebelum rekomendasi
+                Recommended2(), // Tambahkan widget Recommended di sini
+              ],
+            ),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class Recommended extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 300, // Sesuaikan ketinggian dengan konten yang sesuai
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 10, // Ganti dengan jumlah item yang ingin ditampilkan
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: SizedBox(
+              width: 250, // Sesuaikan lebar item dengan kebutuhan Anda
+              child: RecommendedItem(
+                imageUrl: 'assets/images/tanah.png',
+                location: '42 966 Ha, Kalimantan',
+                name: 'Supardi',
+                tgl: 'Terpetakan 12/02/2024',
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class RecommendedItem extends StatelessWidget {
+  final String imageUrl;
+  final String location;
+  final String name;
+  final String tgl;
+
+  RecommendedItem({
+    required this.imageUrl,
+    required this.location,
+    required this.name,
+    required this.tgl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0), // Tambahkan padding
+      child: Container(
+        width: 120,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey), // Menambahkan border
+          boxShadow: [
+            BoxShadow(
+              color: Color(0x19202020),
+              blurRadius: 50,
+              offset: Offset(0, 4),
+              spreadRadius: -5,
+            )
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 250, // Sesuaikan lebar dengan kotak
+              height: 120, // Sempitkan tinggi gambar
+              child: Image.asset(
+                imageUrl,
+                fit: BoxFit.cover, // Menyesuaikan gambar dengan ukuran kotak
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(
+                  8.0), // Tambahkan padding dalam container
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          // Navigasi ke deskripsi lahan terpetakan
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Deskripsi(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Terpetakan',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Colors.green, // Warna latar belakang hijau
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                5), // Set radius menjadi 5
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    location,
+                    style: TextStyle(
+                      color: Color(0xFF121212),
+                      fontSize: 14,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.07,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    name,
+                    style: TextStyle(
+                      color: Color(0xFF121212),
+                      fontSize: 14,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.07,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    tgl,
+                    style: TextStyle(
+                      color: Color(0xFFAAAAAA),
+                      fontSize: 12,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 0.06,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Recommended1 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 300, // Sesuaikan ketinggian dengan konten yang sesuai
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 10, // Ganti dengan jumlah item yang ingin ditampilkan
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: SizedBox(
+              width: 250, // Sesuaikan lebar item dengan kebutuhan Anda
+              child: RecommendedItem1(
+                imageUrl: 'assets/images/tanah.png',
+                location: '42 966 Ha, Kalimantan',
+                name: 'Supardi',
+                tgl: 'Terpetakan 12/02/2024',
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class RecommendedItem1 extends StatelessWidget {
+  final String imageUrl;
+  final String location;
+  final String name;
+  final String tgl;
+
+  RecommendedItem1({
+    required this.imageUrl,
+    required this.location,
+    required this.name,
+    required this.tgl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0), // Tambahkan padding
+      child: Container(
+        width: 120,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey), // Menambahkan border
+          boxShadow: [
+            BoxShadow(
+              color: Color(0x19202020),
+              blurRadius: 50,
+              offset: Offset(0, 4),
+              spreadRadius: -5,
+            )
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 250, // Sesuaikan lebar dengan kotak
+              height: 120, // Sempitkan tinggi gambar
+              child: Image.asset(
+                imageUrl,
+                fit: BoxFit.cover, // Menyesuaikan gambar dengan ukuran kotak
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(
+                  8.0), // Tambahkan padding dalam container
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          // Implementasi aksi untuk tombol "Terpetakan"
+                        },
+                        child: Text(
+                          'Belum Terpetakan',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(
+                              255, 219, 8, 8), // Warna latar belakang hijau
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                5), // Set radius menjadi 5
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    location,
+                    style: TextStyle(
+                      color: Color(0xFF121212),
+                      fontSize: 14,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.07,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    name,
+                    style: TextStyle(
+                      color: Color(0xFF121212),
+                      fontSize: 14,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.07,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    tgl,
+                    style: TextStyle(
+                      color: Color(0xFFAAAAAA),
+                      fontSize: 12,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 0.06,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Recommended2 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 300, // Sesuaikan ketinggian dengan konten yang sesuai
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 10, // Ganti dengan jumlah item yang ingin ditampilkan
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: SizedBox(
+              width: 250, // Sesuaikan lebar item dengan kebutuhan Anda
+              child: RecommendedItem2(
+                imageUrl: 'assets/images/alat.png',
+                alat: 'Alat xxx',
+                harga: 'Rp 17.000',
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class RecommendedItem2 extends StatelessWidget {
+  final String imageUrl;
+  final String harga;
+  final String alat;
+
+  RecommendedItem2({
+    required this.imageUrl,
+    required this.harga,
+    required this.alat,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0), // Tambahkan padding
+      child: Container(
+        width: 120,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey), // Menambahkan border
+          boxShadow: [
+            BoxShadow(
+              color: Color(0x19202020),
+              blurRadius: 50,
+              offset: Offset(0, 4),
+              spreadRadius: -5,
+            )
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 250, // Sesuaikan lebar dengan kotak
+              height: 120, // Sempitkan tinggi gambar
+              child: Image.asset(
+                imageUrl,
+                fit: BoxFit.cover, // Menyesuaikan gambar dengan ukuran kotak
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(
+                  8.0), // Tambahkan padding dalam container
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                      height:
+                          8), // Tambahkan jarak antara harga dan tombol "Beli"
+                  Text(
+                    harga,
+                    style: TextStyle(
+                      color: Color(0xFF121212),
+                      fontSize: 14,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.07,
+                    ),
+                  ),
+                  SizedBox(
+                      height: 8), // Tambahkan jarak antara harga dan nama alat
+                  Text(
+                    alat,
+                    style: TextStyle(
+                      color: Color(0xFFAAAAAA),
+                      fontSize: 12,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 0.06,
+                    ),
+                  ),
+                  SizedBox(
+                      height:
+                          8), // Tambahkan jarak antara nama alat dan tombol "Beli"
+                  ElevatedButton(
+                    onPressed: () {
+                      // Implementasi aksi untuk tombol "Beli"
+                    },
+                    child: Text(
+                      'Beli',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          Colors.green, // Warna latar belakang hijau
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(5), // Set radius menjadi 5
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -211,6 +724,7 @@ class FilterPage1 extends StatefulWidget {
 }
 
 class _FilterPage1State extends State<FilterPage1> {
+  // ignore: unused_field
   bool _resetFilter = false;
 
   void _handleReset() {

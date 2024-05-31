@@ -1,11 +1,9 @@
-import 'dart:convert';
-import '/../home pages/dashboard.dart';
+import 'package:bfarm_mobileapp/home%20pages/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'daftarsebagai.dart';
 import 'kebijakan_privasi.dart';
 import 'ketentuan_layanan.dart';
 import 'lupakatasandi.dart'; // Import the LupaKataSandi class
-import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   @override
@@ -13,46 +11,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  Future<void> loginUser(BuildContext context) async {
-    final String apiUrl = 'http://192.168.100.170:8000/api/login';
-
-    final response = await http.post(Uri.parse(apiUrl), body: {
-      'email': emailController.text,
-      'password': passwordController.text,
-    });
-
-    final jsonData = json.decode(response.body);
-
-    // Handle response here, for example, you can check the status code
-    if (response.statusCode == 200) {
-      // If login is successful, navigate to dashboard
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Dashboard()));
-    } else {
-      // If login fails, show error message
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Login Failed'),
-            content: Text(jsonData['message'] ?? 'Unknown Error'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,7 +83,6 @@ class _LoginState extends State<Login> {
                       ),
                       padding: EdgeInsets.only(left: 10),
                       child: TextFormField(
-                        controller: emailController,
                         decoration: InputDecoration(
                           hintText: 'Email',
                           prefixIcon: Icon(Icons.email),
@@ -142,7 +99,6 @@ class _LoginState extends State<Login> {
                       ),
                       padding: EdgeInsets.only(left: 10),
                       child: TextFormField(
-                        controller: passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
                           hintText: 'Kata Sandi',
@@ -177,7 +133,12 @@ class _LoginState extends State<Login> {
                     SizedBox(height: 20.0),
                     ElevatedButton(
                       onPressed: () {
-                        loginUser(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Dashboard(),
+                          ),
+                        );
                       },
                       child: Text(
                         'Login',

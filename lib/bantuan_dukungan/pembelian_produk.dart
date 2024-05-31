@@ -14,10 +14,12 @@ class FigmaToCodeApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFF7F7F7),
         appBarTheme: AppBarTheme(
           backgroundColor: const Color(0xFFF7F7F7),
-          foregroundColor: Colors.black, // Warna teks dan ikon di app bar menjadi hitam
+          foregroundColor:
+              Colors.black, // Warna teks dan ikon di app bar menjadi hitam
         ),
       ),
-      home: PembelianProdukPage(), // Menggunakan halaman AkunPenggunaPage sebagai home
+      home:
+          PembelianProdukPage(), // Menggunakan halaman AkunPenggunaPage sebagai home
     );
   }
 }
@@ -32,7 +34,8 @@ class PembelianProdukPage extends StatelessWidget {
           'Pembelian Produk',
           style: TextStyle(color: Colors.black), // Warna teks menjadi hitam
         ),
-        iconTheme: IconThemeData(color: Colors.black), // Warna ikon menjadi hitam
+        iconTheme:
+            IconThemeData(color: Colors.black), // Warna ikon menjadi hitam
         backgroundColor: const Color(0xFFF7F7F7),
       ),
       body: SingleChildScrollView(
@@ -40,9 +43,11 @@ class PembelianProdukPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              const SizedBox(height: 10), // Memberikan ruang di atas objek pertama
+              const SizedBox(
+                  height: 10), // Memberikan ruang di atas objek pertama
               Group12860(),
-              const SizedBox(height: 10), // Memberikan ruang di bawah objek terakhir
+              const SizedBox(
+                  height: 10), // Memberikan ruang di bawah objek terakhir
             ],
           ),
         ),
@@ -59,43 +64,58 @@ class Group12860 extends StatelessWidget {
         buildListItem(
           title: 'Bagaimana cara melakukan pembelian produk di aplikasi ini?',
           context: context,
-          answer: 'Anda dapat melakukan pembelian produk dengan masuk beranda lalu gulir ke bawah sampai menemukan produk lalu tekan tombol "Beli" . Setelah itu, ikuti langkah-langkah pembayaran yang disediakan.', 
+          answer:
+              'Anda dapat melakukan pembelian produk dengan masuk beranda lalu gulir ke bawah sampai menemukan produk lalu tekan tombol "Beli" . Setelah itu, ikuti langkah-langkah pembayaran yang disediakan.',
         ),
-        const SizedBox(height: 16), // Memberikan ruang di antara objek pertama dan kedua
+        const SizedBox(
+            height: 16), // Memberikan ruang di antara objek pertama dan kedua
         buildListItem(
-          title: 'Apakah ada batasan jumlah produk yang dapat dibeli dalam satu transaksi?',
+          title:
+              'Apakah ada batasan jumlah produk yang dapat dibeli dalam satu transaksi?',
           context: context,
-          answer: 'Batasan jumlah produk yang dapat dibeli dalam satu transaksi tergantung pada ketersediaan stok.', 
+          answer:
+              'Batasan jumlah produk yang dapat dibeli dalam satu transaksi tergantung pada ketersediaan stok.',
         ),
-        const SizedBox(height: 16), // Memberikan ruang di antara objek kedua dan ketiga
+        const SizedBox(
+            height: 16), // Memberikan ruang di antara objek kedua dan ketiga
         buildListItem(
-          title: 'Bagaimana cara memeriksa ketersediaan stok produk sebelum melakukan pembelian?',
+          title:
+              'Bagaimana cara memeriksa ketersediaan stok produk sebelum melakukan pembelian?',
           context: context,
-          answer: 'Stok produk yang tersedia dapat dilihat saat kita telah menambahkan barang di “Keranjang”.', 
+          answer:
+              'Stok produk yang tersedia dapat dilihat saat kita telah menambahkan barang di “Keranjang”.',
         ),
-        const SizedBox(height: 16), // Memberikan ruang di antara objek ketiga dan keempat
+        const SizedBox(
+            height: 16), // Memberikan ruang di antara objek ketiga dan keempat
         buildListItem(
-          title: 'Apakah ada biaya tambahan yang harus saya bayarkan selain harga produk?',
+          title:
+              'Apakah ada biaya tambahan yang harus saya bayarkan selain harga produk?',
           context: context,
-          answer: 'Biaya tambahan seperti biaya pengiriman, pajak, biaya layanan mungkin dikenakan tergantung pada lokasi pengiriman.',
+          answer:
+              'Biaya tambahan seperti biaya pengiriman, pajak, biaya layanan mungkin dikenakan tergantung pada lokasi pengiriman.',
         ),
-        const SizedBox(height: 16), 
+        const SizedBox(height: 16),
         buildListItem(
-          title: 'Apakah tersedia metode pembayaran yang berbeda? Jika ya, apa saja metode pembayaran yang dapat digunakan?',
+          title:
+              'Apakah tersedia metode pembayaran yang berbeda? Jika ya, apa saja metode pembayaran yang dapat digunakan?',
           context: context,
-          answer: 'Berbagai metode pembayaran  tersedia, seperti kartu kredit, transfer bank, e-wallet, atau pembayaran tunai saat pengiriman.',
+          answer:
+              'Berbagai metode pembayaran  tersedia, seperti kartu kredit, transfer bank, e-wallet, atau pembayaran tunai saat pengiriman.',
         ),
-        const SizedBox(height: 16), 
+        const SizedBox(height: 16),
         buildListItem(
-          title: 'Bagaimana saya bisa mendapatkan bantuan jika mengalami masalah atau kesulitan saat mengajukan daftar lahan?',
+          title:
+              'Bagaimana saya bisa mendapatkan bantuan jika mengalami masalah atau kesulitan saat mengajukan daftar lahan?',
           context: context,
-          answer: 'Jika Anda mengalami masalah atau kesulitan, Anda dapat menghubungi tim bFarm melalui saluran komunikasi yang disediakan, seperti email atau whatsapp. Tim bFarm akan siap membantu Anda menyelesaikan masalah tersebut.',
+          answer:
+              'Jika Anda mengalami masalah atau kesulitan, Anda dapat menghubungi tim bFarm melalui saluran komunikasi yang disediakan, seperti email atau whatsapp. Tim bFarm akan siap membantu Anda menyelesaikan masalah tersebut.',
         ),
       ],
     );
   }
 
-  Widget buildListItem({required String title, required BuildContext context, String? answer}) {
+  Widget buildListItem(
+      {required String title, required BuildContext context, String? answer}) {
     return ExpansionTile(
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -119,8 +139,14 @@ class Group12860 extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 color: Colors.white, // Warna background putih
-                boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 4, offset: Offset(0, 2))], // Bayangan
-                border: Border.all(color: const Color(0xFF6EBF45), width: 1), // Garis batas 
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      blurRadius: 4,
+                      offset: Offset(0, 2))
+                ], // Bayangan
+                border: Border.all(
+                    color: const Color(0xFF6EBF45), width: 1), // Garis batas
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Text(
@@ -129,7 +155,8 @@ class Group12860 extends StatelessWidget {
                   color: Colors.black, // Warna teks hitam
                   fontSize: 12,
                 ),
-                textAlign: TextAlign.justify, // Menjaga teks jawaban menjadi rapih
+                textAlign:
+                    TextAlign.justify, // Menjaga teks jawaban menjadi rapih
               ),
             ),
           ),

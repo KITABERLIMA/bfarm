@@ -1,450 +1,467 @@
 import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-
-import '../model/provinsi.dart';
-import '../model/kota.dart';
-import '../model/kecamatan.dart';
-import '../model/kelurahan.dart';
 import 'otp.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: SignUpPage(),
+    home: RegistrationPage(
+      apiKey:
+          '2ed019ca673ef08cc29666f0af5faa5cc30d16ddb4882770297948bed8e54452',
+    ),
   ));
 }
 
+// Kelas model untuk menyimpan data provinsi, kota, kabupaten, dll.
+class Provinsi {
+  final String id;
+  final String name;
+
+  Provinsi({required this.id, required this.name});
+
+  factory Provinsi.fromJson(Map<String, dynamic> json) {
+    return Provinsi(id: json['id'], name: json['name']);
+  }
+}
+
+class Kota {
+  final String id;
+  final String idProvinsi;
+  final String name;
+
+  Kota({required this.id, required this.idProvinsi, required this.name});
+
+  factory Kota.fromJson(Map<String, dynamic> json) {
+    return Kota(
+        id: json['id'], idProvinsi: json['id_provinsi'], name: json['name']);
+  }
+}
+
+class Kecamatan {
+  final String id;
+  final String idKabupaten;
+  final String name;
+
+  Kecamatan({required this.id, required this.idKabupaten, required this.name});
+
+  factory Kecamatan.fromJson(Map<String, dynamic> json) {
+    return Kecamatan(
+        id: json['id'], idKabupaten: json['id_kabupaten'], name: json['name']);
+  }
+}
+
+class Kelurahan {
+  final String id;
+  final String idKecamatan;
+  final String name;
+
+  Kelurahan({required this.id, required this.idKecamatan, required this.name});
+
+  factory Kelurahan.fromJson(Map<String, dynamic> json) {
+    return Kelurahan(
+        id: json['id'], idKecamatan: json['id_kecamatan'], name: json['name']);
+  }
+}
+
 // ignore: must_be_immutable
-class SignUpPage extends StatefulWidget {
+class RegistrationPage extends StatefulWidget {
+  final String apiKey; // API key for fetching region data
   String idProvinsi = "0";
   String idKabupaten = "0";
   String idKecamatan = "0";
 
-  final String apiKey =
-      "2ed019ca673ef08cc29666f0af5faa5cc30d16ddb4882770297948bed8e54452";
+  RegistrationPage({required this.apiKey});
 
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _RegistrationPageState createState() => _RegistrationPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
-  final _userTypeController = TextEditingController();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _fullAddressController = TextEditingController();
-  final _subsDistrictController = TextEditingController();
-  final _villageController = TextEditingController();
-  final _postalCodeController = TextEditingController();
-  final _cityDistrictController = TextEditingController();
-  final _provinceController = TextEditingController();
-  PickedFile? _image;
+class _RegistrationPageState extends State<RegistrationPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _fullAddressController = TextEditingController();
+  final TextEditingController _provinceController = TextEditingController();
+  final TextEditingController _cityDistrictController = TextEditingController();
+  final TextEditingController _subDistrictController = TextEditingController();
+  final TextEditingController _villageController = TextEditingController();
+  final TextEditingController _postalCodeController = TextEditingController();
 
-  Future<String?> uploadImageAndGetUrl(PickedFile image) async {
-    try {
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(
-            'http://192.168.100.170:8000/api/upload_image'), // Ganti URL dengan URL upload gambar di server Anda
+  String? _userType;
+  File? _selectedImage; // Variabel untuk menyimpan gambar yang dipilih
+
+  // Fungsi untuk mengambil gambar dari galeri
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      setState(() {
+        _selectedImage = File(image.path);
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please select an image")),
       );
-
-      String filePath = image.path;
-      var file = await http.MultipartFile.fromPath('image', filePath);
-      request.files.add(file);
-
-      var streamedResponse = await request.send();
-      var response = await http.Response.fromStream(streamedResponse);
-
-      if (response.statusCode == 200) {
-        return json.decode(response.body)['image_url'];
-      } else {
-        print('Failed to upload image. Status code: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      print('Error uploading image: $e');
-      return null;
     }
   }
 
   Future<void> _register() async {
-    String userType = _userTypeController.text;
-    String firstName = _firstNameController.text;
-    String lastName = _lastNameController.text;
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String phone = _phoneController.text;
-    String fullAddress = _fullAddressController.text;
-    String subDistrict = _subsDistrictController.text;
-    String village = _villageController.text;
-    String postalCode = _postalCodeController.text;
-    String cityDistrict = _cityDistrictController.text;
-    String province = _provinceController.text;
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      if (_userType == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Please select a user type")),
+        );
+        return;
+      }
 
-    String? image;
-    if (_image != null) {
-      image = await uploadImageAndGetUrl(_image!);
-    }
+      if (_selectedImage == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Please select a profile picture")),
+        );
+        return;
+      }
 
-    Map<String, dynamic> data = {
-      'user_type': userType,
-      'first_name': firstName,
-      'last_name': lastName,
-      'email': email,
-      'password': password,
-      'phone': phone,
-      'full_address': fullAddress,
-      'sub_district': subDistrict,
-      'village': village,
-      'postal_code': postalCode,
-      'city_district': cityDistrict,
-      'province': province,
-      'image': image,
-    };
+      var uri = Uri.parse("http://bfarm.ahmadyaz.my.id/api/individuals");
 
-    String jsonData = json.encode(data);
+      var request = http.MultipartRequest("POST", uri);
 
-    var response = await http.post(
-      Uri.parse('http://192.168.100.170:8000/api/individuals'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonData,
-    );
+      request.fields['user_type'] = _userType!;
+      request.fields['first_name'] = _firstNameController.text;
+      request.fields['last_name'] = _lastNameController.text;
+      request.fields['email'] =
+          _emailController.text.trim(); // Hilangkan spasi ekstra
+      request.fields['password'] = _passwordController.text;
+      request.fields['phone'] = _phoneController.text;
+      request.fields['full_address'] = _fullAddressController.text;
+      request.fields['province'] = _provinceController.text;
+      request.fields['city_district'] = _cityDistrictController.text;
+      request.fields['sub_district'] = _subDistrictController.text;
+      request.fields['village'] = _villageController.text;
+      request.fields['postal_code'] = _postalCodeController.text;
 
-    if (response.statusCode == 200) {
-      print('Registration successful');
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => OTPScreen()),
-      );
+      var imageFile =
+          await http.MultipartFile.fromPath('image', _selectedImage!.path);
+
+      var response = await request.send();
+      var responseBody = await response.stream.bytesToString();
+      var jsonResponse = jsonDecode(responseBody);
+
+      if (response.statusCode == 200 && jsonResponse['success'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Registration successful!")),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  OTPScreen(email: _emailController.text.trim())),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Registration failed: $responseBody")),
+        );
+      }
     } else {
-      print('Registration failed');
-      // Tampilkan pesan kesalahan jika diperlukan
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill all required fields.")),
+      );
     }
-  }
-
-  Future<void> _pickImage() async {
-    final pickedFile =
-        await ImagePicker().getImage(source: ImageSource.gallery);
-    setState(() {
-      _image = pickedFile;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.4,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/sawah.png'),
+      appBar: AppBar(
+        title: Text("Pendaftaran"),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: ListView(
+          children: [
+            TextFormField(
+              controller: _firstNameController,
+              decoration: InputDecoration(
+                labelText: 'Nama Depan',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your first name';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _lastNameController,
+              decoration: InputDecoration(
+                labelText: 'Nama Belakang',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your last name';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _phoneController,
+              decoration: InputDecoration(
+                labelText: 'Nomor Telepon',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your phone number';
+                }
+                return null;
+              },
+            ),
+            DropdownButtonFormField<String>(
+              value: _userType,
+              onChanged: (value) {
+                setState(() {
+                  _userType = value;
+                });
+              },
+              items: [
+                DropdownMenuItem(
+                  child: Text("Individual"),
+                  value: "individual",
+                ),
+                DropdownMenuItem(
+                  child: Text("Corporate"),
+                  value: "corporate",
+                ),
+              ],
+              decoration: InputDecoration(
+                labelText: "User Type",
+              ),
+              validator: (value) {
+                if (value == null) {
+                  return 'Please select a user type';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value == null) {
+                  return 'Please enter a valid email';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Kata Sandi',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _fullAddressController,
+              decoration: InputDecoration(
+                labelText: 'Alamat Lengkap',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your full address';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _postalCodeController,
+              decoration: InputDecoration(
+                labelText: 'Kode Pos',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your postal code';
+                }
+                return null;
+              },
+            ),
+            // Dropdown for choosing province
+            DropdownSearch<Provinsi>(
+              mode: Mode.BOTTOM_SHEET,
+              showSearchBox: true,
+              dropdownBuilder: (BuildContext context, Provinsi? selectedItem) =>
+                  Text(selectedItem?.name ?? "Belum memilih Provinsi"),
+              popupItemBuilder:
+                  (BuildContext context, Provinsi item, bool isSelected) =>
+                      ListTile(
+                title: Text(item.name),
+              ),
+              // Remove the duplicate named argument 'showSearchBox'
+              onFind: (String? text) async {
+                var response = await http.get(Uri.parse(
+                    "https://api.binderbyte.com/wilayah/provinsi?api_key=${widget.apiKey}"));
+                if (response.statusCode != 200) {
+                  return [];
+                }
+                List<dynamic> allProvince = json.decode(response.body)["value"];
+                List<Provinsi> allModelProvince = [];
+
+                for (var element in allProvince) {
+                  allModelProvince.add(Provinsi.fromJson(element));
+                }
+                return allModelProvince;
+              },
+              onChanged: (Provinsi? value) {
+                if (value != null) {
+                  setState(() {
+                    widget.idProvinsi = value.id;
+                    _provinceController.text = value.name;
+                  });
+                }
+              },
+            ),
+
+            // Dropdown for choosing city based on selected province
+            if (widget.idProvinsi != "0")
+              DropdownSearch<Kota>(
+                mode: Mode.DIALOG,
+                showSearchBox: true,
+                dropdownBuilder: (BuildContext context, Kota? selectedItem) =>
+                    Text(selectedItem?.name ?? "Belum memilih Kota"),
+                popupItemBuilder:
+                    (BuildContext context, Kota item, bool isSelected) =>
+                        ListTile(
+                  title: Text(item.name),
+                ),
+                onFind: (String? text) async {
+                  var response = await http.get(Uri.parse(
+                      "https://api.binderbyte.com/wilayah/kabupaten?api_key=${widget.apiKey}&id_provinsi=${widget.idProvinsi}"));
+                  if (response.statusCode != 200) {
+                    return [];
+                  }
+                  List<dynamic> allKota = json.decode(response.body)["value"];
+                  List<Kota> allModelKota = [];
+
+                  for (var element in allKota) {
+                    allModelKota.add(Kota.fromJson(element));
+                  }
+                  return allModelKota;
+                },
+                onChanged: (Kota? value) {
+                  if (value != null) {
+                    setState(() {
+                      widget.idKabupaten = value.id;
+                      _cityDistrictController.text = value.name;
+                    });
+                  }
+                },
+              ),
+
+            // Dropdown for choosing sub-district based on selected city
+            if (widget.idKabupaten != "0")
+              DropdownSearch<Kecamatan>(
+                mode: Mode.DIALOG,
+                showSearchBox: true,
+                dropdownBuilder:
+                    (BuildContext context, Kecamatan? selectedItem) =>
+                        Text(selectedItem?.name ?? "Belum memilih Kecamatan"),
+                popupItemBuilder:
+                    (BuildContext context, Kecamatan item, bool isSelected) =>
+                        ListTile(
+                  title: Text(item.name),
+                ),
+                onFind: (String? text) async {
+                  var response = await http.get(Uri.parse(
+                      "https://api.binderbyte.com/wilayah/kecamatan?api_key=${widget.apiKey}&id_kabupaten=${widget.idKabupaten}"));
+                  if (response.statusCode != 200) {
+                    return [];
+                  }
+                  List<dynamic> allKecamatan =
+                      json.decode(response.body)["value"];
+                  List<Kecamatan> allModelKecamatan = [];
+
+                  for (var element in allKecamatan) {
+                    allModelKecamatan.add(Kecamatan.fromJson(element));
+                  }
+                  return allModelKecamatan;
+                },
+                onChanged: (Kecamatan? value) {
+                  if (value != null) {
+                    setState(() {
+                      widget.idKecamatan = value.id;
+                      _subDistrictController.text = value.name;
+                    });
+                  }
+                },
+              ),
+
+            // Dropdown for choosing village based on selected sub-district
+            if (widget.idKecamatan != "0")
+              DropdownSearch<Kelurahan>(
+                mode: Mode.BOTTOM_SHEET,
+                showSearchBox: true,
+                dropdownBuilder:
+                    (BuildContext context, Kelurahan? selectedItem) =>
+                        Text(selectedItem?.name ?? "Belum memilih Kelurahan"),
+                popupItemBuilder:
+                    (BuildContext context, Kelurahan item, bool isSelected) =>
+                        ListTile(
+                  title: Text(item.name),
+                ),
+                onFind: (String? text) async {
+                  var response = await http.get(Uri.parse(
+                      "https://api.binderbyte.com/wilayah/kelurahan?api_key=${widget.apiKey}&id_kecamatan=${widget.idKecamatan}"));
+                  if (response.statusCode != 200) {
+                    return [];
+                  }
+                  List<dynamic> allKelurahan =
+                      json.decode(response.body)["value"];
+                  List<Kelurahan> allModelKelurahan = [];
+
+                  for (var element in allKelurahan) {
+                    allModelKelurahan.add(Kelurahan.fromJson(element));
+                  }
+                  return allModelKelurahan;
+                },
+                onChanged: (Kelurahan? value) {
+                  if (value != null) {
+                    _villageController.text = value.name;
+                  }
+                },
+              ),
+            // Tombol untuk memilih gambar dari galeri
+            ElevatedButton(
+              onPressed: _pickImage,
+              child: Text("Select Profile Picture"),
+            ),
+            if (_selectedImage != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Image.file(
+                  _selectedImage!,
+                  height: 100,
+                  width: 100,
                   fit: BoxFit.cover,
                 ),
               ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Pendaftaran',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      'Akun personal',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Text(
-                    'Isi seluruh form di bawah untuk mendaftarkan akun',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                border: Border.all(color: Colors.green),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: TextFormField(
-                controller: _firstNameController,
-                style: TextStyle(fontSize: 18),
-                decoration: InputDecoration(
-                  hintText: 'Masukkan Nama Depan Anda',
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                border: Border.all(color: Colors.green),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: TextFormField(
-                controller: _lastNameController,
-                style: TextStyle(fontSize: 18),
-                decoration: InputDecoration(
-                  hintText: 'Masukkan Nama Belakang Anda',
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-            // other text form fields go here...
-            InkWell(
-              onTap: _pickImage,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  border: Border.all(color: Colors.green),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      _image != null ? 'Gambar Terpilih' : 'Pilih Gambar',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Icon(Icons.camera_alt),
-                  ],
-                ),
-              ),
-            ),
-            // Dropdowns for selecting province, city, and district
-            Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: DropdownSearch<Provinsi>(
-                    mode: Mode.BOTTOM_SHEET,
-                    showSearchBox: true,
-                    onChanged: (Provinsi? value) {
-                      setState(() {
-                        widget.idProvinsi = value?.id ?? "0";
-                      });
-                    },
-                    dropdownBuilder: (BuildContext context,
-                            Provinsi? selectedItem) =>
-                        Text(selectedItem?.name ?? "Belum memilih Provinsi"),
-                    popupItemBuilder: (BuildContext context, Provinsi item,
-                            bool isSelected) =>
-                        ListTile(
-                      title: Text(item.name),
-                    ),
-                    onFind: (String? text) async {
-                      var response = await http.get(Uri.parse(
-                          "https://api.binderbyte.com/wilayah/provinsi?api_key=${widget.apiKey}"));
-                      if (response.statusCode != 200) {
-                        return [];
-                      }
-                      List<dynamic> allProvince =
-                          json.decode(response.body)["value"];
-                      List<Provinsi> allModelProvince = [];
-
-                      for (var element in allProvince) {
-                        allModelProvince.add(Provinsi.fromJson(element));
-                      }
-                      return allModelProvince;
-                    },
-                  ),
-                ),
-                SizedBox(height: 20),
-                if (widget.idProvinsi != "0")
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    child: DropdownSearch<Kota>(
-                      mode: Mode.DIALOG,
-                      showSearchBox: true,
-                      onChanged: (Kota? value) {
-                        setState(() {
-                          widget.idKabupaten = value?.id ?? "0";
-                        });
-                      },
-                      dropdownBuilder:
-                          (BuildContext context, Kota? selectedItem) =>
-                              Text(selectedItem?.name ?? "Belum memilih Kota"),
-                      popupItemBuilder:
-                          (BuildContext context, Kota item, bool isSelected) =>
-                              ListTile(
-                        title: Text(item.name),
-                      ),
-                      onFind: (String? text) async {
-                        var response = await http.get(Uri.parse(
-                            "https://api.binderbyte.com/wilayah/kabupaten?api_key=${widget.apiKey}&id_provinsi=${widget.idProvinsi}"));
-                        if (response.statusCode != 200) {
-                          return [];
-                        }
-                        List<dynamic> allKota =
-                            json.decode(response.body)["value"];
-                        List<Kota> allModelKota = [];
-
-                        for (var element in allKota) {
-                          allModelKota.add(Kota(
-                              id: element["id"],
-                              idProvinsi: element["id_provinsi"],
-                              name: element["name"]));
-                        }
-                        return allModelKota;
-                      },
-                    ),
-                  ),
-                SizedBox(height: 20),
-                if (widget.idKabupaten != "0")
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    child: DropdownSearch<Kecamatan>(
-                      mode: Mode.DIALOG,
-                      showSearchBox: true,
-                      onChanged: (Kecamatan? value) {
-                        setState(() {
-                          widget.idKecamatan = value?.id ?? "0";
-                        });
-                      },
-                      dropdownBuilder: (BuildContext context,
-                              Kecamatan? selectedItem) =>
-                          Text(selectedItem?.name ?? "Belum memilih Kecamatan"),
-                      popupItemBuilder: (BuildContext context, Kecamatan item,
-                              bool isSelected) =>
-                          ListTile(
-                        title: Text(item.name),
-                      ),
-                      onFind: (String? text) async {
-                        var response = await http.get(Uri.parse(
-                            "https://api.binderbyte.com/wilayah/kecamatan?api_key=${widget.apiKey}&id_kabupaten=${widget.idKabupaten}"));
-                        if (response.statusCode != 200) {
-                          return [];
-                        }
-                        List<dynamic> allKecamatan =
-                            json.decode(response.body)["value"];
-                        List<Kecamatan> allModelKecamatan = [];
-
-                        for (var element in allKecamatan) {
-                          Kecamatan kecamatan = Kecamatan(
-                            id: element["id"],
-                            idKabupaten: element["id_kabupaten"],
-                            name: element["name"],
-                          );
-                          allModelKecamatan.add(kecamatan);
-                        }
-                        return allModelKecamatan;
-                      },
-                    ),
-                  ),
-                SizedBox(height: 20),
-                if (widget.idKecamatan != "0")
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    child: DropdownSearch<Kelurahan>(
-                      mode: Mode.DIALOG,
-                      showSearchBox: true,
-                      onChanged: (Kelurahan? value) {
-                        // Handle the selected Kelurahan
-                      },
-                      dropdownBuilder: (BuildContext context,
-                              Kelurahan? selectedItem) =>
-                          Text(selectedItem?.name ?? "Belum memilih Kelurahan"),
-                      popupItemBuilder: (BuildContext context, Kelurahan item,
-                              bool isSelected) =>
-                          ListTile(
-                        title: Text(item.name),
-                      ),
-                      onFind: (String? text) async {
-                        var response = await http.get(Uri.parse(
-                            "https://api.binderbyte.com/wilayah/kelurahan?api_key=${widget.apiKey}&id_kecamatan=${widget.idKecamatan}"));
-                        if (response.statusCode != 200) {
-                          return [];
-                        }
-                        List<dynamic> allKelurahan =
-                            json.decode(response.body)["value"];
-                        List<Kelurahan> allModelKelurahan = [];
-
-                        for (var element in allKelurahan) {
-                          Kelurahan kelurahan = Kelurahan(
-                            id: element["id"],
-                            idKecamatan: element["id_kecamatan"],
-                            name: element["name"],
-                          );
-                          allModelKelurahan.add(kelurahan);
-                        }
-                        return allModelKelurahan;
-                      },
-                    ),
-                  ),
-              ],
-            ),
-
             SizedBox(height: 20),
-            // Register Button
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: ElevatedButton(
-                onPressed: _register,
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 15.0),
-                  child: Center(
-                    child: Text(
-                      'Daftar',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 249, 249, 249),
-                      ),
-                    ),
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20.0),
-            Text(
-              'Dengan masuk atau daftar, Anda setuju dengan',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 10.0),
+            ElevatedButton(
+              onPressed: () {
+                _register();
+              },
+              child: Text("Daftar"),
             ),
           ],
         ),

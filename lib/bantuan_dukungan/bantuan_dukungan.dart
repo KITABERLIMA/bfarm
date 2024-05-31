@@ -37,14 +37,14 @@ class _BantuanDukungan extends State<BantuanDukungan> {
               color: Colors.black,
             ),
             onPressed: () {
-              // Aksi ketika tombol diklik
+              Navigator.pop(context); // Aksi ketika tombol diklik
             },
           ),
           title: Text(
             'Bantuan dan Dukungan',
             style: TextStyle(
               color: Color(0xFF121212),
-              fontSize: 20,
+              fontSize: 14,
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w500,
             ),

@@ -46,19 +46,6 @@ class DaftarSebagai extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 50),
-                  buildOption(
-                    'assets/images/7.png',
-                    'assets/images/8.png',
-                    'Personal',
-                    () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignUpPage(),
-                        ),
-                      );
-                    },
-                  ),
                   SizedBox(height: 50),
                   buildOption(
                     'assets/images/9.png',

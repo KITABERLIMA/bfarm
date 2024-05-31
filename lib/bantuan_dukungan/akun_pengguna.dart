@@ -14,10 +14,12 @@ class FigmaToCodeApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFF7F7F7),
         appBarTheme: AppBarTheme(
           backgroundColor: const Color(0xFFF7F7F7),
-          foregroundColor: Colors.black, // Warna teks dan ikon di app bar menjadi hitam
+          foregroundColor:
+              Colors.black, // Warna teks dan ikon di app bar menjadi hitam
         ),
       ),
-      home: AkunPenggunaPage(), // Menggunakan halaman AkunPenggunaPage sebagai home
+      home:
+          AkunPenggunaPage(), // Menggunakan halaman AkunPenggunaPage sebagai home
     );
   }
 }
@@ -32,7 +34,8 @@ class AkunPenggunaPage extends StatelessWidget {
           'Akun Pengguna',
           style: TextStyle(color: Colors.black), // Warna teks menjadi hitam
         ),
-        iconTheme: IconThemeData(color: Colors.black), // Warna ikon menjadi hitam
+        iconTheme:
+            IconThemeData(color: Colors.black), // Warna ikon menjadi hitam
         backgroundColor: const Color(0xFFF7F7F7),
       ),
       body: SingleChildScrollView(
@@ -40,9 +43,11 @@ class AkunPenggunaPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              const SizedBox(height: 10), // Memberikan ruang di atas objek pertama
+              const SizedBox(
+                  height: 10), // Memberikan ruang di atas objek pertama
               Group12860(),
-              const SizedBox(height: 10), // Memberikan ruang di bawah objek terakhir
+              const SizedBox(
+                  height: 10), // Memberikan ruang di bawah objek terakhir
             ],
           ),
         ),
@@ -51,100 +56,99 @@ class AkunPenggunaPage extends StatelessWidget {
   }
 }
 
-class Group12860 extends StatelessWidget {
+class Group12860 extends StatefulWidget {
+  @override
+  _Group12860State createState() => _Group12860State();
+}
+
+class _Group12860State extends State<Group12860> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        buildListItem(
-          title: 'Bagaimana cara membuat akun pengguna baru? ',
-          context: context,
-          answer: 'Untuk membuat akun baru, cukup klik tombol "Daftar" dan ikuti langkah-langkah pendaftarannya.', 
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildListItem(
+              title: 'Bagaimana cara membuat akun pengguna baru?',
+              answer:
+                  'Untuk membuat akun baru, cukup klik tombol "Daftar" dan ikuti langkah-langkah pendaftarannya.',
+            ),
+            buildListItem(
+              title: 'Apa langkah-langkah untuk mengatur profil pengguna?',
+              answer:
+                  'Anda dapat mengatur profil pengguna Anda dengan masuk ke navbar "Akun" dan mengklik opsi "Edit Profil".',
+            ),
+            buildListItem(
+              title:
+                  'Bagaimana cara mengubah kata sandi atau informasi kontak dalam akun saya?',
+              answer:
+                  'Anda bisa mengubah kata sandi dengan masuk ke navbar "Akun" dan mengakses opsi "Kata Sandi".',
+            ),
+            buildListItem(
+              title:
+                  'Bagaimana cara melaporkan masalah atau bug dalam aplikasi?',
+              answer:
+                  'Apabila terdapat masalah atau bug, Anda dapat menghubungi pihak bFarm melalui kanal yang sudah disediakan (WA dan Email).',
+            ),
+          ],
         ),
-        const SizedBox(height: 16), // Memberikan ruang di antara objek pertama dan kedua
-        buildListItem(
-          title: 'Apa langkah-langkah untuk mengatur profil pengguna?',
-          context: context,
-          answer: 'Anda dapat mengatur profil pengguna Anda dengan masuk ke navbar "Akun" dan mengklik opsi "Edit Profil".', 
-        ),
-        const SizedBox(height: 16), // Memberikan ruang di antara objek kedua dan ketiga
-        buildListItem(
-          title: 'Bagaimana cara mengubah kata sandi atau informasi kontak dalam akun saya?',
-          context: context,
-          answer: 'Anda bisa mengubah kata sandi dengan masuk ke navbar "Akun" dan mengakses opsi "Kata Sandi".', 
-        ),
-        const SizedBox(height: 16), // Memberikan ruang di antara objek ketiga dan keempat
-        buildListItem(
-          title: 'Bagaimana cara melaporkan masalah atau bug dalam aplikasi?',
-          context: context,
-          answer: 'Apabila terdapat masalah atau bug Anda dapat menghubungi pihal bFarm di kanal yang sudah disediakan (WA dan Email)',
-        ),
-      ],
+      ),
     );
   }
 
-  Widget buildListItem({required String title, required BuildContext context, String? answer}) {
-    return ExpansionTile(
-      title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Text(
-          title,
-          style: TextStyle(
-            color: Colors.black, // Warna teks hitam
-            fontSize: 16,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-            height: 1.5,
-          ),
-        ),
-      ),
-      children: [
-        if (answer != null)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
-              margin: const EdgeInsets.all(10.0),
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.white, // Warna background putih
-                boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 4, offset: Offset(0, 2))], // Bayangan
-                border: Border.all(color: const Color(0xFF6EBF45), width: 1), // Garis batas 
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Text(
-                answer,
-                style: TextStyle(
-                  color: Colors.black, // Warna teks hitam
-                  fontSize: 12,
-                ),
-                textAlign: TextAlign.justify, // Menjaga teks jawaban menjadi rapih
-              ),
+  Widget buildListItem({
+    required String title,
+    required String answer,
+  }) {
+    return Container(
+      color: Colors.white,
+      margin: EdgeInsets.symmetric(vertical: 8),
+      child: ExpansionTile(
+        title: Padding(
+          padding: EdgeInsetsDirectional.only(start: 0),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: Colors
+                  .grey.shade800, // Menggunakan warna abu-abu yang lebih gelap
+              fontSize: 14,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.bold,
             ),
           ),
-      ],
-      tilePadding: const EdgeInsets.all(8.0), // Padding untuk seluruh tile
-      trailing: Stack(
+        ),
+        trailing: Icon(
+          Icons.expand_more,
+          color: Colors.green,
+        ),
         children: [
-          // Ikon panah putih yang lebih tebal
-          Icon(
-            Icons.chevron_right,
-            color: Colors.white,
-            size: 36,
-          ),
-          // Ikon panah hitam
-          Positioned(
-            left: 2,
-            child: Icon(
-              Icons.chevron_right,
-              color: const Color(0xFF6EBF45), // Warna panah hitam
-              size: 32, // Menyesuaikan ukuran panah
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(width: double.infinity),
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Text(
+                    answer,
+                    style: TextStyle(
+                      color: Colors.grey
+                          .shade800, // Menggunakan warna abu-abu yang lebih gelap
+                      fontSize: 12,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.normal,
+                    ),
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
-      collapsedBackgroundColor: Colors.white,
-      backgroundColor: Colors.white,
-      iconColor: Colors.white,
     );
   }
 }

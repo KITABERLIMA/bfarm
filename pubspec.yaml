@@ -32,17 +32,20 @@ dependencies:
     sdk: flutter
 
   # Contoh dependensi yang baru ditambahkan
-  http: ^0.13.3  # Digunakan untuk melakukan permintaan HTTP
+  http: ^1.2.1  # Digunakan untuk melakukan permintaan HTTP
 
   # Dependensi yang sudah ada
   cupertino_icons: ^1.0.2  # Font untuk ikon gaya iOS
   dropdown_search: ^3.0.1
-  image_picker: ^0.8.4+4
+  image_picker: ^1.1.1
+  flutter_dotenv: ^5.1.0
+  provider: ^5.0.0
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  carousel_slider: ^4.0.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -76,10 +79,14 @@ flutter:
     - assets/images/8.png
     - assets/images/9.png
     - assets/images/10.png
+    - assets/images/14.png
     - assets/images/tanah.png
+    - assets/images/logobaru.png
     - assets/images/info aplikasi.png
     - assets/images/info aplikasi2.png
     - assets/images/bantuan dukungan.png
+    - assets/images/open.gif
+    - assets/images/berhasil.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
