@@ -516,7 +516,8 @@ class ButtonAddToCart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cartItem = Provider.of<cart_item>(context);
+    var cartItem = 'Apple';
+    print('You have added $cartItem to your cart.');
 
     return GestureDetector(
       onTap: counter >
