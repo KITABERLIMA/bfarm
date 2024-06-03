@@ -1,4 +1,5 @@
 import 'package:bfarm_mobileapp/home%20pages/profile.dart';
+import 'package:bfarm_mobileapp/pembayaran/pembelian_alat.dart';
 import 'package:flutter/material.dart';
 import 'deskripsi.dart';
 import 'lahan.dart';
@@ -271,7 +272,12 @@ class BerandaPage extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        // Implementasi aksi untuk tombol "Lihat Semua"
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Beranda(),
+                          ),
+                        );
                       },
                       child: Text(
                         'Lihat Semua',

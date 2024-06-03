@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'signup_personal.dart';
+import 'signup_personal';
 
 void main() {
   runApp(const DaftarSebagai());

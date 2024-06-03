@@ -36,7 +36,7 @@ dependencies:
 
   # Dependensi yang sudah ada
   cupertino_icons: ^1.0.2  # Font untuk ikon gaya iOS
-  dropdown_search: ^3.0.1
+  dropdown_search: ^5.0.6
   image_picker: ^1.1.1
   flutter_dotenv: ^5.1.0
   provider: ^5.0.0
@@ -87,6 +87,8 @@ flutter:
     - assets/images/bantuan dukungan.png
     - assets/images/open.gif
     - assets/images/berhasil.png
+    - assets/images/alat.png
+    
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

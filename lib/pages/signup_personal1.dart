@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:convert';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'kebijakan_privasi.dart';
+import 'ketentuan_layanan.dart';
 import 'otp.dart';
 
 void main() {
@@ -65,6 +67,7 @@ class Kelurahan {
   }
 }
 
+// ignore: must_be_immutable
 class RegisterForm extends StatefulWidget {
   final String apiKey;
   String idProvinsi = "0";
@@ -127,11 +130,10 @@ class _RegisterFormState extends State<RegisterForm> {
 
       var request = http.MultipartRequest("POST", uri);
 
-      request.fields['user_type'] = _userType!;
+      request.fields['user_type'] = 'individual';
       request.fields['first_name'] = _firstNameController.text;
       request.fields['last_name'] = _lastNameController.text;
-      request.fields['email'] =
-          _emailController.text.trim();
+      request.fields['email'] = _emailController.text.trim();
       request.fields['password'] = _passwordController.text;
       request.fields['phone'] = _phoneController.text;
       request.fields['full_address'] = _fullAddressController.text;
@@ -218,6 +220,23 @@ class _RegisterFormState extends State<RegisterForm> {
     super.dispose();
   }
 
+  Future<List<Provinsi>> _fetchProvinces() async {
+    var response = await http.get(Uri.parse(
+        'https://api.binderbyte.com/wilayah/provinsi?api_key=${widget.apiKey}'));
+
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      print(jsonResponse); // Debugging log
+      var provinces = (jsonResponse['value'] as List)
+          .map((data) => Provinsi.fromJson(data))
+          .toList();
+      return provinces;
+    } else {
+      print('Failed to load provinces'); // Debugging log
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -230,17 +249,70 @@ class _RegisterFormState extends State<RegisterForm> {
           key: _formKey,
           child: ListView(
             children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.4,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/sawah.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Pendaftaran',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        'Akun personal',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Text(
+                      'Isi seluruh form di bawah untuk mendaftarkan akun',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               TextFormField(
                 controller: _firstNameController,
                 focusNode: _firstNameFocusNode,
                 decoration: InputDecoration(
                   labelText: 'First Name',
                   labelStyle: TextStyle(
-                    color: _firstNameFocusNode.hasFocus ? Colors.lightGreen : null,
+                    color:
+                        _firstNameFocusNode.hasFocus ? Colors.lightGreen : null,
                   ),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
-                      color: _firstNameFocusNode.hasFocus ? Colors.lightGreen : Colors.grey,
+                      color: _firstNameFocusNode.hasFocus
+                          ? Colors.lightGreen
+                          : Colors.grey,
                     ),
                   ),
                 ),
@@ -257,11 +329,14 @@ class _RegisterFormState extends State<RegisterForm> {
                 decoration: InputDecoration(
                   labelText: 'Last Name',
                   labelStyle: TextStyle(
-                    color: _lastNameFocusNode.hasFocus ? Colors.lightGreen : null,
+                    color:
+                        _lastNameFocusNode.hasFocus ? Colors.lightGreen : null,
                   ),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
-                      color: _lastNameFocusNode.hasFocus ? Colors.lightGreen : Colors.grey,
+                      color: _lastNameFocusNode.hasFocus
+                          ? Colors.lightGreen
+                          : Colors.grey,
                     ),
                   ),
                 ),
@@ -282,13 +357,16 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
-                      color: _emailFocusNode.hasFocus ? Colors.lightGreen : Colors.grey,
+                      color: _emailFocusNode.hasFocus
+                          ? Colors.lightGreen
+                          : Colors.grey,
                     ),
                   ),
                 ),
+                keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null) {
-                    return 'Please enter a valid email address';
+                    return 'Please enter your email';
                   }
                   return null;
                 },
@@ -299,18 +377,21 @@ class _RegisterFormState extends State<RegisterForm> {
                 decoration: InputDecoration(
                   labelText: 'Password',
                   labelStyle: TextStyle(
-                    color: _passwordFocusNode.hasFocus ? Colors.lightGreen : null,
+                    color:
+                        _passwordFocusNode.hasFocus ? Colors.lightGreen : null,
                   ),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
-                      color: _passwordFocusNode.hasFocus ? Colors.lightGreen : Colors.grey,
+                      color: _passwordFocusNode.hasFocus
+                          ? Colors.lightGreen
+                          : Colors.grey,
                     ),
                   ),
                 ),
                 obscureText: true,
                 validator: (value) {
                   if (value == null) {
-                    return 'Please enter a valid password';
+                    return 'Please enter your password';
                   }
                   return null;
                 },
@@ -325,14 +406,16 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
-                      color: _phoneFocusNode.hasFocus ? Colors.lightGreen : Colors.grey,
+                      color: _phoneFocusNode.hasFocus
+                          ? Colors.lightGreen
+                          : Colors.grey,
                     ),
                   ),
                 ),
                 keyboardType: TextInputType.phone,
                 validator: (value) {
                   if (value == null) {
-                    return 'Please enter a valid phone number';
+                    return 'Please enter your phone number';
                   }
                   return null;
                 },
@@ -343,11 +426,15 @@ class _RegisterFormState extends State<RegisterForm> {
                 decoration: InputDecoration(
                   labelText: 'Full Address',
                   labelStyle: TextStyle(
-                    color: _fullAddressFocusNode.hasFocus ? Colors.lightGreen : null,
+                    color: _fullAddressFocusNode.hasFocus
+                        ? Colors.lightGreen
+                        : null,
                   ),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
-                      color: _fullAddressFocusNode.hasFocus ? Colors.lightGreen : Colors.grey,
+                      color: _fullAddressFocusNode.hasFocus
+                          ? Colors.lightGreen
+                          : Colors.grey,
                     ),
                   ),
                 ),
@@ -358,55 +445,21 @@ class _RegisterFormState extends State<RegisterForm> {
                   return null;
                 },
               ),
-              TextFormField(
-                controller: _postalCodeController,
-                focusNode: _postalCodeFocusNode,
-                decoration: InputDecoration(
-                  labelText: 'Postal Code',
-                  labelStyle: TextStyle(
-                    color: _postalCodeFocusNode.hasFocus ? Colors.lightGreen : null,
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: _postalCodeFocusNode.hasFocus ? Colors.lightGreen : Colors.grey,
-                    ),
-                  ),
-                ),
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please enter your postal code';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
               DropdownSearch<Provinsi>(
-                mode: Mode.BOTTOM_SHEET,
-                showSearchBox: true,
-                dropdownBuilder:
-                    (BuildContext context, Provinsi? selectedItem) =>
-                        Text(selectedItem?.name ?? "Belum memilih Provinsi"),
-                popupItemBuilder:
-                    (BuildContext context, Provinsi item, bool isSelected) =>
-                        ListTile(
-                  title: Text(item.name),
-                ),
-                onFind: (String? text) async {
+                asyncItems: (String filter) async {
                   var response = await http.get(Uri.parse(
-                      "https://api.binderbyte.com/wilayah/provinsi?api_key=${widget.apiKey}"));
-                  if (response.statusCode != 200) {
-                    return [];
+                      'https://api.binderbyte.com/wilayah/provinsi?api_key=${widget.apiKey}'));
+                  if (response.statusCode == 200) {
+                    var jsonResponse = jsonDecode(response.body);
+                    print(jsonResponse); // Debugging log
+                    return (jsonResponse['value'] as List)
+                        .map((data) => Provinsi.fromJson(data))
+                        .toList();
                   }
-                  List<dynamic> allProvince =
-                      json.decode(response.body)["value"];
-                  List<Provinsi> allModelProvince = [];
-
-                  for (var element in allProvince) {
-                    allModelProvince.add(Provinsi.fromJson(element));
-                  }
-                  return allModelProvince;
+                  print('Failed to load provinces'); // Debugging log
+                  return [];
                 },
+                itemAsString: (Provinsi p) => p.name,
                 onChanged: (Provinsi? value) {
                   if (value != null) {
                     setState(() {
@@ -415,134 +468,219 @@ class _RegisterFormState extends State<RegisterForm> {
                     });
                   }
                 },
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: 'Province',
+                  ),
+                ),
+                popupProps: PopupProps.menu(
+                  showSearchBox: true,
+                ),
+                validator: (value) =>
+                    value == null ? 'Please select a province' : null,
               ),
-              SizedBox(height: 20),
-              if (widget.idProvinsi != "0")
-                DropdownSearch<Kota>(
-                  mode: Mode.DIALOG,
-                  showSearchBox: true,
-                  dropdownBuilder: (BuildContext context, Kota? selectedItem) =>
-                      Text(selectedItem?.name ?? "Belum memilih Kota"),
-                  popupItemBuilder:
-                      (BuildContext context, Kota item, bool isSelected) =>
-                          ListTile(
-                    title: Text(item.name),
-                  ),
-                  onFind: (String? text) async {
-                    var response = await http.get(Uri.parse(
-                        "https://api.binderbyte.com/wilayah/kabupaten?api_key=${widget.apiKey}&id_provinsi=${widget.idProvinsi}"));
-                    if (response.statusCode != 200) {
-                      return [];
-                    }
-                    List<dynamic> allKota = json.decode(response.body)["value"];
-                    List<Kota> allModelKota = [];
-
-                    for (var element in allKota) {
-                      allModelKota.add(Kota.fromJson(element));
-                    }
-                    return allModelKota;
-                  },
-                  onChanged: (Kota? value) {
-                    if (value != null) {
-                      setState(() {
-                        widget.idKabupaten = value.id;
-                        _cityDistrictController.text = value.name;
-                      });
-                    }
-                  },
-                ),
-              SizedBox(height: 20),
-              if (widget.idKabupaten != "0")
-                DropdownSearch<Kecamatan>(
-                  mode: Mode.DIALOG,
-                  showSearchBox: true,
-                  dropdownBuilder:
-                      (BuildContext context, Kecamatan? selectedItem) =>
-                          Text(selectedItem?.name ?? "Belum memilih Kecamatan"),
-                  popupItemBuilder:
-                      (BuildContext context, Kecamatan item, bool isSelected) =>
-                          ListTile(
-                    title: Text(item.name),
-                  ),
-                  onFind: (String? text) async {
-                    var response = await http.get(Uri.parse(
-                        "https://api.binderbyte.com/wilayah/kecamatan?api_key=${widget.apiKey}&id_kabupaten=${widget.idKabupaten}"));
-                    if (response.statusCode != 200) {
-                      return [];
-                    }
-                    List<dynamic> allKecamatan =
-                        json.decode(response.body)["value"];
-                    List<Kecamatan> allModelKecamatan = [];
-
-                    for (var element in allKecamatan) {
-                      allModelKecamatan.add(Kecamatan.fromJson(element));
-                    }
-                    return allModelKecamatan;
-                  },
-                  onChanged: (Kecamatan? value) {
-                    if (value != null) {
-                      setState(() {
-                        widget.idKecamatan = value.id;
-                        _subDistrictController.text = value.name;
-                      });
-                    }
-                  },
-                ),
-              SizedBox(height: 20),
-              if (widget.idKecamatan != "0")
-                DropdownSearch<Kelurahan>(
-                  mode: Mode.BOTTOM_SHEET,
-                  showSearchBox: true,
-                  dropdownBuilder:
-                      (BuildContext context, Kelurahan? selectedItem) =>
-                          Text(selectedItem?.name ?? "Belum memilih Kelurahan"),
-                  popupItemBuilder:
-                      (BuildContext context, Kelurahan item, bool isSelected) =>
-                          ListTile(
-                    title: Text(item.name),
-                  ),
-                  onFind: (String? text) async {
-                    var response = await http.get(Uri.parse(
-                        "https://api.binderbyte.com/wilayah/kelurahan?api_key=${widget.apiKey}&id_kecamatan=${widget.idKecamatan}"));
-                    if (response.statusCode != 200) {
-                      return [];
-                    }
-                    List<dynamic> allKelurahan =
-                        json.decode(response.body)["value"];
-                    List<Kelurahan> allModelKelurahan = [];
-
-                    for (var element in allKelurahan) {
-                      allModelKelurahan.add(Kelurahan.fromJson(element));
-                    }
-                    return allModelKelurahan;
-                  },
-                  onChanged: (Kelurahan? value) {
-                    if (value != null) {
-                      _villageController.text = value.name;
-                    }
-                  },
-                ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _pickImage,
-                child: Text("Select Profile Picture"),
-              ),
-              if (_selectedImage != null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Image.file(
-                    _selectedImage!,
-                    height: 100,
-                    width: 100,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  _register();
+              DropdownSearch<Kota>(
+                asyncItems: (String filter) async {
+                  var response = await http.get(Uri.parse(
+                      'https://api.binderbyte.com/wilayah/kabupaten?api_key=${widget.apiKey}&id_provinsi=${widget.idProvinsi}'));
+                  if (response.statusCode == 200) {
+                    var jsonResponse = jsonDecode(response.body);
+                    print(jsonResponse); // Debugging log
+                    return (jsonResponse['value'] as List)
+                        .map((data) => Kota.fromJson(data))
+                        .toList();
+                  }
+                  print('Failed to load cities'); // Debugging log
+                  return [];
                 },
+                itemAsString: (Kota k) => k.name,
+                onChanged: (Kota? value) {
+                  if (value != null) {
+                    setState(() {
+                      widget.idKabupaten = value.id;
+                      _cityDistrictController.text = value.name;
+                    });
+                  }
+                },
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: 'City/District',
+                  ),
+                ),
+                popupProps: PopupProps.menu(
+                  showSearchBox: true,
+                ),
+                validator: (value) =>
+                    value == null ? 'Please select a city/district' : null,
+              ),
+              DropdownSearch<Kecamatan>(
+                asyncItems: (String filter) async {
+                  var response = await http.get(Uri.parse(
+                      'https://api.binderbyte.com/wilayah/kecamatan?api_key=${widget.apiKey}&id_kabupaten=${widget.idKabupaten}'));
+                  if (response.statusCode == 200) {
+                    var jsonResponse = jsonDecode(response.body);
+                    print(jsonResponse); // Debugging log
+                    return (jsonResponse['value'] as List)
+                        .map((data) => Kecamatan.fromJson(data))
+                        .toList();
+                  }
+                  print('Failed to load sub-districts'); // Debugging log
+                  return [];
+                },
+                itemAsString: (Kecamatan k) => k.name,
+                onChanged: (Kecamatan? value) {
+                  if (value != null) {
+                    setState(() {
+                      widget.idKecamatan = value.id;
+                      _subDistrictController.text = value.name;
+                    });
+                  }
+                },
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: 'Sub-district',
+                  ),
+                ),
+                popupProps: PopupProps.menu(
+                  showSearchBox: true,
+                ),
+                validator: (value) =>
+                    value == null ? 'Please select a sub-district' : null,
+              ),
+              DropdownSearch<Kelurahan>(
+                asyncItems: (String filter) async {
+                  var response = await http.get(Uri.parse(
+                      'https://api.binderbyte.com/wilayah/kelurahan?api_key=${widget.apiKey}&id_kecamatan=${widget.idKecamatan}'));
+                  if (response.statusCode == 200) {
+                    var jsonResponse = jsonDecode(response.body);
+                    print(jsonResponse); // Debugging log
+                    return (jsonResponse['value'] as List)
+                        .map((data) => Kelurahan.fromJson(data))
+                        .toList();
+                  }
+                  print('Failed to load villages'); // Debugging log
+                  return [];
+                },
+                itemAsString: (Kelurahan k) => k.name,
+                onChanged: (Kelurahan? value) {
+                  if (value != null) {
+                    setState(() {
+                      _villageController.text = value.name;
+                    });
+                  }
+                },
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: 'Village',
+                  ),
+                ),
+                popupProps: PopupProps.menu(
+                  showSearchBox: true,
+                ),
+                validator: (value) =>
+                    value == null ? 'Please select a village' : null,
+              ),
+              TextFormField(
+                controller: _postalCodeController,
+                focusNode: _postalCodeFocusNode,
+                decoration: InputDecoration(
+                  labelText: 'Postal Code',
+                  labelStyle: TextStyle(
+                    color: _postalCodeFocusNode.hasFocus
+                        ? Colors.lightGreen
+                        : null,
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: _postalCodeFocusNode.hasFocus
+                          ? Colors.lightGreen
+                          : Colors.grey,
+                    ),
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please enter your postal code';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              Center(
+                child: Column(
+                  children: [
+                    _selectedImage != null
+                        ? Image.file(_selectedImage!, height: 100, width: 100)
+                        : SizedBox(),
+                    ElevatedButton(
+                      onPressed: _pickImage,
+                      child: Text("Select Profile Picture"),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _register,
                 child: Text("Register"),
+              ),
+              SizedBox(height: 20.0),
+              Text(
+                'Dengan masuk atau daftar, Anda setuju dengan',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 10.0),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => KetentuanLayananScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Ketentuan Layanan',
+                      style: TextStyle(
+                        fontSize: 10.0,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    ' dan ',
+                    style: TextStyle(
+                      fontSize: 10.0,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => KebijakanPrivasiScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Kebijakan Privasi',
+                      style: TextStyle(
+                        fontSize: 10.0,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    ' bFarm',
+                    style: TextStyle(
+                      fontSize: 10.0,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
