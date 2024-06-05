@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../pembayaran/pembayaran_berhasil.dart';
+import 'signup_company.dart';
 import 'signup_personal1.dart';
 //import 'signup_personal.dart';
 
@@ -70,8 +69,10 @@ class DaftarSebagai extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PembayaranBerhasil(),
-                        ),
+                            builder: (context) => RegisterCompany(
+                                  apiKey:
+                                      '2ed019ca673ef08cc29666f0af5faa5cc30d16ddb4882770297948bed8e54452',
+                                )),
                       );
                     },
                   ),
