@@ -1,5 +1,5 @@
-import 'package:bfarm_mobileapp/home%20pages/profile.dart';
 import 'package:bfarm_mobileapp/pembayaran/pembelian_alat.dart';
+import 'package:bfarm_mobileapp/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'deskripsi.dart';
 import 'lahan.dart';

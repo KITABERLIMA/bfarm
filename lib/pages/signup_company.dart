@@ -10,7 +10,7 @@ import 'otp.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: RegisterForm(
+    home: RegisterCompany(
       apiKey:
           '2ed019ca673ef08cc29666f0af5faa5cc30d16ddb4882770297948bed8e54452',
     ),
@@ -68,31 +68,33 @@ class Kelurahan {
 }
 
 // ignore: must_be_immutable
-class RegisterForm extends StatefulWidget {
+class RegisterCompany extends StatefulWidget {
   final String apiKey;
   String idProvinsi = "0";
   String idKabupaten = "0";
   String idKecamatan = "0";
-  RegisterForm({required this.apiKey});
+  RegisterCompany({required this.apiKey});
   @override
   _RegisterFormState createState() => _RegisterFormState();
 }
 
-class _RegisterFormState extends State<RegisterForm> {
+class _RegisterFormState extends State<RegisterCompany> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _companyNameControler = TextEditingController();
+  final TextEditingController _positionController = TextEditingController();
   final TextEditingController _fullAddressController = TextEditingController();
   final TextEditingController _provinceController = TextEditingController();
   final TextEditingController _cityDistrictController = TextEditingController();
   final TextEditingController _subDistrictController = TextEditingController();
   final TextEditingController _villageController = TextEditingController();
   final TextEditingController _postalCodeController = TextEditingController();
-
-  String? _userType = "individual";
+  // ignore: unused_field
+  String? _userType = "company";
   File? _selectedImage;
 
   Future<void> _pickImage() async {
@@ -112,13 +114,6 @@ class _RegisterFormState extends State<RegisterForm> {
 
   Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
-      if (_userType == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Please select a user type")),
-        );
-        return;
-      }
-
       if (_selectedImage == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Please select a profile picture")),
@@ -126,16 +121,18 @@ class _RegisterFormState extends State<RegisterForm> {
         return;
       }
 
-      var uri = Uri.parse("http://bfarm.ahmadyaz.my.id/api/individuals");
+      var uri = Uri.parse("http://bfarm.ahmadyaz.my.id/api/companies");
 
       var request = http.MultipartRequest("POST", uri);
 
-      request.fields['user_type'] = 'individual';
+      request.fields['user_type'] = 'company';
       request.fields['first_name'] = _firstNameController.text;
       request.fields['last_name'] = _lastNameController.text;
       request.fields['email'] = _emailController.text.trim();
       request.fields['password'] = _passwordController.text;
-      request.fields['phone'] = _phoneController.text;
+      request.fields['company_name'] = _companyNameControler.text;
+      request.fields['company_phone'] = _phoneController.text;
+      request.fields['position'] = _positionController.text;
       request.fields['full_address'] = _fullAddressController.text;
       request.fields['province'] = _provinceController.text;
       request.fields['city_district'] = _cityDistrictController.text;
@@ -180,6 +177,8 @@ class _RegisterFormState extends State<RegisterForm> {
   final FocusNode _phoneFocusNode = FocusNode();
   final FocusNode _fullAddressFocusNode = FocusNode();
   final FocusNode _postalCodeFocusNode = FocusNode();
+  final FocusNode _companyNameFocusNode = FocusNode();
+  final FocusNode _positionFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -400,7 +399,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 controller: _phoneController,
                 focusNode: _phoneFocusNode,
                 decoration: InputDecoration(
-                  labelText: 'Phone',
+                  labelText: 'Company Phone',
                   labelStyle: TextStyle(
                     color: _phoneFocusNode.hasFocus ? Colors.lightGreen : null,
                   ),
@@ -416,6 +415,55 @@ class _RegisterFormState extends State<RegisterForm> {
                 validator: (value) {
                   if (value == null) {
                     return 'Please enter your phone number';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _companyNameControler,
+                focusNode: _companyNameFocusNode,
+                decoration: InputDecoration(
+                  labelText: 'Company Name',
+                  labelStyle: TextStyle(
+                    color: _companyNameFocusNode.hasFocus
+                        ? Colors.lightGreen
+                        : null,
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: _companyNameFocusNode.hasFocus
+                          ? Colors.lightGreen
+                          : Colors.grey,
+                    ),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please enter your company name';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _positionController,
+                focusNode: _positionFocusNode,
+                decoration: InputDecoration(
+                  labelText: 'Position',
+                  labelStyle: TextStyle(
+                    color:
+                        _positionFocusNode.hasFocus ? Colors.lightGreen : null,
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: _positionFocusNode.hasFocus
+                          ? Colors.lightGreen
+                          : Colors.grey,
+                    ),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please enter your position';
                   }
                   return null;
                 },

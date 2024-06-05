@@ -6,6 +6,7 @@ import 'kebijakan_privasi.dart';
 import 'ketentuan_layanan.dart';
 import 'lupakatasandi.dart'; // Import the LupaKataSandi class
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 
 class Login extends StatefulWidget {
   @override
@@ -28,6 +29,10 @@ class _LoginState extends State<Login> {
 
     // Handle response here, for example, you can check the status code
     if (response.statusCode == 200) {
+      // Save token to SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', jsonData['token']);
+
       // If login is successful, navigate to dashboard
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Dashboard()));
