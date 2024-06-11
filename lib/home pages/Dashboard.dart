@@ -156,7 +156,7 @@ class BerandaPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FilterPage(),
+                        builder: (context) => FilterPage1(),
                       ),
                     );
                   },
