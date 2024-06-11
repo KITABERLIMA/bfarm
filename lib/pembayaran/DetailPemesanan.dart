@@ -1,27 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:bfarm_mobileapp/pembayaran/pembelian_alat.dart';
 import 'tagihan.dart';
 
-void main() {
-  runApp(const DetailPemesanan());
-}
-
 class DetailPemesanan extends StatelessWidget {
-  const DetailPemesanan({Key? key}) : super(key: key);
+  final int totalAmount;
+
+  const DetailPemesanan({Key? key, required this.totalAmount})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.light().copyWith(
-        scaffoldBackgroundColor: Colors.white,
+    return Scaffold(
+      body: ListView(
+        children: [
+          Icon2(),
+          AdditionalContent(),
+          DataPemesan(),
+          Detailharga(totalAmount: totalAmount),
+        ],
       ),
-      home: Scaffold(
-        body: ListView(
-          children: [
-            Icon2(),
-            AdditionalContent(),
-            DataPemesan(),
-            Detailharga()
-          ],
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        child: Container(
+          height: 60,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Beranda()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6EBF45),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Pesan Lagi',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -39,11 +66,7 @@ class Icon2 extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Tagihan(selectedItems: 0)),
-                  );
+                  Navigator.pop(context); // Go back to the previous screen
                 },
                 child: Icon(
                   Icons.arrow_back,
@@ -75,56 +98,51 @@ class Icon2 extends StatelessWidget {
                 child: Image.asset('assets/images/perusahaan.png',
                     fit: BoxFit.cover),
               ),
-              const SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'PT. Lima Benua Koneksindo, Surabaya',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none,
+              const SizedBox(width: 16), // Added SizedBox for spacing
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'PT. Lima Benua Koneksindo, Surabaya',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: Stack(
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              size: 16,
-                              color: Colors.red,
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.location_on,
+                          size: 16,
+                          color: Colors.red,
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            'xxxxx',
+                            style: TextStyle(
+                              color: Color(0xFF616161),
+                              fontSize: 12,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                              decoration: TextDecoration.none,
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'xxxxx',
-                        style: TextStyle(
-                          color: Color(0xFF616161),
-                          fontSize: 12,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
-                          decoration: TextDecoration.none,
+                        Icon(
+                          Icons.navigate_next,
+                          size: 24,
+                          color: Color(0xFF404040),
                         ),
-                      ),
-                      const SizedBox(width: 300),
-                      Icon(
-                        Icons.navigate_next,
-                        size: 24,
-                        color: Color(0xFF404040),
-                      )
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -144,229 +162,100 @@ class Icon2 extends StatelessWidget {
                   decoration: TextDecoration.none,
                 ),
               ),
-              SizedBox(height: 70),
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        Row(
+          children: [
+            SizedBox(
+              height: 80,
+              width: 90,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 16), // Tambahkan padding di sebelah kanan gambar
+                child: Image.asset(
+                  'assets/images/ProductAlat.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(width: 32), // Added SizedBox for spacing
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 80,
-                    width: 70,
-                    child: Image.asset('assets/images/ProductAlat.png',
-                        fit: BoxFit.cover),
+                  const Text(
+                    'Alat XXX',
+                    style: TextStyle(
+                      color: Color(0xFF0A0A0A),
+                      fontSize: 12,
+                      fontFamily: 'Poppins',
+                    ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Alat XXX',
-                          style: TextStyle(
-                            color: Color(0xFF0A0A0A),
-                            fontSize: 12,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            height: 1.0,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Qty: 1',
-                          style: TextStyle(
-                            color: Color(0xFF616161),
-                            fontSize: 10,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Rp 60.000',
-                          style: TextStyle(
-                            color: Color(0xFF6EBF45),
-                            fontSize: 10,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                      ],
+                  const SizedBox(height: 8),
+                  Text(
+                    'Qty : 1 ',
+                    style: const TextStyle(
+                      color: Color(0xFF616161),
+                      fontSize: 10,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Rp. 60000',
+                    style: const TextStyle(
+                      color: Color(0xFF6EBF45),
+                      fontSize: 14,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 16),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 80,
-                    width: 70,
-                    child: Image.asset('assets/images/ProductAlat.png',
-                        fit: BoxFit.cover),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Alat YYY',
-                          style: TextStyle(
-                            color: Color(0xFF0A0A0A),
-                            fontSize: 12,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            height: 1.0,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Qty: 1',
-                          style: TextStyle(
-                            color: Color(0xFF616161),
-                            fontSize: 10,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Rp 60.000',
-                          style: TextStyle(
-                            color: Color(0xFF6EBF45),
-                            fontSize: 10,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 80,
-                    width: 70,
-                    child: Image.asset('assets/images/ProductAlat.png',
-                        fit: BoxFit.cover),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Alat ZZZ',
-                          style: TextStyle(
-                            color: Color(0xFF0A0A0A),
-                            fontSize: 12,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            height: 1.0,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Qty: 1',
-                          style: TextStyle(
-                            color: Color(0xFF616161),
-                            fontSize: 10,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Rp 60.000',
-                          style: TextStyle(
-                            color: Color(0xFF6EBF45),
-                            fontSize: 10,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     );
   }
 }
 
+// Dummy widgets for AdditionalContent and DataPemesan
 class AdditionalContent extends StatelessWidget {
-  const AdditionalContent({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 35),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(2),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'Pembayaran',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              Spacer(),
-              Image.asset(
-                "assets/images/Bank.png",
-                width: 40,
-                height: 40,
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 35),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(2),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'BCA Virtual Account',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 12,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
-        ),
-        const SizedBox(height: 4),
-        const Divider(
-          color: Color(0xFFE0E0E0),
-          height: 1,
-          thickness: 1,
-          indent: 35,
-          endIndent: 35,
-        ),
-      ],
+          const Spacer(),
+          Image.asset(
+            "assets/images/Bank.png",
+            width: 40,
+            height: 40,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -406,88 +295,26 @@ class DataPemesan extends StatelessWidget {
         SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 35),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: [
-              Text(
-                'Nama',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  decoration: TextDecoration.none,
-                ),
+              InfoRow(
+                label: 'Nama',
+                value: 'Shinta',
               ),
-              Text(
-                'Nana',
-                style: TextStyle(
-                  color: Color(0xFF757575),
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.none,
-                ),
+              SizedBox(height: 20),
+              InfoRow(
+                label: 'Alamat',
+                value: 'Jl. Gunung Anyar Jaya',
               ),
+              SizedBox(height: 20),
+              InfoRow(
+                label: 'Nomor Telepon',
+                value: '+628 7730384030',
+              ),
+              SizedBox(height: 20),
             ],
           ),
         ),
-        SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 35),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Alamat',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  decoration: TextDecoration.none,
-                ),
-              ),
-              Text(
-                'Jl. Gunung Anyar Jaya',
-                style: TextStyle(
-                  color: Color(0xFF757575),
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.none,
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 35),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Nomor Telepon',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  decoration: TextDecoration.none,
-                ),
-              ),
-              Text(
-                '+628 7730384030',
-                style: TextStyle(
-                  color: Color(0xFF757575),
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.none,
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 20),
         const Divider(
           color: Color(0xFFE0E0E0),
           height: 1,
@@ -501,7 +328,9 @@ class DataPemesan extends StatelessWidget {
 }
 
 class Detailharga extends StatelessWidget {
-  const Detailharga({Key? key}) : super(key: key);
+  final int totalAmount;
+
+  const Detailharga({Key? key, required this.totalAmount}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -535,90 +364,61 @@ class Detailharga extends StatelessWidget {
         SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 35),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: [
-              Text(
-                'Sub Total',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  decoration: TextDecoration.none,
-                ),
+              InfoRow(
+                label: 'Sub Total',
+                value: 'Rp.60000',
               ),
-              Text(
-                'Rp.260.000',
-                style: TextStyle(
-                  color: Color(0xFF757575),
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.none,
-                ),
+              SizedBox(height: 20),
+              InfoRow(
+                label: 'Biaya Layanan',
+                value: 'Rp.0',
               ),
+              SizedBox(height: 20),
+              InfoRow(
+                label: 'Harga Total',
+                value: 'Rp. $totalAmount',
+              ),
+              SizedBox(height: 20),
             ],
           ),
         ),
-        SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 35),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Biaya Layanan',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  decoration: TextDecoration.none,
-                ),
-              ),
-              Text(
-                'Rp.5.000',
-                style: TextStyle(
-                  color: Color(0xFF757575),
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.none,
-                ),
-              ),
-            ],
+      ],
+    );
+  }
+}
+
+class InfoRow extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const InfoRow({Key? key, required this.label, required this.value})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 12,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w400,
           ),
         ),
-        SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 35),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Harga Total',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  decoration: TextDecoration.none,
-                ),
-              ),
-              Text(
-                'Rp. 165.000',
-                style: TextStyle(
-                  color: Color(0xFF757575),
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.none,
-                ),
-              ),
-            ],
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 12,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w400,
           ),
         ),
-        SizedBox(
-            height:
-                20), // Menambahkan spasi di antara Detailharga dan konten berikutnya
       ],
     );
   }

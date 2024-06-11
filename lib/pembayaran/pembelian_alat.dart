@@ -1,3 +1,4 @@
+import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -162,17 +163,25 @@ class IconBack extends StatelessWidget {
     return Positioned(
       left: 0,
       top: 0,
-      child: Container(
-        width: 36.59,
-        height: 32,
-        decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => BFarmHomePage()),
+          );
+        },
+        child: Container(
+          width: 36.59,
+          height: 32,
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Center(
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
           ),
         ),
       ),
@@ -230,7 +239,7 @@ class _Rectangle6State extends State<Rectangle6> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Rp. 6.000.000',
+                      'Rp. 60.000',
                       style: TextStyle(
                         color: Color(0xFF6EBF45),
                         fontSize: 20,

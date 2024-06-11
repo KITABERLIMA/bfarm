@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 import '../bantuan_dukungan/bantuan_dukungan.dart';
 import '../edit/edit_password.dart';
 import '../edit/edit_personal.dart';
@@ -10,7 +13,67 @@ void main() {
   runApp(Profile());
 }
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  String imageUrl = '';
+  String firstName = '';
+  String lastName = '';
+  String userType = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      // Handle the case where token is not available
+      setState(() {
+        userType = 'Token not found';
+      });
+      return;
+    }
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/users'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      if (responseData.containsKey('data')) {
+        var userData = responseData['data']['user'];
+        var userAdditionalData = responseData['data']['user_additional_data'];
+        var userImage = responseData['data']['user_image'];
+        setState(() {
+          imageUrl =
+              'http://bfarm.ahmadyaz.my.id/users/' + (userImage['image'] ?? '');
+          firstName = userAdditionalData['first_name'] ?? '';
+          lastName = userAdditionalData['last_name'] ?? '';
+          userType = userData['user_type'] ?? '';
+        });
+      } else {
+        setState(() {
+          userType = 'Data not found';
+        });
+      }
+    } else {
+      setState(() {
+        userType = 'Failed to load data';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -41,17 +104,21 @@ class Profile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        'api',
-                      ),
+                      backgroundImage: NetworkImage(imageUrl),
                       radius: 30.0,
+                      onBackgroundImageError: (exception, stackTrace) {
+                        setState(() {
+                          imageUrl =
+                              ''; // Reset imageUrl if the image fails to load
+                        });
+                      },
                     ),
                     SizedBox(width: 20),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Jennie Aldebaran',
+                          '$firstName $lastName',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -62,7 +129,7 @@ class Profile extends StatelessWidget {
                         ),
                         SizedBox(height: 5),
                         Text(
-                          'Personal',
+                          userType,
                           style: TextStyle(
                             color: Color(0xFFD7D7D7),
                             fontSize: 16,

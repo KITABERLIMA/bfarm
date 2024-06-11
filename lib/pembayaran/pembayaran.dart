@@ -195,14 +195,14 @@ class Icon2 extends StatelessWidget {
                       height: 32,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage("assets/images/logo gopay.png"),
+                          image: AssetImage("assets/images/Ovo.png"),
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
                     SizedBox(width: 16),
                     Text(
-                      'Gopay',
+                      'OVO',
                       style: TextStyle(
                         color: Color(0xFF1E2022),
                         fontSize: 16,
@@ -245,18 +245,18 @@ class Icon2 extends StatelessWidget {
                   children: [
                     SizedBox(width: 16),
                     Container(
-                      width: 40.44,
-                      height: 32,
+                      width: 39.61,
+                      height: 30,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage("assets/images/logo gopay.png"),
+                          image: AssetImage("assets/images/Shopeepay.png"),
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
                     SizedBox(width: 16),
                     Text(
-                      'Gopay',
+                      'ShopeePay',
                       style: TextStyle(
                         color: Color(0xFF1E2022),
                         fontSize: 16,
@@ -309,18 +309,18 @@ class Icon2 extends StatelessWidget {
                   children: [
                     SizedBox(width: 16),
                     Container(
-                      width: 40.44,
-                      height: 32,
+                      width: 43.49,
+                      height: 14,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage("assets/images/logo gopay.png"),
+                          image: AssetImage("assets/images/Bank.png"),
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
                     SizedBox(width: 16),
                     Text(
-                      'Gopay',
+                      'BCA Transfer',
                       style: TextStyle(
                         color: Color(0xFF1E2022),
                         fontSize: 16,
@@ -330,7 +330,7 @@ class Icon2 extends StatelessWidget {
                     ),
                     Spacer(),
                     Text(
-                      '15 m',
+                      '1 j 30 m',
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color: Color(0xFF828282),
@@ -363,18 +363,18 @@ class Icon2 extends StatelessWidget {
                   children: [
                     SizedBox(width: 16),
                     Container(
-                      width: 40.44,
-                      height: 32,
+                      width: 46.08,
+                      height: 14.56,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage("assets/images/logo gopay.png"),
+                          image: AssetImage("assets/images/Mandiri.png"),
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
                     SizedBox(width: 16),
                     Text(
-                      'Gopay',
+                      'Mandiri Transfer',
                       style: TextStyle(
                         color: Color(0xFF1E2022),
                         fontSize: 16,
@@ -384,7 +384,7 @@ class Icon2 extends StatelessWidget {
                     ),
                     Spacer(),
                     Text(
-                      '15 m',
+                      '1 j 30 m',
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color: Color(0xFF828282),
@@ -393,7 +393,59 @@ class Icon2 extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                width: double.infinity,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x198F9AA0),
+                      blurRadius: 24,
+                      offset: Offset(4, 8),
+                      spreadRadius: 0,
+                    )
+                  ],
+                ),
+                child: Row(
+                  children: [
                     SizedBox(width: 16),
+                    Container(
+                      width: 45.96,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/BNI.png"),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Text(
+                      'BNI Transfer',
+                      style: TextStyle(
+                        color: Color(0xFF1E2022),
+                        fontSize: 16,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Spacer(),
+                    Text(
+                      '1 j 30 m',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: Color(0xFF828282),
+                        fontSize: 12,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                   ],
                 ),
               ),
