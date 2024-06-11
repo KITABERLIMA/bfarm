@@ -4,8 +4,6 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:convert';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'kebijakan_privasi.dart';
-import 'ketentuan_layanan.dart';
 import 'otp.dart';
 
 void main() {
@@ -67,7 +65,6 @@ class Kelurahan {
   }
 }
 
-// ignore: must_be_immutable
 class RegisterForm extends StatefulWidget {
   final String apiKey;
   String idProvinsi = "0";
@@ -130,7 +127,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
       var request = http.MultipartRequest("POST", uri);
 
-      request.fields['user_type'] = 'individual';
+      request.fields['user_type'] = _userType!;
       request.fields['first_name'] = _firstNameController.text;
       request.fields['last_name'] = _lastNameController.text;
       request.fields['email'] = _emailController.text.trim();
@@ -249,56 +246,6 @@ class _RegisterFormState extends State<RegisterForm> {
           key: _formKey,
           child: ListView(
             children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.4,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/sawah.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Pendaftaran',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        'Akun personal',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Text(
-                      'Isi seluruh form di bawah untuk mendaftarkan akun',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               TextFormField(
                 controller: _firstNameController,
                 focusNode: _firstNameFocusNode,
@@ -606,13 +553,37 @@ class _RegisterFormState extends State<RegisterForm> {
                   return null;
                 },
               ),
+              DropdownButtonFormField<String>(
+                value: _userType,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _userType = newValue;
+                  });
+                },
+                items: <String>['individual', 'company']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                decoration: InputDecoration(
+                  labelText: 'User Type',
+                ),
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a user type';
+                  }
+                  return null;
+                },
+              ),
               SizedBox(height: 16.0),
               Center(
                 child: Column(
                   children: [
                     _selectedImage != null
                         ? Image.file(_selectedImage!, height: 100, width: 100)
-                        : SizedBox(),
+                        : Text("No image selected."),
                     ElevatedButton(
                       onPressed: _pickImage,
                       child: Text("Select Profile Picture"),
@@ -624,63 +595,6 @@ class _RegisterFormState extends State<RegisterForm> {
               ElevatedButton(
                 onPressed: _register,
                 child: Text("Register"),
-              ),
-              SizedBox(height: 20.0),
-              Text(
-                'Dengan masuk atau daftar, Anda setuju dengan',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10.0),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => KetentuanLayananScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Ketentuan Layanan',
-                      style: TextStyle(
-                        fontSize: 10.0,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    ' dan ',
-                    style: TextStyle(
-                      fontSize: 10.0,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => KebijakanPrivasiScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Kebijakan Privasi',
-                      style: TextStyle(
-                        fontSize: 10.0,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    ' bFarm',
-                    style: TextStyle(
-                      fontSize: 10.0,
-                    ),
-                  ),
-                ],
               ),
             ],
           ),

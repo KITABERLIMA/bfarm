@@ -21,6 +21,8 @@ class _PeriksaEmailState extends State<PeriksaEmail> {
       List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
   bool _isResendOtpLoading = false;
+  bool _obscureText1 = true;
+  bool _obscureText2 = true;
 
   @override
   void dispose() {
@@ -44,56 +46,154 @@ class _PeriksaEmailState extends State<PeriksaEmail> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Text(
-              'Periksa Email Anda',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-              ),
-            ),
-            SizedBox(height: 6),
-            Text(
-              'Kami telah mengirimkan tautan reset ke email ${widget.email}. Silakan masukkan kode enam digit yang disebutkan dalam email.',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey,
-              ),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(6, (index) => _buildOtpBox(index)),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => BuatKataSandiBaru()),
-                );
-              },
-              child: Text(
-                'Verifikasi Kode',
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Text(
+                'Periksa Email Anda',
                 style: TextStyle(
-                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
                 ),
               ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+              SizedBox(height: 6),
+              Text(
+                'Kami telah mengirimkan tautan reset ke email ${widget.email}. Silakan masukkan kode enam digit yang disebutkan dalam email.',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.grey,
+                ),
               ),
-            ),
-            SizedBox(height: 10),
-            TextButton(
-              onPressed: _isResendOtpLoading ? null : _resendOtp,
-              child: _isResendOtpLoading
-                  ? CircularProgressIndicator()
-                  : Text('Belum menerima email? Kirim ulang email'),
-            ),
-          ],
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: List.generate(6, (index) => _buildOtpBox(index)),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Kata Sandi',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  border: Border.all(color: Colors.green),
+                ),
+                padding: EdgeInsets.only(left: 10),
+                child: TextFormField(
+                  obscureText: _obscureText1,
+                  decoration: InputDecoration(
+                    hintText: 'Masukkan Kata Sandi Baru Anda',
+                    border: InputBorder.none,
+                    suffixIcon: IconButton(
+                      icon: _obscureText1
+                          ? Icon(Icons.visibility)
+                          : Icon(Icons.visibility_off),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText1 = !_obscureText1;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Konfirmasi Kata Sandi',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  border: Border.all(color: Colors.green),
+                ),
+                padding: EdgeInsets.only(left: 10),
+                child: TextFormField(
+                  obscureText: _obscureText2,
+                  decoration: InputDecoration(
+                    hintText: 'Masukkan Kembali Kata Sandi',
+                    border: InputBorder.none,
+                    suffixIcon: IconButton(
+                      icon: _obscureText2
+                          ? Icon(Icons.visibility)
+                          : Icon(Icons.visibility_off),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText2 = !_obscureText2;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BerhasilPerbaruiSandi()),
+                    );
+                  },
+                  child: Text(
+                    'Perbarui Kata Sandi',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.green),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BuatKataSandiBaru()),
+                  );
+                },
+                child: Text(
+                  'Verifikasi Kode',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.green),
+                ),
+              ),
+              SizedBox(height: 10),
+              TextButton(
+                onPressed: _isResendOtpLoading ? null : _resendOtp,
+                child: _isResendOtpLoading
+                    ? CircularProgressIndicator()
+                    : Text('Belum menerima email? Kirim ulang email'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -149,5 +249,19 @@ class _PeriksaEmailState extends State<PeriksaEmail> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Email terkirim ulang')));
     });
+  }
+}
+
+class BerhasilPerbaruiSandi extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Berhasil Perbarui Sandi'),
+      ),
+      body: Center(
+        child: Text('Kata sandi Anda telah diperbarui.'),
+      ),
+    );
   }
 }

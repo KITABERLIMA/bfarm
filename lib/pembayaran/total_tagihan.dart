@@ -1,5 +1,6 @@
 import 'CaraPembayaran.dart';
 import 'StatusPembayaran.dart';
+import 'DetailPemesanan.dart';
 import 'pembelian_alat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -364,10 +365,18 @@ class TotalPayment extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    // Handle detail tap
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailPemesanan(
+                          totalAmount: totalAmount,
+                        ),
+                      ),
+                    );
                   },
-                  child: SizedBox(
-                    height: 16,
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: const [
@@ -379,7 +388,8 @@ class TotalPayment extends StatelessWidget {
                             fontSize: 10,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
-                            height: 0.16,
+                            height:
+                                1.0, // Height diubah menjadi 1.0 untuk menyesuaikan line height
                           ),
                         ),
                       ],
@@ -455,7 +465,6 @@ class TotalPayment extends StatelessWidget {
             child: Container(
               width: double.infinity,
               height: 32,
-              padding: const EdgeInsets.symmetric(horizontal: 153, vertical: 8),
               decoration: ShapeDecoration(
                 color: const Color(0xFF6EBF45),
                 shape: RoundedRectangleBorder(
@@ -492,7 +501,6 @@ class TotalPayment extends StatelessWidget {
             child: Container(
               width: double.infinity,
               height: 32,
-              padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 8),
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
                   side: const BorderSide(width: 1, color: Color(0xFF6EBF45)),
