@@ -19,13 +19,16 @@ class _ProdukState extends State<Produk> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: ListView(
-          children: [
-            ProductHeader(),
-            SizedBox(height: 32),
-            KontenProduk(),
-            KontenProduk1()
-          ],
+        body: SingleChildScrollView(
+          // Mengganti ListView dengan SingleChildScrollView
+          child: Column(
+            children: [
+              ProductHeader(),
+              SizedBox(height: 32),
+              KontenProduk(),
+              KontenProduk1()
+            ],
+          ),
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
@@ -117,8 +120,11 @@ class KontenProduk1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 386,
-      height: 305,
+      width: MediaQuery.of(context)
+          .size
+          .width, // Menggunakan lebar layar secara responsif
+      padding: EdgeInsets.symmetric(
+          horizontal: 16), // Menambahkan padding horizontal
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -137,29 +143,23 @@ class KontenProduk1 extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 55),
-                child: Text(
-                  'Alat Pengukur pH Tanah dan Kesuburan Tanah ETP303',
-                  style: TextStyle(
-                    color: Color(0xFF121212),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.06,
-                  ),
+              Text(
+                'Alat Pengukur pH Tanah dan Kesuburan Tanah ETP303',
+                style: TextStyle(
+                  color: Color(0xFF121212),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.06,
                 ),
               ),
               SizedBox(height: 12),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 55),
-                child: Text(
-                  'Perangkat modern yang dirancang khusus untuk membantu petani dan ahli pertanian dalam mengukur pH tanah serta tingkat kesuburan tanah dengan cepat dan akurat.',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 0.06,
-                  ),
+              Text(
+                'Perangkat modern yang dirancang khusus untuk membantu petani dan ahli pertanian dalam mengukur pH tanah serta tingkat kesuburan tanah dengan cepat dan akurat.',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 0.06,
                 ),
               ),
               SizedBox(height: 12),
@@ -168,7 +168,6 @@ class KontenProduk1 extends StatelessWidget {
                 children: [
                   Container(
                     width: 120,
-                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: ElevatedButton(
                       onPressed: () {
                         // Aksi yang dijalankan saat tombol "Beli" ditekan
@@ -217,8 +216,11 @@ class KontenProduk extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 386,
-      height: 305,
+      width: MediaQuery.of(context)
+          .size
+          .width, // Menggunakan lebar layar secara responsif
+      padding: EdgeInsets.symmetric(
+          horizontal: 16), // Menambahkan padding horizontal
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -237,29 +239,23 @@ class KontenProduk extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 55),
-                child: Text(
-                  'Alat Pengukur pH Tanah dan Kesuburan Tanah ETP303',
-                  style: TextStyle(
-                    color: Color(0xFF121212),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.06,
-                  ),
+              Text(
+                'Alat Pengukur pH Tanah dan Kesuburan Tanah ETP303',
+                style: TextStyle(
+                  color: Color(0xFF121212),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.06,
                 ),
               ),
               SizedBox(height: 12),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 55),
-                child: Text(
-                  'Perangkat modern yang dirancang khusus untuk membantu petani dan ahli pertanian dalam mengukur pH tanah serta tingkat kesuburan tanah dengan cepat dan akurat.',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 0.06,
-                  ),
+              Text(
+                'Perangkat modern yang dirancang khusus untuk membantu petani dan ahli pertanian dalam mengukur pH tanah serta tingkat kesuburan tanah dengan cepat dan akurat.',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 0.06,
                 ),
               ),
               SizedBox(height: 12),
@@ -268,7 +264,6 @@ class KontenProduk extends StatelessWidget {
                 children: [
                   Container(
                     width: 120,
-                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: ElevatedButton(
                       onPressed: () {
                         // Aksi yang dijalankan saat tombol "Beli" ditekan
