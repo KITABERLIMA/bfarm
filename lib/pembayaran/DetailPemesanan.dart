@@ -58,6 +58,13 @@ class DetailPemesanan extends StatelessWidget {
 class Icon2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    const int itemPrice = 60000; // Harga per item
+    int qty = (context
+                .findAncestorWidgetOfExactType<DetailPemesanan>()
+                ?.totalAmount ??
+            0) ~/
+        itemPrice;
+
     return Column(
       children: [
         Padding(
@@ -194,7 +201,7 @@ class Icon2 extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Qty : 1 ',
+                    'Qty : $qty',
                     style: const TextStyle(
                       color: Color(0xFF616161),
                       fontSize: 10,
@@ -203,7 +210,7 @@ class Icon2 extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Rp. 60000',
+                    'Rp. ${itemPrice * qty}',
                     style: const TextStyle(
                       color: Color(0xFF6EBF45),
                       fontSize: 14,
@@ -368,7 +375,7 @@ class Detailharga extends StatelessWidget {
             children: [
               InfoRow(
                 label: 'Sub Total',
-                value: 'Rp.60000',
+                value: 'Rp. $totalAmount',
               ),
               SizedBox(height: 20),
               InfoRow(
