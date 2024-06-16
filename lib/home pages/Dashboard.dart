@@ -1,11 +1,12 @@
-import 'package:bfarm_mobileapp/home%20pages/profile.dart';
+import 'package:bfarm_mobileapp/home%20pages/detailbelumterpetakan.dart';
+import 'package:bfarm_mobileapp/home%20pages/detailterpetakan.dart';
+import 'package:bfarm_mobileapp/home%20pages/profile.dart' as profile;
 import 'package:bfarm_mobileapp/pembayaran/pembelian_alat.dart';
 import 'package:flutter/material.dart';
 import 'deskripsi.dart';
-import 'lahan.dart';
-import 'langganan.dart';
-import 'history.dart';
-import 'lihat_daftarlahan.dart';
+import 'package:bfarm_mobileapp/home%20pages/lahan.dart' as lahan;
+import 'package:bfarm_mobileapp/home%20pages/langganan.dart' as langganan;
+import 'package:bfarm_mobileapp/home%20pages/history.dart' as history;
 
 void main() {
   runApp(Dashboard());
@@ -35,10 +36,10 @@ class _BFarmHomePageState extends State<BFarmHomePage> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     BerandaPage(),
-    LahanPage(),
-    riwayat(),
-    Langganan(),
-    Profile(),
+    lahan.LahanPage(),
+    history.riwayat(),
+    langganan.Langganan(),
+    profile.Profile()
   ];
 
   @override
@@ -205,10 +206,11 @@ class BerandaPage extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         // Implementasi aksi untuk tombol "Lihat Semua"
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => FigmaToCodeApp(),
+                            builder: (context) => detailterpetakan(),
                           ),
                         );
                       },
@@ -242,6 +244,13 @@ class BerandaPage extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         // Implementasi aksi untuk tombol "Lihat Semua"
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => detailbelumterpetakan(),
+                          ),
+                        );
                       },
                       child: Text(
                         'Lihat Semua',
