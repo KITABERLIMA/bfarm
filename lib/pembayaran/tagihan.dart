@@ -20,102 +20,95 @@ class Tagihan extends StatelessWidget {
       ),
       home: Scaffold(
         body: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 8),
+            Row(
               children: [
-                Row(
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PembayaranScreen(
+                          selectedItems: selectedItems,
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                const Text(
+                  'Pembayaran',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PembayaranScreen(
-                              selectedItems: selectedItems,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
-                        size: 24,
+                    const Text(
+                      'Total Tagihan',
+                      style: TextStyle(
+                        color: Color(0xFF616161),
+                        fontSize: 12,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(height: 8),
                     Text(
-                      'Pembayaran',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
+                      'Rp. ${60000 * selectedItems}',
+                      style: const TextStyle(
+                        color: Color(0xFF6EBF45),
+                        fontSize: 12,
                         fontFamily: 'Poppins',
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.none,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Total Tagihan',
-                            style: TextStyle(
-                              color: Color(0xFF616161),
-                              fontSize: 12,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Rp. ${60000 * selectedItems}',
-                            style: TextStyle(
-                              color: Color(0xFF6EBF45),
-                              fontSize: 12,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Divider(
-                  color: Color(0xFFE0E0E0),
-                  height: 24,
-                  thickness: 1,
-                ),
-                _buildInfoRow(
-                  iconSize: 5,
-                  iconColor: Color(0xFF616161),
-                  text:
-                      'Transaksi ini akan otomatis menggantikan tagihan BCA Virtual Account yang belum dibayar.',
-                ),
-                _buildInfoRow(
-                  iconSize: 5,
-                  iconColor: Color(0xFF616161),
-                  text: 'Dapatkan kode pembayaran setelah klik “Bayar”.',
-                ),
-                _buildInfoRow(
-                  iconSize: 5,
-                  iconColor: Color(0xFF616161),
-                  text:
-                      'Tidak disarankan bayar melalui bank lain agar transaksi dapat diproses tanpa kendala.',
-                ),
-                SizedBox(height: 210),
-                _buildBottomBar(context),
               ],
             ),
+            const Divider(
+              color: Color(0xFFE0E0E0),
+              height: 24,
+              thickness: 1,
+            ),
+            _buildInfoRow(
+              iconSize: 5,
+              iconColor: const Color(0xFF616161),
+              text:
+                  'Transaksi ini akan otomatis menggantikan tagihan BCA Virtual Account yang belum dibayar.',
+            ),
+            _buildInfoRow(
+              iconSize: 5,
+              iconColor: const Color(0xFF616161),
+              text: 'Dapatkan kode pembayaran setelah klik “Bayar”.',
+            ),
+            _buildInfoRow(
+              iconSize: 5,
+              iconColor: const Color(0xFF616161),
+              text:
+                  'Tidak disarankan bayar melalui bank lain agar transaksi dapat diproses tanpa kendala.',
+            ),
+            const SizedBox(height: 210),
+            _buildBottomBar(context),
           ],
         ),
       ),
@@ -140,11 +133,11 @@ class Tagihan extends StatelessWidget {
               color: iconColor,
             ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
               text,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Color(0xFF616161),
                 fontSize: 12,
                 fontFamily: 'Poppins',
@@ -162,7 +155,7 @@ class Tagihan extends StatelessWidget {
       width: double.infinity,
       height: 84,
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(
@@ -225,6 +218,7 @@ class Tagihan extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(
+            flex: 3,
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -237,19 +231,22 @@ class Tagihan extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF6EBF45),
+                backgroundColor: const Color(0xFF6EBF45),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
-              child: const Text(
-                'Pilih Pembayaran',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w600,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: const Text(
+                  'Pilih Pembayaran',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),

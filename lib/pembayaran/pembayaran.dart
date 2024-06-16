@@ -454,19 +454,8 @@ class Icon2 extends StatelessWidget {
                 width: double.infinity,
                 height: 84,
                 padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0x19000000),
-                      blurRadius: 20,
-                      offset: const Offset(0, -6),
-                      spreadRadius: 0,
-                    )
-                  ],
-                ),
+                color: Colors.white,
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -517,6 +506,7 @@ class Icon2 extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Expanded(
+                      flex: 3,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.push(
@@ -534,16 +524,17 @@ class Icon2 extends StatelessWidget {
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                        child: const Text(
-                          'Pilih Pembayaran',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: -0.08,
-                            decoration: TextDecoration.none,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: const Text(
+                            'Pilih Pembayaran',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'buat_kata_sandi_baru.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import '../home pages/Dashboard.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -24,12 +27,60 @@ class _PeriksaEmailState extends State<PeriksaEmail> {
   bool _obscureText1 = true;
   bool _obscureText2 = true;
 
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  bool _isUpdating = false;
+
   @override
   void dispose() {
     // Dispose controllers and focus nodes
     _otpControllers.forEach((controller) => controller.dispose());
     _focusNodes.forEach((focusNode) => focusNode.dispose());
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _confirmResetPassword() async {
+    setState(() {
+      _isUpdating = true;
+    });
+
+    String otpCode =
+        _otpControllers.map((controller) => controller.text).join();
+    String newPassword = _newPasswordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+    String email = widget.email;
+
+    final response = await http.post(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/confirmResetPassword'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'otp_code': otpCode,
+        'new_password': newPassword,
+        'confirm_password': confirmPassword,
+        'email': email,
+      }),
+    );
+
+    setState(() {
+      _isUpdating = false;
+    });
+
+    if (response.statusCode == 200) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Dashboard()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Gagal memperbarui kata sandi ${response.body}')),
+      );
+    }
   }
 
   @override
@@ -89,6 +140,7 @@ class _PeriksaEmailState extends State<PeriksaEmail> {
                 ),
                 padding: EdgeInsets.only(left: 10),
                 child: TextFormField(
+                  controller: _newPasswordController,
                   obscureText: _obscureText1,
                   decoration: InputDecoration(
                     hintText: 'Masukkan Kata Sandi Baru Anda',
@@ -124,6 +176,7 @@ class _PeriksaEmailState extends State<PeriksaEmail> {
                 ),
                 padding: EdgeInsets.only(left: 10),
                 child: TextFormField(
+                  controller: _confirmPasswordController,
                   obscureText: _obscureText2,
                   decoration: InputDecoration(
                     hintText: 'Masukkan Kembali Kata Sandi',
@@ -145,44 +198,20 @@ class _PeriksaEmailState extends State<PeriksaEmail> {
               Container(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BerhasilPerbaruiSandi()),
-                    );
-                  },
-                  child: Text(
-                    'Perbarui Kata Sandi',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
+                  onPressed: _isUpdating ? null : _confirmResetPassword,
+                  child: _isUpdating
+                      ? CircularProgressIndicator()
+                      : Text(
+                          'Perbarui Kata Sandi',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
                   style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.green),
                   ),
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BuatKataSandiBaru()),
-                  );
-                },
-                child: Text(
-                  'Verifikasi Kode',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.green),
                 ),
               ),
               SizedBox(height: 10),
@@ -249,19 +278,5 @@ class _PeriksaEmailState extends State<PeriksaEmail> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Email terkirim ulang')));
     });
-  }
-}
-
-class BerhasilPerbaruiSandi extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Berhasil Perbarui Sandi'),
-      ),
-      body: Center(
-        child: Text('Kata sandi Anda telah diperbarui.'),
-      ),
-    );
   }
 }

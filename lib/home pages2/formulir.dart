@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:dropdown_search/dropdown_search.dart';
 
+import '../home pages/lahan.dart';
+
 class FormulirPenambahanLahan extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -89,9 +91,6 @@ class _MyCustomFormState extends State<MyCustomForm> {
   final TextEditingController _location = TextEditingController();
   final TextEditingController _landArea = TextEditingController();
   final TextEditingController _fullAddressController = TextEditingController();
-  final TextEditingController _provinceController = TextEditingController();
-  final TextEditingController _cityDistrictController = TextEditingController();
-  final TextEditingController _subDistrictController = TextEditingController();
   final TextEditingController _villageController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
@@ -142,9 +141,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
       request.fields['land_area'] = _landArea.text;
       request.fields['phone'] = _phoneController.text;
       request.fields['full_address'] = _fullAddressController.text;
-      request.fields['province'] = _provinceController.text;
-      request.fields['city_district'] = _cityDistrictController.text;
-      request.fields['sub_district'] = _subDistrictController.text;
+      request.fields['province'] = widget.idProvinsi;
+      request.fields['city_district'] = widget.idKabupaten;
+      request.fields['sub_district'] = widget.idKecamatan;
       request.fields['village'] = _villageController.text;
 
       var imageFile =
@@ -306,73 +305,49 @@ class _MyCustomFormState extends State<MyCustomForm> {
       key: _formKey,
       child: ListView(
         children: <Widget>[
-          DropdownSearch<Provinsi>(
-            asyncItems: (String filter) => _fetchProvinces(),
-            itemAsString: (Provinsi p) => p.name,
-            dropdownDecoratorProps: DropDownDecoratorProps(
-              dropdownSearchDecoration: InputDecoration(
-                labelText: "Pilih Provinsi",
-                hintText: "provinsi",
-              ),
+          Text(
+            'Formulir Penambahan Lahan',
+            style: TextStyle(fontSize: 24),
+          ),
+          SizedBox(height: 20),
+          DropdownButtonFormField<String>(
+            focusNode: _landStatusFocusNode,
+            decoration: InputDecoration(
+              labelText: 'Status Lahan',
+              border: OutlineInputBorder(),
             ),
-            onChanged: (Provinsi? data) {
+            value: _landStatusController,
+            items: [
+              DropdownMenuItem(
+                value: 'unmapped',
+                child: Text('Belum Terpetakan'),
+              ),
+              DropdownMenuItem(
+                value: 'mapped',
+                child: Text('Sudah Terpetakan'),
+              ),
+            ],
+            onChanged: (value) {
               setState(() {
-                widget.idProvinsi = data?.id ?? "0";
+                _landStatusController = value;
               });
             },
-          ),
-          DropdownSearch<Kota>(
-            asyncItems: (String filter) => _fetchCities(widget.idProvinsi),
-            itemAsString: (Kota p) => p.name,
-            dropdownDecoratorProps: DropDownDecoratorProps(
-              dropdownSearchDecoration: InputDecoration(
-                labelText: "Pilih Kota/Kabupaten",
-                hintText: "kota/kabupaten",
-              ),
-            ),
-            onChanged: (Kota? data) {
-              setState(() {
-                widget.idKabupaten = data?.id ?? "0";
-              });
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Status lahan harus diisi';
+              }
+              return null;
             },
           ),
-          DropdownSearch<Kecamatan>(
-            asyncItems: (String filter) => _fetchDistricts(widget.idKabupaten),
-            itemAsString: (Kecamatan p) => p.name,
-            dropdownDecoratorProps: DropDownDecoratorProps(
-              dropdownSearchDecoration: InputDecoration(
-                labelText: "Pilih Kecamatan",
-                hintText: "kecamatan",
-              ),
-            ),
-            onChanged: (Kecamatan? data) {
-              setState(() {
-                widget.idKecamatan = data?.id ?? "0";
-              });
-            },
-          ),
-          DropdownSearch<Kelurahan>(
-            asyncItems: (String filter) => _fetchVillages(widget.idKecamatan),
-            itemAsString: (Kelurahan p) => p.name,
-            dropdownDecoratorProps: DropDownDecoratorProps(
-              dropdownSearchDecoration: InputDecoration(
-                labelText: "Pilih Kelurahan",
-                hintText: "kelurahan",
-              ),
-            ),
-            onChanged: (Kelurahan? data) {
-              setState(() {
-                _villageController.text = data?.name ?? "";
-              });
-            },
-          ),
+          SizedBox(height: 20),
           TextFormField(
-            controller: _landDescribeController,
             focusNode: _landDescribeFocusNode,
+            controller: _landDescribeController,
             decoration: InputDecoration(
               labelText: 'Deskripsi Lahan',
               border: OutlineInputBorder(),
             ),
+            maxLines: 3,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Deskripsi lahan harus diisi';
@@ -380,10 +355,44 @@ class _MyCustomFormState extends State<MyCustomForm> {
               return null;
             },
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 20),
+          DropdownButtonFormField<String>(
+            focusNode: _ownershipStatusFocusNode,
+            decoration: InputDecoration(
+              labelText: 'Status Kepemilikan',
+              border: OutlineInputBorder(),
+            ),
+            value: _ownershipStatusController,
+            items: [
+              DropdownMenuItem(
+                value: 'owned',
+                child: Text('Milik Sendiri'),
+              ),
+              DropdownMenuItem(
+                value: 'rented',
+                child: Text('Sewa'),
+              ),
+              DropdownMenuItem(
+                value: 'other',
+                child: Text('Lainnya'),
+              ),
+            ],
+            onChanged: (value) {
+              setState(() {
+                _ownershipStatusController = value;
+              });
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Status kepemilikan harus diisi';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 20),
           TextFormField(
-            controller: _location,
             focusNode: _locationFocusNode,
+            controller: _location,
             decoration: InputDecoration(
               labelText: 'Lokasi',
               border: OutlineInputBorder(),
@@ -395,10 +404,10 @@ class _MyCustomFormState extends State<MyCustomForm> {
               return null;
             },
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 20),
           TextFormField(
-            controller: _landArea,
             focusNode: _landAreaFocusNode,
+            controller: _landArea,
             decoration: InputDecoration(
               labelText: 'Luas Lahan (m2)',
               border: OutlineInputBorder(),
@@ -410,10 +419,10 @@ class _MyCustomFormState extends State<MyCustomForm> {
               return null;
             },
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 20),
           TextFormField(
-            controller: _fullAddressController,
             focusNode: _fullAddressFocusNode,
+            controller: _fullAddressController,
             decoration: InputDecoration(
               labelText: 'Alamat Lengkap',
               border: OutlineInputBorder(),
@@ -425,70 +434,176 @@ class _MyCustomFormState extends State<MyCustomForm> {
               return null;
             },
           ),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: _pickImage,
-            child: Text('Pilih Gambar'),
-          ),
-          if (_selectedImage != null)
-            Image.file(_selectedImage!)
-          else
-            Text('Belum ada gambar yang dipilih'),
-          SizedBox(height: 10),
-          DropdownButtonFormField<String>(
-            value: _landStatusController,
-            items: [
-              DropdownMenuItem(value: 'unmapped', child: Text('Unmapped')),
-              DropdownMenuItem(value: 'mapped', child: Text('Mapped')),
-            ],
-            onChanged: (value) {
-              setState(() {
-                _landStatusController = value;
-              });
+          SizedBox(height: 20),
+          FutureBuilder<List<Provinsi>>(
+            future: _fetchProvinces(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Text('Tidak ada data provinsi');
+              } else {
+                return DropdownSearch<Provinsi>(
+                  items: snapshot.data!,
+                  itemAsString: (Provinsi u) => u.name,
+                  onChanged: (Provinsi? data) {
+                    setState(() {
+                      widget.idProvinsi = data?.id ?? "0";
+                    });
+                  },
+                  selectedItem: snapshot.data!.first,
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      labelText: 'Pilih Provinsi',
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.name.isEmpty) {
+                      return 'Provinsi harus diisi';
+                    }
+                    return null;
+                  },
+                );
+              }
             },
-            decoration: InputDecoration(
-              labelText: 'Status Lahan',
-              border: OutlineInputBorder(),
-            ),
           ),
-          SizedBox(height: 10),
-          DropdownButtonFormField<String>(
-            value: _ownershipStatusController,
-            items: [
-              DropdownMenuItem(value: 'owned', child: Text('Owned')),
-              DropdownMenuItem(value: 'rented', child: Text('Rented')),
-            ],
-            onChanged: (value) {
-              setState(() {
-                _ownershipStatusController = value;
-              });
+          SizedBox(height: 20),
+          FutureBuilder<List<Kota>>(
+            future: _fetchCities(widget.idProvinsi),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Text('Tidak ada data kota');
+              } else {
+                return DropdownSearch<Kota>(
+                  items: snapshot.data!,
+                  itemAsString: (Kota u) => u.name,
+                  onChanged: (Kota? data) {
+                    setState(() {
+                      widget.idKabupaten = data?.id ?? "0";
+                    });
+                  },
+                  selectedItem: snapshot.data!.first,
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      labelText: 'Pilih Kota/Kabupaten',
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.name.isEmpty) {
+                      return 'Kota/Kabupaten harus diisi';
+                    }
+                    return null;
+                  },
+                );
+              }
             },
-            decoration: InputDecoration(
-              labelText: 'Status Kepemilikan',
-              border: OutlineInputBorder(),
-            ),
+          ),
+          SizedBox(height: 20),
+          FutureBuilder<List<Kecamatan>>(
+            future: _fetchDistricts(widget.idKabupaten),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Text('Tidak ada data kecamatan');
+              } else {
+                return DropdownSearch<Kecamatan>(
+                  items: snapshot.data!,
+                  itemAsString: (Kecamatan u) => u.name,
+                  onChanged: (Kecamatan? data) {
+                    setState(() {
+                      widget.idKecamatan = data?.id ?? "0";
+                    });
+                  },
+                  selectedItem: snapshot.data!.first,
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      labelText: 'Pilih Kecamatan',
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.name.isEmpty) {
+                      return 'Kecamatan harus diisi';
+                    }
+                    return null;
+                  },
+                );
+              }
+            },
+          ),
+          SizedBox(height: 20),
+          FutureBuilder<List<Kelurahan>>(
+            future: _fetchVillages(widget.idKecamatan),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Text('Tidak ada data kelurahan');
+              } else {
+                return DropdownSearch<Kelurahan>(
+                  items: snapshot.data!,
+                  itemAsString: (Kelurahan u) => u.name,
+                  onChanged: (Kelurahan? data) {
+                    setState(() {
+                      widget.idKecamatan = data?.id ?? "0";
+                    });
+                  },
+                  selectedItem: snapshot.data!.first,
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      labelText: 'Pilih Kelurahan',
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.name.isEmpty) {
+                      return 'Kelurahan harus diisi';
+                    }
+                    return null;
+                  },
+                );
+              }
+            },
           ),
           SizedBox(height: 20),
           ElevatedButton(
-            onPressed: _tambahlahan,
-            child: Text('Tambah Lahan'),
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                // Process data.
+              }
+            },
+            child: Text('Submit'),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// Placeholder class for LahanPage
-class LahanPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Lahan Page'),
-      ),
-      body: Center(
-        child: Text('Selamat datang di halaman Lahan!'),
       ),
     );
   }

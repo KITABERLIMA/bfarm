@@ -560,7 +560,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     _userType = newValue;
                   });
                 },
-                items: <String>['individual', 'company']
+                items: <String>['individual']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -587,6 +587,10 @@ class _RegisterFormState extends State<RegisterForm> {
                     ElevatedButton(
                       onPressed: _pickImage,
                       child: Text("Select Profile Picture"),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Color(0xFF6EBF45),
+                      ),
                     ),
                   ],
                 ),
@@ -595,6 +599,10 @@ class _RegisterFormState extends State<RegisterForm> {
               ElevatedButton(
                 onPressed: _register,
                 child: Text("Register"),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Color(0xFF6EBF45),
+                ),
               ),
             ],
           ),

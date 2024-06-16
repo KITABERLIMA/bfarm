@@ -385,7 +385,7 @@ class TotalPayment extends StatelessWidget {
                           textAlign: TextAlign.right,
                           style: TextStyle(
                             color: Color(0xFF6EBF45),
-                            fontSize: 10,
+                            fontSize: 12,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
                             height:
@@ -439,15 +439,18 @@ class TotalPayment extends StatelessWidget {
                       height: 0.16,
                     ),
                   ),
-                  SizedBox(height: 35),
-                  Text(
-                    'Pesanan baru di teruskan ke resepsionis setelah pembayaran terverifikasi',
+                  SizedBox(height: 16),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Pesanan baru diteruskan ke resepsionis setelah pembayaran terverifikasi',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color(0xFF757575),
                       fontSize: 12,
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w400,
-                      height: 0.16,
+                      height:
+                          1.5, // Increased line height for better readability
                     ),
                   ),
                 ],

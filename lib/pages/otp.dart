@@ -95,7 +95,7 @@ class _OTPScreenState extends State<OTPScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset('assets/images/logo.png', height: 50),
+        title: Image.asset('assets/images/logobaru.png', height: 50),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),

@@ -2,400 +2,568 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
-import 'package:mime/mime.dart';
+import 'dart:convert';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'lahan.dart';
 
-class FormulirLahan extends StatelessWidget {
+class FormulirPenambahanLahan extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Formulir Penambahan Lahan'),
+        title: const Text(
+          'Formulir Penambahan Lahan',
+          style: TextStyle(fontSize: 20),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: MyCustomForm(),
-      ),
-    );
-  }
-}
-
-class MyCustomForm extends StatefulWidget {
-  @override
-  _MyCustomFormState createState() => _MyCustomFormState();
-}
-
-class _MyCustomFormState extends State<MyCustomForm> {
-  File? _image;
-  String _ownershipStatus = 'Owned';
-  String _landStatus = 'Unmapped';
-  bool _showLandStatus = false;
-
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _postalCodeController = TextEditingController();
-  final TextEditingController _areaController = TextEditingController();
-  final TextEditingController _coordinatesController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-
-  void _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-    }
-  }
-
-  Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      final uri = Uri.parse('http://bfarm.ahmadyaz.my.id/api/lands');
-      final request = http.MultipartRequest('POST', uri);
-
-      request.fields['ownership_status'] = _ownershipStatus;
-      request.fields['land_status'] = _landStatus;
-      request.fields['full_address'] = _addressController.text;
-      request.fields['postal_code'] = _postalCodeController.text;
-      request.fields['land_area'] = _areaController.text;
-      request.fields['location'] = _coordinatesController.text;
-      request.fields['land_desc'] = _descriptionController.text;
-
-      if (_image != null) {
-        final mimeTypeData = lookupMimeType(_image!.path, headerBytes: [0xFF, 0xD8])?.split('/');
-        final file = await http.MultipartFile.fromPath(
-          'image',
-          _image!.path,
-          contentType: MediaType(mimeTypeData![0], mimeTypeData[1]),
-        );
-        request.files.add(file);
-      }
-
-      try {
-        final response = await request.send();
-        if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Lahan berhasil disimpan!')),
-          );
-          Navigator.pop(context);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Gagal menyimpan lahan! Kode: ${response.statusCode}')),
-          );
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Terjadi kesalahan: $e')),
-        );
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 16, bottom: 8),
-              child: Text(
-                'Pilih Tipe Kepemilikan',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _ownershipStatus = 'Owned';
-                          _landStatus = 'Unmapped';
-                          _showLandStatus = false;
-                        });
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: _ownershipStatus == 'Owned' ? Colors.green : Colors.grey[200],
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 8),
-                        child: Text(
-                          'Milik Sendiri',
-                          style: TextStyle(
-                            color: _ownershipStatus == 'Owned' ? Colors.white : Colors.black,
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _ownershipStatus = 'Rent';
-                          _landStatus = 'Unmapped';
-                          _showLandStatus = false;
-                        });
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: _ownershipStatus == 'Rent' ? Colors.green : Colors.grey[200],
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 8),
-                        child: Text(
-                          'Sewa',
-                          style: TextStyle(
-                            color: _ownershipStatus == 'Rent' ? Colors.white : Colors.black,
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
-            Visibility(
-              visible: _showLandStatus,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 8),
-                child: Text(
-                  'Status Lahan',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ),
-            Visibility(
-              visible: _showLandStatus,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _landStatus = 'Unmapped';
-                          });
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: _landStatus == 'Unmapped' ? Colors.green : Colors.grey[200],
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Text(
-                            'Unmapped',
-                            style: TextStyle(
-                              color: _landStatus == 'Unmapped' ? Colors.white : Colors.black,
-                              fontSize: 16,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _landStatus = 'Mapped';
-                          });
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: _landStatus == 'Mapped' ? Colors.green : Colors.grey[200],
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Text(
-                            'Mapped',
-                            style: TextStyle(
-                              color: _landStatus == 'Mapped' ? Colors.white : Colors.black,
-                              fontSize: 16,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            CustomTextFormField(
-              controller: _addressController,
-              label: 'Alamat Lengkap',
-              hint: 'Alamat Lengkap Lahan',
-            ),
-            SizedBox(height: 10),
-            CustomTextFormField(
-              controller: _postalCodeController,
-              label: 'Kode Pos',
-              hint: 'Isikan Kode Pos Anda',
-            ),
-            SizedBox(height: 10),
-            CustomTextFormField(
-              controller: _areaController,
-              label: 'Luas Lahan',
-              hint: 'Isikan Nama Luas Lahan per- Hektar (Ha)',
-            ),
-            SizedBox(height: 10),
-            CustomTextFormField(
-              controller: _coordinatesController,
-              label: 'Koordinat Lokasi',
-              hint: 'Isikan Titik Lokasi  contoh: (-7.66519, 111.31629)',
-            ),
-            SizedBox(height: 10),
-            CustomTextFormField(
-              controller: _descriptionController,
-              label: 'Deskripsi',
-              hint: 'Masukkan Deskripsi Pengajuan Lahan (maksimal 250 kata)',
-              maxLines: 3,
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Unggah Gambar Lahan',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            SizedBox(height: 8),
-            InkWell(
-              onTap: _pickImage,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Color(0xFFF2F2F2),
-                  borderRadius: BorderRadius.circular(8.0),
-                  border: Border.all(color: Colors.grey),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Text(
-                          _image != null ? _image!.path.split('/').last : 'Pilih Gambar',
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: _image != null ? Colors.black : Colors.grey,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      Icons.camera_alt,
-                      color: Colors.grey,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Center(
-              child: ElevatedButton(
-                onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF6EBF45),
-                  foregroundColor: Colors.white,
-                ),
-                child: Text('SIMPAN'),
-              ),
-            ),
-          ],
+        child: MyCustomForm(
+          apiKey:
+              '2ed019ca673ef08cc29666f0af5faa5cc30d16ddb4882770297948bed8e54452',
         ),
       ),
     );
   }
 }
 
-class CustomTextFormField extends StatelessWidget {
-  final TextEditingController controller;
-  final String label;
-  final String hint;
-  final int? maxLines;
+class Provinsi {
+  final String id;
+  final String name;
 
-  const CustomTextFormField({
-    Key? key,
-    required this.controller,
-    required this.label,
-    required this.hint,
-    this.maxLines,
-  }) : super(key: key);
+  Provinsi({required this.id, required this.name});
+
+  factory Provinsi.fromJson(Map<String, dynamic> json) {
+    return Provinsi(id: json['id'], name: json['name']);
+  }
+}
+
+class Kota {
+  final String id;
+  final String idProvinsi;
+  final String name;
+
+  Kota({required this.id, required this.idProvinsi, required this.name});
+
+  factory Kota.fromJson(Map<String, dynamic> json) {
+    return Kota(
+        id: json['id'], idProvinsi: json['id_provinsi'], name: json['name']);
+  }
+}
+
+class Kecamatan {
+  final String id;
+  final String idKabupaten;
+  final String name;
+
+  Kecamatan({required this.id, required this.idKabupaten, required this.name});
+
+  factory Kecamatan.fromJson(Map<String, dynamic> json) {
+    return Kecamatan(
+        id: json['id'], idKabupaten: json['id_kabupaten'], name: json['name']);
+  }
+}
+
+class Kelurahan {
+  final String id;
+  final String idKecamatan;
+  final String name;
+
+  Kelurahan({required this.id, required this.idKecamatan, required this.name});
+
+  factory Kelurahan.fromJson(Map<String, dynamic> json) {
+    return Kelurahan(
+        id: json['id'], idKecamatan: json['id_kecamatan'], name: json['name']);
+  }
+}
+
+class MyCustomForm extends StatefulWidget {
+  final String apiKey;
+  String idProvinsi = "0";
+  String idKabupaten = "0";
+  String idKecamatan = "0";
+  MyCustomForm({required this.apiKey});
+  @override
+  _MyCustomFormState createState() => _MyCustomFormState();
+}
+
+class _MyCustomFormState extends State<MyCustomForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _landDescribeController = TextEditingController();
+  final TextEditingController _location = TextEditingController();
+  final TextEditingController _landArea = TextEditingController();
+  final TextEditingController _fullAddressController = TextEditingController();
+  final TextEditingController _provinceController = TextEditingController();
+  final TextEditingController _cityDistrictController = TextEditingController();
+  final TextEditingController _subDistrictController = TextEditingController();
+  final TextEditingController _villageController = TextEditingController();
+  final TextEditingController _postalController = TextEditingController();
+
+  String? _landStatusController = "unmapped";
+  String? _ownershipStatusController = "owned";
+  File? _selectedImage;
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      setState(() {
+        _selectedImage = File(image.path);
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please select an image")),
+      );
+    }
+  }
+
+  Future<void> _tambahlahan() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Token is missing")),
+      );
+      return;
+    }
+
+    if (_formKey.currentState!.validate()) {
+      if (_landStatusController == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Please select a land status")),
+        );
+        return;
+      }
+
+      if (_selectedImage == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Please select an image")),
+        );
+        return;
+      }
+
+      var uri = Uri.parse("http://bfarm.ahmadyaz.my.id/api/lands");
+
+      var request = http.MultipartRequest("POST", uri)
+        ..headers['Authorization'] = 'Bearer $token';
+
+      request.fields['land_status'] = _landStatusController!;
+      request.fields['land_description'] = _landDescribeController.text;
+      request.fields['ownership_status'] = _ownershipStatusController!;
+      request.fields['location'] = _location.text.trim();
+      request.fields['land_area'] = _landArea.text;
+      request.fields['postal_code'] = _postalController.text;
+      request.fields['full_address'] = _fullAddressController.text;
+      request.fields['province'] = _provinceController.text;
+      request.fields['city_district'] = _cityDistrictController.text;
+      request.fields['sub_district'] = _subDistrictController.text;
+      request.fields['village'] = _villageController.text;
+
+      var imageFile =
+          await http.MultipartFile.fromPath('image', _selectedImage!.path);
+      request.files.add(imageFile);
+
+      var response = await request.send();
+      var responseBody = await response.stream.bytesToString();
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: $responseBody');
+
+      try {
+        var jsonResponse = jsonDecode(responseBody);
+
+        if (response.statusCode == 200 && jsonResponse['success'] == true) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Penambahan Lahan Berhasil!")),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    LahanPage()), // Implementasikan LahanPage atau ganti dengan halaman tujuan
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Registration failed: $responseBody")),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to decode response: $responseBody")),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill all required fields.")),
+      );
+    }
+  }
+
+  final FocusNode _landStatusFocusNode = FocusNode();
+  final FocusNode _landDescribeFocusNode = FocusNode();
+  final FocusNode _ownershipStatusFocusNode = FocusNode();
+  final FocusNode _locationFocusNode = FocusNode();
+  final FocusNode _landAreaFocusNode = FocusNode();
+  final FocusNode _fullAddressFocusNode = FocusNode();
+  final FocusNode _provinceFocusNode = FocusNode();
+  final FocusNode _cityDistrictFocusNode = FocusNode();
+  final FocusNode _subDistrictFocusNode = FocusNode();
+  final FocusNode _villageFocusNode = FocusNode();
+  final FocusNode _postalFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _landDescribeFocusNode.addListener(() {
+      setState(() {});
+    });
+    _ownershipStatusFocusNode.addListener(() {
+      setState(() {});
+    });
+    _locationFocusNode.addListener(() {
+      setState(() {});
+    });
+    _landAreaFocusNode.addListener(() {
+      setState(() {});
+    });
+    _fullAddressFocusNode.addListener(() {
+      setState(() {});
+    });
+    _provinceFocusNode.addListener(() {
+      setState(() {});
+    });
+    _cityDistrictFocusNode.addListener(() {
+      setState(() {});
+    });
+    _subDistrictFocusNode.addListener(() {
+      setState(() {});
+    });
+    _villageFocusNode.addListener(() {
+      setState(() {});
+    });
+    _postalFocusNode.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _landStatusFocusNode.dispose();
+    _landDescribeFocusNode.dispose();
+    _ownershipStatusFocusNode.dispose();
+    _locationFocusNode.dispose();
+    _landAreaFocusNode.dispose();
+    _fullAddressFocusNode.dispose();
+    _provinceFocusNode.dispose();
+    _cityDistrictFocusNode.dispose();
+    _subDistrictFocusNode.dispose();
+    _villageFocusNode.dispose();
+    _postalFocusNode.dispose();
+    super.dispose();
+  }
+
+  Future<List<Provinsi>> _fetchProvinces() async {
+    var response = await http.get(Uri.parse(
+        'https://api.binderbyte.com/wilayah/provinsi?api_key=${widget.apiKey}'));
+
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      print(jsonResponse); // Debugging log
+      var provinces = (jsonResponse['value'] as List)
+          .map((data) => Provinsi.fromJson(data))
+          .toList();
+      return provinces;
+    } else {
+      print('Failed to load provinces'); // Debugging log
+      return [];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 16,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400,
+    return Form(
+      key: _formKey,
+      child: ListView(
+        children: <Widget>[
+          SizedBox(height: 10),
+          Text('Selamat datang di halaman Lahan!'),
+          SizedBox(height: 10),
+          DropdownButtonFormField<String>(
+            value: _landStatusController,
+            items: [
+              DropdownMenuItem(value: 'unmapped', child: Text('Unmapped')),
+            ],
+            onChanged: (value) {
+              setState(() {
+                _landStatusController = value;
+              });
+            },
+            decoration: InputDecoration(
+              labelText: 'Status Lahan',
+              border: OutlineInputBorder(),
             ),
           ),
-          SizedBox(height: 8),
-          TextFormField(
-            controller: controller,
-            maxLines: maxLines,
+          SizedBox(height: 10),
+          DropdownButtonFormField<String>(
+            value: _ownershipStatusController,
+            items: [
+              DropdownMenuItem(value: 'owned', child: Text('Owned')),
+            ],
+            onChanged: (value) {
+              setState(() {
+                _ownershipStatusController = value;
+              });
+            },
             decoration: InputDecoration(
-              hintText: hint,
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8),
+              labelText: 'Status Kepemilikan',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          SizedBox(height: 10),
+          TextFormField(
+            controller: _landDescribeController,
+            focusNode: _landDescribeFocusNode,
+            decoration: InputDecoration(
+              labelText: 'Deskripsi Lahan',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Deskripsi lahan harus diisi';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 10),
+          TextFormField(
+            controller: _location,
+            focusNode: _locationFocusNode,
+            decoration: InputDecoration(
+              labelText: 'Lokasi',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Lokasi harus diisi';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 10),
+          TextFormField(
+            controller: _landArea,
+            focusNode: _landAreaFocusNode,
+            decoration: InputDecoration(
+              labelText: 'Luas Lahan (m2)',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Luas lahan harus diisi';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 10),
+          TextFormField(
+            controller: _fullAddressController,
+            focusNode: _fullAddressFocusNode,
+            decoration: InputDecoration(
+              labelText: 'Alamat Lengkap',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Alamat lengkap harus diisi';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 10),
+          DropdownSearch<Provinsi>(
+            asyncItems: (String filter) async {
+              var response = await http.get(Uri.parse(
+                  'https://api.binderbyte.com/wilayah/provinsi?api_key=${widget.apiKey}'));
+              if (response.statusCode == 200) {
+                var jsonResponse = jsonDecode(response.body);
+                print(jsonResponse); // Debugging log
+                return (jsonResponse['value'] as List)
+                    .map((data) => Provinsi.fromJson(data))
+                    .toList();
+              }
+              print('Failed to load provinces'); // Debugging log
+              return [];
+            },
+            itemAsString: (Provinsi p) => p.name,
+            onChanged: (Provinsi? value) {
+              if (value != null) {
+                setState(() {
+                  widget.idProvinsi = value.id;
+                  _provinceController.text = value.name;
+                });
+              }
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+              dropdownSearchDecoration: InputDecoration(
+                labelText: 'Province',
               ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8),
+            ),
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+            ),
+            validator: (value) =>
+                value == null ? 'Please select a province' : null,
+          ),
+          DropdownSearch<Kota>(
+            asyncItems: (String filter) async {
+              var response = await http.get(Uri.parse(
+                  'https://api.binderbyte.com/wilayah/kabupaten?api_key=${widget.apiKey}&id_provinsi=${widget.idProvinsi}'));
+              if (response.statusCode == 200) {
+                var jsonResponse = jsonDecode(response.body);
+                print(jsonResponse); // Debugging log
+                return (jsonResponse['value'] as List)
+                    .map((data) => Kota.fromJson(data))
+                    .toList();
+              }
+              print('Failed to load cities'); // Debugging log
+              return [];
+            },
+            itemAsString: (Kota k) => k.name,
+            onChanged: (Kota? value) {
+              if (value != null) {
+                setState(() {
+                  widget.idKabupaten = value.id;
+                  _cityDistrictController.text = value.name;
+                });
+              }
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+              dropdownSearchDecoration: InputDecoration(
+                labelText: 'City/District',
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            ),
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+            ),
+            validator: (value) =>
+                value == null ? 'Please select a city/district' : null,
+          ),
+          DropdownSearch<Kecamatan>(
+            asyncItems: (String filter) async {
+              var response = await http.get(Uri.parse(
+                  'https://api.binderbyte.com/wilayah/kecamatan?api_key=${widget.apiKey}&id_kabupaten=${widget.idKabupaten}'));
+              if (response.statusCode == 200) {
+                var jsonResponse = jsonDecode(response.body);
+                print(jsonResponse); // Debugging log
+                return (jsonResponse['value'] as List)
+                    .map((data) => Kecamatan.fromJson(data))
+                    .toList();
+              }
+              print('Failed to load sub-districts'); // Debugging log
+              return [];
+            },
+            itemAsString: (Kecamatan k) => k.name,
+            onChanged: (Kecamatan? value) {
+              if (value != null) {
+                setState(() {
+                  widget.idKecamatan = value.id;
+                  _subDistrictController.text = value.name;
+                });
+              }
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+              dropdownSearchDecoration: InputDecoration(
+                labelText: 'Sub-district',
+              ),
+            ),
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+            ),
+            validator: (value) =>
+                value == null ? 'Please select a sub-district' : null,
+          ),
+          DropdownSearch<Kelurahan>(
+            asyncItems: (String filter) async {
+              var response = await http.get(Uri.parse(
+                  'https://api.binderbyte.com/wilayah/kelurahan?api_key=${widget.apiKey}&id_kecamatan=${widget.idKecamatan}'));
+              if (response.statusCode == 200) {
+                var jsonResponse = jsonDecode(response.body);
+                print(jsonResponse); // Debugging log
+                return (jsonResponse['value'] as List)
+                    .map((data) => Kelurahan.fromJson(data))
+                    .toList();
+              }
+              print('Failed to load villages'); // Debugging log
+              return [];
+            },
+            itemAsString: (Kelurahan k) => k.name,
+            onChanged: (Kelurahan? value) {
+              if (value != null) {
+                setState(() {
+                  _villageController.text = value.name;
+                });
+              }
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+              dropdownSearchDecoration: InputDecoration(
+                labelText: 'Village',
+              ),
+            ),
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+            ),
+            validator: (value) =>
+                value == null ? 'Please select a village' : null,
+          ),
+          SizedBox(height: 10),
+          TextFormField(
+            controller: _postalController,
+            focusNode: _postalFocusNode,
+            decoration: InputDecoration(
+              labelText: 'Postal Code',
+              labelStyle: TextStyle(
+                color: _postalFocusNode.hasFocus ? Colors.lightGreen : null,
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: _postalFocusNode.hasFocus
+                      ? Colors.lightGreen
+                      : Colors.grey,
+                ),
+              ),
+            ),
+            keyboardType: TextInputType.number,
+            validator: (value) {
+              if (value == null) {
+                return 'Please enter your postal code';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: _pickImage,
+            child: Text('Pilih Gambar'),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: Color(0xFF6EBF45), // Warna latar belakang tombol
+            ),
+          ),
+          if (_selectedImage != null)
+            Image.file(_selectedImage!)
+          else
+            Text('Belum ada gambar yang dipilih'),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _tambahlahan,
+            child: Text('Tambah Lahan'),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: Color(0xFF6EBF45),
             ),
           ),
         ],

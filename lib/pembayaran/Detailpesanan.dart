@@ -546,8 +546,9 @@ class _DetailPesananScreenState extends State<DetailPesananScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PembayaranScreen(
-                                    selectedItems:
-                                        selectedItems), // Pass selectedItems
+                                  selectedItems:
+                                      selectedItems, // Pass selectedItems
+                                ),
                               ),
                             );
                           },
@@ -557,14 +558,17 @@ class _DetailPesananScreenState extends State<DetailPesananScreen> {
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
-                          child: const Text(
-                            'Pilih Pembayaran',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: const Text(
+                              'Pilih Pembayaran',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),

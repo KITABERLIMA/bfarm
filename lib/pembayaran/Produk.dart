@@ -266,7 +266,10 @@ class KontenProduk extends StatelessWidget {
                     width: 120,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Aksi yang dijalankan saat tombol "Beli" ditekan
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Beranda()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF6EBF45),
