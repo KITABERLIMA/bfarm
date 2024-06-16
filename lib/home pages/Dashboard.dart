@@ -1,12 +1,8 @@
-<<<<<<< HEAD
-=======
 import 'package:bfarm_mobileapp/home%20pages/detailbelumterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailterpetakan.dart';
-import 'package:bfarm_mobileapp/home%20pages/profile.dart' as profile;
->>>>>>> 2e5971a4d9ffa3c3ec9740f3ba2bd30e0e0a4b98
+import 'package:bfarm_mobileapp/profile/profile.dart' as profile;
 import 'package:bfarm_mobileapp/pembayaran/pembelian_alat.dart';
 import 'package:flutter/material.dart';
-import '../profile/profile.dart';
 import 'deskripsi.dart';
 import 'package:bfarm_mobileapp/home%20pages/lahan.dart' as lahan;
 import 'package:bfarm_mobileapp/home%20pages/langganan.dart' as langganan;
@@ -247,19 +243,12 @@ class BerandaPage extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-<<<<<<< HEAD
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LahanPage(),
-=======
                         // Implementasi aksi untuk tombol "Lihat Semua"
 
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => detailbelumterpetakan(),
->>>>>>> 2e5971a4d9ffa3c3ec9740f3ba2bd30e0e0a4b98
                           ),
                         );
                       },
