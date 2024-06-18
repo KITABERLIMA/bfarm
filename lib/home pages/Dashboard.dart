@@ -695,7 +695,11 @@ class RecommendedItem2 extends StatelessWidget {
                           8), // Tambahkan jarak antara nama alat dan tombol "Beli"
                   ElevatedButton(
                     onPressed: () {
-                      // Implementasi aksi untuk tombol "Beli"
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Beranda(),
+                          ));
                     },
                     child: Text(
                       'Beli',
