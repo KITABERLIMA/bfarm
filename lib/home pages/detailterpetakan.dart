@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Dashboard.dart'; // Sesuaikan dengan path yang sesuai
+import 'Deskripsi.dart'; // Pastikan path menuju file Deskripsi benar
 
 void main() {
   runApp(detailterpetakan());
@@ -40,8 +41,7 @@ class _BFarmHomePageState extends State<BFarmHomePage> {
     return Scaffold(
       appBar: _selectedIndex == 0
           ? AppBar(
-              backgroundColor:
-                  Colors.green, // Set warna background hijau di sini
+              backgroundColor: Colors.green,
               title: Row(
                 children: [
                   SizedBox(width: 10),
@@ -49,7 +49,7 @@ class _BFarmHomePageState extends State<BFarmHomePage> {
                     'Daftar Lahan Terpetakan',
                     style: TextStyle(
                       fontSize: 24,
-                      color: Colors.white, // Set warna teks putih di sini
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -142,22 +142,21 @@ class Recommended1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 600, // Menambah tinggi container
+      height: 600,
       child: ListView.builder(
         shrinkWrap: true,
-        physics: ScrollPhysics(), // ScrollPhysics agar bisa di-scroll
+        physics: ScrollPhysics(),
         scrollDirection: Axis.vertical,
         itemCount: 10,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 20.0),
             child: Center(
-              // Membuat item berada di tengah
               child: RecommendedItem1(
                 imageUrl: 'assets/images/tanah.png',
                 location: '42 966 Ha, Kalimantan',
                 name: 'Supardi',
-                tgl: 'Belum Terpetakan 12/02/2024',
+                tgl: 'Terpetakan 12/02/2024',
               ),
             ),
           );
@@ -183,7 +182,7 @@ class RecommendedItem1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 300, // Menentukan lebar item
+      width: 300,
       child: GestureDetector(
         onTap: () {},
         child: Column(
@@ -196,7 +195,7 @@ class RecommendedItem1 extends StatelessWidget {
                   child: Image.asset(
                     imageUrl,
                     height: 180,
-                    width: double.infinity, // Menentukan lebar gambar
+                    width: double.infinity,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -204,7 +203,14 @@ class RecommendedItem1 extends StatelessWidget {
                   bottom: 8,
                   left: 8,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Deskripsi(),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
