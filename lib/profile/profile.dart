@@ -7,6 +7,7 @@ import '../edit/edit_password.dart';
 import '../edit/edit_personal.dart';
 import '../pages/kebijakan_privasi.dart';
 import '../pages/ketentuan_layanan.dart';
+import '../pages/login.dart';
 import '../pages/tentang_aplikasi.dart';
 
 void main() {
@@ -35,7 +36,6 @@ class _ProfileState extends State<Profile> {
     String? token = prefs.getString('token');
 
     if (token == null) {
-      // Handle the case where token is not available
       setState(() {
         userType = 'Token not found';
       });
@@ -56,8 +56,8 @@ class _ProfileState extends State<Profile> {
         var userAdditionalData = responseData['data']['user_additional_data'];
         var userImage = responseData['data']['user_image'];
         setState(() {
-          imageUrl =
-              'http://bfarm.ahmadyaz.my.id/users/' + (userImage['image'] ?? '');
+          imageUrl = 'http://bfarm.ahmadyaz.my.id/storage/' +
+              (userImage['image'] ?? '');
           firstName = userAdditionalData['first_name'] ?? '';
           lastName = userAdditionalData['last_name'] ?? '';
           userType = userData['user_type'] ?? '';
@@ -71,6 +71,92 @@ class _ProfileState extends State<Profile> {
       setState(() {
         userType = 'Failed to load data';
       });
+    }
+  }
+
+  Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      // Token not found, mungkin sudah logout sebelumnya
+      return;
+    }
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/logout'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Berhasil logout, hapus token dari SharedPreferences
+      prefs.remove('token');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Login(),
+        ),
+      );
+    } else {
+      // Gagal logout, tampilkan pesan error atau lakukan penanganan lainnya
+      print('Failed to logout: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
+  }
+
+  void showLargeImage(String url) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.7,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.contain,
+                  image: NetworkImage(url),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildProfileImage() {
+    if (imageUrl.isNotEmpty) {
+      return GestureDetector(
+        onTap: () {
+          showLargeImage(imageUrl);
+        },
+        child: CircleAvatar(
+          radius: 30.0,
+          backgroundImage: NetworkImage(imageUrl),
+          onBackgroundImageError: (exception, stackTrace) {
+            setState(() {
+              imageUrl = '';
+            });
+          },
+        ),
+      );
+    } else {
+      return CircleAvatar(
+        radius: 30.0,
+        backgroundColor: Colors.white,
+        child: Icon(
+          Icons.person,
+          color: Color(0xFF6EBF45),
+          size: 40,
+        ),
+      );
     }
   }
 
@@ -103,16 +189,7 @@ class _ProfileState extends State<Profile> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(imageUrl),
-                      radius: 30.0,
-                      onBackgroundImageError: (exception, stackTrace) {
-                        setState(() {
-                          imageUrl =
-                              ''; // Reset imageUrl if the image fails to load
-                        });
-                      },
-                    ),
+                    buildProfileImage(),
                     SizedBox(width: 20),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,7 +268,7 @@ class _ProfileState extends State<Profile> {
               ),
               buildSettingItem(
                 title: 'Kata Sandi',
-                subtitle: 'Manage your device security',
+                subtitle: 'Kelola keamanan perangkat Anda',
                 onTap: () {
                   Navigator.push(
                     context,
@@ -293,7 +370,7 @@ class _ProfileState extends State<Profile> {
               buildSettingItem(
                 title: 'Keluar',
                 onTap: () {
-                  // Tambahkan logika untuk aksi ketika kotak diklik
+                  logout(); // Panggil fungsi logout saat item "Keluar" diklik
                 },
                 subtitle: '',
                 icon: Icons.exit_to_app,
