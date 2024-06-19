@@ -531,7 +531,7 @@ class Icon2 extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 14,
+                              fontSize: 16,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,
                             ),
