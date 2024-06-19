@@ -30,7 +30,24 @@ class _BFarmState extends State<BFarm> {
       setState(() {
         _currentPage = controller.page!.round();
       });
+
+      // Prevent sliding back from slide 2 to slide 1
+      if (_currentPage == 1 && controller.page! < 1.0) {
+        controller.jumpToPage(1);
+      }
     });
+  }
+
+  void _goToNextPage() {
+    if (_currentPage < 3) {
+      controller.animateToPage(_currentPage + 1,
+          duration: Duration(milliseconds: 800), curve: Curves.easeInOut);
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+      );
+    }
   }
 
   @override
@@ -94,12 +111,7 @@ class _BFarmState extends State<BFarm> {
                         ],
                       ),
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Login()),
-                          );
-                        },
+                        onPressed: _goToNextPage,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
                           elevation: 0,

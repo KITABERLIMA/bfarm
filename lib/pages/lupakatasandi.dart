@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'periksaemail.dart';
+import 'login.dart';
 
 void main() {
   runApp(Lupakatasandi());
@@ -18,19 +19,21 @@ class Lupakatasandi extends StatelessWidget {
               return IconButton(
                 icon: Icon(Icons.arrow_back),
                 onPressed: () {
-                  Navigator.pop(
-                      context); // Navigate back when the back arrow is pressed
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => Login()),
+                  );
                 },
               );
             },
           ),
-          title: Text('Lupa Kata Sandi'), // Adding a title to the AppBar
+          title: Text('Lupa Kata Sandi'), // Menambahkan judul ke AppBar
         ),
         body: SingleChildScrollView(
           child: Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ResetPasswordForm(), // Changed to a stateful widget
+              child: ResetPasswordForm(), // Diubah menjadi widget stateful
             ),
           ),
         ),
@@ -108,9 +111,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
               fontFamily: 'Poppins',
             ),
           ),
-          SizedBox(
-              height:
-                  10), // Add some space between the "Your Email" text and the text field
+          SizedBox(height: 10),
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -128,7 +129,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                 if (value == null || value.isEmpty) {
                   return 'Email tidak boleh kosong';
                 }
-                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                if (!RegExp(r'^[^@]+@[^@]+.[^@]+').hasMatch(value)) {
                   return 'Masukkan email yang valid';
                 }
                 return null;

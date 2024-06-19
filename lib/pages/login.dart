@@ -1,12 +1,12 @@
 import 'dart:convert';
-import '/../home pages/dashboard.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import '/../home pages/dashboard.dart';
 import 'daftarsebagai.dart';
 import 'kebijakan_privasi.dart';
 import 'ketentuan_layanan.dart';
-import 'lupakatasandi.dart'; // Import the LupaKataSandi class
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
+import 'lupakatasandi.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -16,6 +16,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _obscureText = true;
 
   Future<void> loginUser(BuildContext context) async {
     final String apiUrl = 'http://bfarm.ahmadyaz.my.id/api/login'; //kantor
@@ -148,10 +149,22 @@ class _LoginState extends State<Login> {
                       padding: EdgeInsets.only(left: 10),
                       child: TextFormField(
                         controller: passwordController,
-                        obscureText: true,
+                        obscureText: _obscureText,
                         decoration: InputDecoration(
                           hintText: 'Kata Sandi',
                           prefixIcon: Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                          ),
                           border: InputBorder.none,
                         ),
                       ),
