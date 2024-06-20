@@ -292,26 +292,25 @@ class _MyCustomFormState extends State<MyCustomForm> {
           SizedBox(height: 10),
           Text('Selamat datang di halaman Lahan!'),
           SizedBox(height: 10),
-          DropdownButtonFormField<String>(
-            value: _landStatusController,
-            items: [
-              DropdownMenuItem(value: 'unmapped', child: Text('Unmapped')),
-            ],
-            onChanged: (value) {
-              setState(() {
-                _landStatusController = value;
-              });
-            },
+          TextFormField(
+            controller: TextEditingController(text: 'Unmapped'),
+            enabled: false,
             decoration: InputDecoration(
               labelText: 'Status Lahan',
+              labelStyle: TextStyle(color: Colors.grey), // Make the label text grey
               border: OutlineInputBorder(),
+              disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey), // Make the border grey
+              ),
             ),
+            style: TextStyle(color: Colors.grey), // Make the input text grey
           ),
           SizedBox(height: 10),
           DropdownButtonFormField<String>(
-            value: _ownershipStatusController,
+            value: _ownershipStatusController, // Ensure this is initialized to 'rent'
             items: [
               DropdownMenuItem(value: 'owned', child: Text('Owned')),
+              DropdownMenuItem(value: 'rent', child: Text('Rent')),
             ],
             onChanged: (value) {
               setState(() {
