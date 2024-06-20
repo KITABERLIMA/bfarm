@@ -553,48 +553,34 @@ class _RegisterFormState extends State<RegisterForm> {
                   return null;
                 },
               ),
-              DropdownButtonFormField<String>(
-                value: _userType,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _userType = newValue;
-                  });
-                },
-                items: <String>['individual']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
+              TextFormField(
+                initialValue: 'individual',
                 decoration: InputDecoration(
                   labelText: 'User Type',
+                  labelStyle: TextStyle(color: Colors.grey), // Mengubah warna label menjadi abu-abu
                 ),
+                enabled: false, // Menonaktifkan TextFormField agar tidak bisa diedit
+                style: TextStyle(color: Colors.grey), // Mengubah warna teks menjadi abu-abu
                 validator: (value) {
-                  if (value == null) {
+                  if (value == null || value.isEmpty) {
                     return 'Please select a user type';
                   }
                   return null;
                 },
               ),
               SizedBox(height: 16.0),
-              Center(
-                child: Column(
-                  children: [
-                    _selectedImage != null
-                        ? Image.file(_selectedImage!, height: 100, width: 100)
-                        : Text("No image selected."),
-                    ElevatedButton(
-                      onPressed: _pickImage,
-                      child: Text("Select Profile Picture"),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Color(0xFF6EBF45),
-                      ),
-                    ),
-                  ],
+              ElevatedButton(
+                onPressed: _pickImage,
+                child: Text('Pilih Gambar'),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Color(0xFF6EBF45), // Warna latar belakang tombol
                 ),
               ),
+              if (_selectedImage != null)
+                Image.file(_selectedImage!)
+              else
+                Text('Belum ada gambar yang dipilih'),
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _register,
