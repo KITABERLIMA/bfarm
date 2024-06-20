@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'formulir_lahan.dart';
+import 'formulir_lahan.dart'; // Ensure this is correctly imported
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LahanPage extends StatefulWidget {
@@ -38,8 +38,9 @@ class _LahanPageState extends State<LahanPage> {
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
 
-      // Assuming the responseData is a map and contains a list of lands
-      // Update this part according to the actual API response structure
+      // Print the full response data for debugging
+      print('Response Data: $responseData');
+
       if (responseData is Map<String, dynamic> &&
           responseData['data'] is List) {
         setState(() {
@@ -89,18 +90,6 @@ class _LahanPageState extends State<LahanPage> {
                         ),
                       ),
                       SizedBox(height: 20),
-                      FloatingActionButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    FormulirPenambahanLahan()),
-                          );
-                        },
-                        child: Icon(Icons.add),
-                        backgroundColor: Color(0xFF6EBF45),
-                      ),
                     ],
                   ),
                 )
@@ -108,6 +97,11 @@ class _LahanPageState extends State<LahanPage> {
                   itemCount: _landData.length,
                   itemBuilder: (context, index) {
                     var land = _landData[index];
+                    String? imageUrl = land['image_url'];
+
+                    // Print the image URL for debugging
+                    print('Image URL: $imageUrl');
+
                     return Card(
                       margin: EdgeInsets.all(10),
                       child: Padding(
@@ -115,6 +109,26 @@ class _LahanPageState extends State<LahanPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            if (imageUrl != null && imageUrl.isNotEmpty)
+                              Image.network(
+                                imageUrl,
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  print('Error loading image: $error');
+                                  return Text(
+                                    'Failed to load image',
+                                    style: TextStyle(color: Colors.red),
+                                  );
+                                },
+                              )
+                            else
+                              Text(
+                                'No Image Available',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            SizedBox(height: 10),
                             Text(
                               land['land_description'] ?? 'No Description',
                               style: TextStyle(
@@ -144,6 +158,16 @@ class _LahanPageState extends State<LahanPage> {
                     );
                   },
                 ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => FormulirPenambahanLahan()),
+          );
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Color(0xFF6EBF45),
+      ),
     );
   }
 }

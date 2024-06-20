@@ -4,8 +4,6 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:convert';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'kebijakan_privasi.dart';
-import 'ketentuan_layanan.dart';
 import 'otp.dart';
 
 void main() {
@@ -67,7 +65,6 @@ class Kelurahan {
   }
 }
 
-// ignore: must_be_immutable
 class RegisterCompany extends StatefulWidget {
   final String apiKey;
   String idProvinsi = "0";
@@ -85,7 +82,7 @@ class _RegisterFormState extends State<RegisterCompany> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _companyNameControler = TextEditingController();
+  final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _positionController = TextEditingController();
   final TextEditingController _fullAddressController = TextEditingController();
   final TextEditingController _provinceController = TextEditingController();
@@ -93,7 +90,7 @@ class _RegisterFormState extends State<RegisterCompany> {
   final TextEditingController _subDistrictController = TextEditingController();
   final TextEditingController _villageController = TextEditingController();
   final TextEditingController _postalCodeController = TextEditingController();
-  // ignore: unused_field
+
   String? _userType = "company";
   File? _selectedImage;
 
@@ -114,6 +111,13 @@ class _RegisterFormState extends State<RegisterCompany> {
 
   Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
+      if (_userType == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Please select a user type")),
+        );
+        return;
+      }
+
       if (_selectedImage == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Please select a profile picture")),
@@ -125,13 +129,13 @@ class _RegisterFormState extends State<RegisterCompany> {
 
       var request = http.MultipartRequest("POST", uri);
 
-      request.fields['user_type'] = 'company';
+      request.fields['user_type'] = _userType!;
       request.fields['first_name'] = _firstNameController.text;
       request.fields['last_name'] = _lastNameController.text;
       request.fields['email'] = _emailController.text.trim();
       request.fields['password'] = _passwordController.text;
-      request.fields['company_name'] = _companyNameControler.text;
       request.fields['company_phone'] = _phoneController.text;
+      request.fields['company_name'] = _companyNameController.text;
       request.fields['position'] = _positionController.text;
       request.fields['full_address'] = _fullAddressController.text;
       request.fields['province'] = _provinceController.text;
@@ -144,23 +148,41 @@ class _RegisterFormState extends State<RegisterCompany> {
           await http.MultipartFile.fromPath('image', _selectedImage!.path);
       request.files.add(imageFile);
 
-      var response = await request.send();
-      var responseBody = await response.stream.bytesToString();
-      var jsonResponse = jsonDecode(responseBody);
+      try {
+        var response = await request.send();
+        var responseBody = await response.stream.bytesToString();
+        print('Response status: ${response.statusCode}'); // Debugging log
+        print('Response body: $responseBody'); // Debugging log
 
-      if (response.statusCode == 200 && jsonResponse['success'] == true) {
+        if (response.headers['content-type']?.contains('application/json') ==
+            true) {
+          var jsonResponse = jsonDecode(responseBody);
+          if (response.statusCode == 200 && jsonResponse['success'] == true) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Registration successful!")),
+            );
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      OTPScreen(email: _emailController.text.trim())),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content:
+                      Text("Registration failed: ${jsonResponse['message']}")),
+            );
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text("Unexpected response format: $responseBody")),
+          );
+        }
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Registration successful!")),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  OTPScreen(email: _emailController.text.trim())),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Registration failed: $responseBody")),
+          SnackBar(content: Text("Registration failed: $e")),
         );
       }
     } else {
@@ -197,6 +219,12 @@ class _RegisterFormState extends State<RegisterCompany> {
       setState(() {});
     });
     _phoneFocusNode.addListener(() {
+      setState(() {});
+    });
+    _companyNameFocusNode.addListener(() {
+      setState(() {});
+    });
+    _positionFocusNode.addListener(() {
       setState(() {});
     });
     _fullAddressFocusNode.addListener(() {
@@ -240,7 +268,7 @@ class _RegisterFormState extends State<RegisterCompany> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Register"),
+        title: Text("Register Company"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -248,56 +276,6 @@ class _RegisterFormState extends State<RegisterCompany> {
           key: _formKey,
           child: ListView(
             children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.4,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/sawah.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Pendaftaran',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        'Akun personal',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Text(
-                      'Isi seluruh form di bawah untuk mendaftarkan akun',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               TextFormField(
                 controller: _firstNameController,
                 focusNode: _firstNameFocusNode,
@@ -399,7 +377,7 @@ class _RegisterFormState extends State<RegisterCompany> {
                 controller: _phoneController,
                 focusNode: _phoneFocusNode,
                 decoration: InputDecoration(
-                  labelText: 'Company Phone',
+                  labelText: 'Phone',
                   labelStyle: TextStyle(
                     color: _phoneFocusNode.hasFocus ? Colors.lightGreen : null,
                   ),
@@ -420,7 +398,7 @@ class _RegisterFormState extends State<RegisterCompany> {
                 },
               ),
               TextFormField(
-                controller: _companyNameControler,
+                controller: _companyNameController,
                 focusNode: _companyNameFocusNode,
                 decoration: InputDecoration(
                   labelText: 'Company Name',
@@ -439,7 +417,7 @@ class _RegisterFormState extends State<RegisterCompany> {
                 ),
                 validator: (value) {
                   if (value == null) {
-                    return 'Please enter your company name';
+                    return 'Please enter your full address';
                   }
                   return null;
                 },
@@ -463,7 +441,7 @@ class _RegisterFormState extends State<RegisterCompany> {
                 ),
                 validator: (value) {
                   if (value == null) {
-                    return 'Please enter your position';
+                    return 'Please enter your full address';
                   }
                   return null;
                 },
@@ -660,10 +638,14 @@ class _RegisterFormState extends State<RegisterCompany> {
                   children: [
                     _selectedImage != null
                         ? Image.file(_selectedImage!, height: 100, width: 100)
-                        : SizedBox(),
+                        : Text("No image selected."),
                     ElevatedButton(
                       onPressed: _pickImage,
                       child: Text("Select Profile Picture"),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Color(0xFF6EBF45),
+                      ),
                     ),
                   ],
                 ),
@@ -672,63 +654,10 @@ class _RegisterFormState extends State<RegisterCompany> {
               ElevatedButton(
                 onPressed: _register,
                 child: Text("Register"),
-              ),
-              SizedBox(height: 20.0),
-              Text(
-                'Dengan masuk atau daftar, Anda setuju dengan',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10.0),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => KetentuanLayananScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Ketentuan Layanan',
-                      style: TextStyle(
-                        fontSize: 10.0,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    ' dan ',
-                    style: TextStyle(
-                      fontSize: 10.0,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => KebijakanPrivasiScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Kebijakan Privasi',
-                      style: TextStyle(
-                        fontSize: 10.0,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    ' bFarm',
-                    style: TextStyle(
-                      fontSize: 10.0,
-                    ),
-                  ),
-                ],
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Color(0xFF6EBF45),
+                ),
               ),
             ],
           ),
