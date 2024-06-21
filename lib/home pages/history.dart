@@ -8,10 +8,10 @@ class riwayat extends StatefulWidget {
   const riwayat({super.key});
 
   @override
-  _riwayat createState() => _riwayat();
+  _RiwayatState createState() => _RiwayatState();
 }
 
-class _riwayat extends State<riwayat> {
+class _RiwayatState extends State<riwayat> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -26,6 +26,7 @@ class _riwayat extends State<riwayat> {
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: Colors.white,
       ),
+      debugShowCheckedModeBanner: false, // Menonaktifkan debug banner
       home: Scaffold(
         body: ListView(
           padding: EdgeInsets.all(16),
@@ -38,39 +39,6 @@ class _riwayat extends State<riwayat> {
             SizedBox(height: 10),
             Frame66(),
           ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Beranda',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.eco),
-              label: 'Lahan',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.history),
-              label: 'Riwayat',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.subscriptions),
-              label: 'Langganan',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle),
-              label: 'Akun',
-            ),
-          ],
-          currentIndex: 1,
-          selectedItemColor: Colors.green[800],
-          unselectedItemColor: Colors.grey,
-          onTap: _onItemTapped,
-          unselectedLabelStyle: TextStyle(color: Colors.grey),
-          selectedLabelStyle: TextStyle(color: Colors.green[800]),
-          backgroundColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          showUnselectedLabels: true,
         ),
       ),
     );
