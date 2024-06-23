@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Added import
+import 'dart:convert'; // Added import
+import 'package:http/http.dart' as http;
 import 'package:bfarm_mobileapp/pembayaran/pembelian_alat.dart';
-import 'tagihan.dart';
 
 class DetailPemesanan extends StatelessWidget {
   final int totalAmount;
@@ -267,8 +269,64 @@ class AdditionalContent extends StatelessWidget {
   }
 }
 
-class DataPemesan extends StatelessWidget {
+class DataPemesan extends StatefulWidget {
   const DataPemesan({Key? key}) : super(key: key);
+
+  @override
+  _DataPemesanState createState() => _DataPemesanState();
+}
+
+class _DataPemesanState extends State<DataPemesan> {
+  String firstName = '';
+  String fullAddress = '';
+  String phone = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      // Handle the case where token is not available
+      setState(() {
+        firstName = 'Token not found';
+      });
+      return;
+    }
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/users'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      if (responseData.containsKey('data')) {
+        var userAdditionalData = responseData['data']['user_additional_data'];
+        var address = responseData['data']['address'];
+
+        setState(() {
+          firstName = userAdditionalData['first_name'] ?? '';
+          fullAddress = address['full_address'] ?? '';
+          phone = userAdditionalData['phone'] ?? '';
+        });
+      } else {
+        setState(() {
+          firstName = 'Data not found';
+        });
+      }
+    } else {
+      setState(() {
+        firstName = 'Failed to load data';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -306,17 +364,17 @@ class DataPemesan extends StatelessWidget {
             children: [
               InfoRow(
                 label: 'Nama',
-                value: 'Shinta',
+                value: firstName,
               ),
               SizedBox(height: 20),
               InfoRow(
                 label: 'Alamat',
-                value: 'Jl. Gunung Anyar Jaya',
+                value: fullAddress,
               ),
               SizedBox(height: 20),
               InfoRow(
                 label: 'Nomor Telepon',
-                value: '+628 7730384030',
+                value: phone,
               ),
               SizedBox(height: 20),
             ],

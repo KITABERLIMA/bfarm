@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'pengajuan.dart';
 
@@ -28,8 +33,7 @@ class Deskripsi extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                width: MediaQuery.of(context).size.width *
-                    0.45, // Menyesuaikan lebar layar
+                width: MediaQuery.of(context).size.width * 0.45,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.green),
@@ -55,8 +59,7 @@ class Deskripsi extends StatelessWidget {
               ),
               SizedBox(width: 20),
               Container(
-                width: MediaQuery.of(context).size.width *
-                    0.45, // Menyesuaikan lebar layar
+                width: MediaQuery.of(context).size.width * 0.45,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   color: Colors.green,
@@ -180,12 +183,71 @@ class LandDetailPage extends StatelessWidget {
   }
 }
 
-class MapWidget extends StatelessWidget {
+class MapWidget extends StatefulWidget {
+  @override
+  _MapWidgetState createState() => _MapWidgetState();
+}
+
+class _MapWidgetState extends State<MapWidget> {
+  LatLng? _initialCenter;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchLandData();
+  }
+
+  Future<void> _fetchLandData() async {
+    final response =
+        await http.get(Uri.parse('http://bfarm.ahmadyaz.my.id/api/lands/list'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final land = data['data'][0];
+      final location = land['location'].split(',');
+      final latitude = double.parse(location[0]);
+      final longitude = double.parse(location[1]);
+
+      setState(() {
+        _initialCenter = LatLng(latitude, longitude);
+      });
+    } else {
+      throw Exception('Failed to load land data');
+    }
+  }
+
+  void launchUrl(Uri uri) async {
+    if (await canLaunch(uri.toString())) {
+      await launch(uri.toString());
+    } else {
+      throw 'Could not launch $uri';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      child: Image.asset('assets/images/map.png', fit: BoxFit.cover),
-    );
+    return _initialCenter == null
+        ? Center(child: CircularProgressIndicator())
+        : FlutterMap(
+            options: MapOptions(
+              initialCenter: _initialCenter!,
+              initialZoom: 9.2,
+            ),
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.example.app',
+              ),
+              RichAttributionWidget(
+                attributions: [
+                  TextSourceAttribution(
+                    'OpenStreetMap contributors',
+                    onTap: () => launchUrl(
+                        Uri.parse('https://openstreetmap.org/copyright')),
+                  ),
+                ],
+              ),
+            ],
+          );
   }
 }

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Added import
+import 'dart:convert'; // Added import
+import 'package:http/http.dart' as http;
 import 'pembayaran.dart'; // Import Pembayaran widget
 import 'pembelian_alat.dart';
 
@@ -35,11 +38,15 @@ class DetailPesananScreen extends StatefulWidget {
 
 class _DetailPesananScreenState extends State<DetailPesananScreen> {
   late int selectedItems;
+  String firstName = '';
+  String fullAddress = '';
+  String Phone = '';
 
   @override
   void initState() {
     super.initState();
     selectedItems = widget.selectedItems;
+    fetchData();
   }
 
   int getTotalPrice() {
@@ -59,6 +66,48 @@ class _DetailPesananScreenState extends State<DetailPesananScreen> {
         selectedItems--;
       }
     });
+  }
+
+  Future<void> fetchData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      // Handle the case where token is not available
+      setState(() {
+        firstName = 'Token not found';
+      });
+      return;
+    }
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/users'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      if (responseData.containsKey('data')) {
+        var userAdditionalData = responseData['data']['user_additional_data'];
+        var address = responseData['data']['address'];
+
+        setState(() {
+          firstName = userAdditionalData['first_name'] ?? '';
+          fullAddress = address['full_address'] ?? '';
+          Phone = userAdditionalData['phone'] ?? '';
+        });
+      } else {
+        setState(() {
+          firstName = 'Data not found';
+        });
+      }
+    } else {
+      setState(() {
+        firstName = 'Failed to load data';
+      });
+    }
   }
 
   @override
@@ -303,7 +352,7 @@ class _DetailPesananScreenState extends State<DetailPesananScreen> {
                                   ),
                                 ),
                                 Text(
-                                  'Shinta',
+                                  firstName,
                                   style: TextStyle(
                                     color: Color(0xFF757575),
                                     fontSize: 12,
@@ -328,7 +377,7 @@ class _DetailPesananScreenState extends State<DetailPesananScreen> {
                                   ),
                                 ),
                                 Text(
-                                  'JL. Gunung Anyar Jaya',
+                                  fullAddress,
                                   style: TextStyle(
                                     color: Color(0xFF757575),
                                     fontSize: 12,
@@ -354,7 +403,7 @@ class _DetailPesananScreenState extends State<DetailPesananScreen> {
                                   ),
                                 ),
                                 Text(
-                                  '+628 7730384030',
+                                  Phone,
                                   style: TextStyle(
                                     color: Color(0xFF757575),
                                     fontSize: 12,
