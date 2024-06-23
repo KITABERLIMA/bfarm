@@ -1,3 +1,4 @@
+import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -18,14 +19,6 @@ class Deskripsi extends StatelessWidget {
     return MaterialApp(
       title: 'Properti Kalimantan',
       home: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context); // Navigate back to previous screen
-            },
-          ),
-        ),
         body: PropertyListing(),
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -37,7 +30,7 @@ class Deskripsi extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.green),
-                  color: const Color.fromARGB(255, 255, 255, 255),
+                  color: Colors.white,
                 ),
                 child: TextButton(
                   onPressed: () {
@@ -57,7 +50,6 @@ class Deskripsi extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 20),
               Container(
                 width: MediaQuery.of(context).size.width * 0.45,
                 decoration: BoxDecoration(
@@ -95,90 +87,102 @@ class PropertyListing extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: <Widget>[
-        CarouselSlider(
-          options: CarouselOptions(
-            height: 200.0,
-            enlargeCenterPage: true,
-            autoPlay: true,
-            aspectRatio: 16 / 9,
-            autoPlayCurve: Curves.fastOutSlowIn,
-            enableInfiniteScroll: true,
-            autoPlayAnimationDuration: Duration(milliseconds: 800),
-            viewportFraction: 0.8,
-          ),
-          items: [
-            'assets/images/tanah.png',
-            'assets/images/tanah.png',
-            'assets/images/tanah.png',
-          ].map((i) {
-            return Builder(
-              builder: (BuildContext context) {
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                  ),
-                  child: Image.asset(i, fit: BoxFit.cover),
+        Stack(
+          children: [
+            CarouselSlider(
+              options: CarouselOptions(
+                height: MediaQuery.of(context).size.height * 0.3,
+                enlargeCenterPage: true,
+                autoPlay: true,
+                aspectRatio: 16 / 9,
+                autoPlayCurve: Curves.fastOutSlowIn,
+                enableInfiniteScroll: true,
+                autoPlayAnimationDuration: Duration(milliseconds: 800),
+                viewportFraction: 1.0,
+              ),
+              items: [
+                'assets/images/tanah.png',
+                'assets/images/tanah.png',
+                'assets/images/tanah.png',
+              ].map((i) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                        ),
+                        child: Image.asset(i, fit: BoxFit.cover),
+                      ),
+                    );
+                  },
                 );
-              },
-            );
-          }).toList(),
-        ),
-        LandDetailPage(), // Add LandDetailPage widget here
-      ],
-    );
-  }
-}
-
-class LandDetailPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              '42 966 Ha, Kalimantan',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              }).toList(),
             ),
-            SizedBox(height: 8),
-            Text(
-              'Deskripsi:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              'Lahan subur seluas 5 hektar di pinggiran kota dengan panorama alam indah dan udara segar. Cocok untuk pertanian produktif, properti perumahan, atau investasi jangka panjang.',
-            ),
-            ListTile(
-              leading: Icon(Icons.account_circle), // Ikon profil
-              title: Text('Supardi'),
-              subtitle: Text('supardimalang@gmail.com'),
-            ),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Lokasi Lahan',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                  Text(
-                    'W5VJ+3F7, Kakap River, Sungai Kakap, Kubu Raya Regency, West Kalimantan 78381',
-                  ),
-                  SizedBox(height: 16),
-                  MapWidget(),
-                  SizedBox(height: 16),
-                ],
+            Positioned(
+              top: 16,
+              left: 16,
+              child: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Dashboard(),
+                    ),
+                  );
+                },
               ),
             ),
           ],
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '42 966 Ha, Kalimantan',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              ),
+              Divider(), // Pemisah antara judul dan deskripsi
+              Text(
+                'Deskripsi:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              Text(
+                'Lahan subur seluas 5 hektar di pinggiran kota dengan panorama alam indah dan udara segar. Akses mudah ke jalan utama dan fasilitas umum. Cocok untuk pertanian produktif, properti perumahan, atau investasi jangka panjang. Topografi variatif dengan sebagian datar dan sebagian berkontur lembut. Sumber air cukup dan iklim mendukung. Siap dibudidayakan atau dikembangkan sesuai visi investor atau pembeli.',
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Terpetakan 12/02/2024',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+              Divider(),
+              ListTile(
+                leading: Icon(Icons.account_circle), // Ikon profil
+                title: Text('Pemilik Lahan'),
+                subtitle: Text('Supardi\nsupardimalang@gmail.com'),
+              ),
+              Divider(),
+              Text(
+                'Lokasi Lahan',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              Text(
+                'W5VJ+3F7, Kakap River, Sungai Kakap, Kubu Raya Regency, West Kalimantan 78381',
+              ),
+              SizedBox(height: 16),
+              Container(
+                height: 200,
+                child: MapWidget(),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -229,10 +233,7 @@ class _MapWidgetState extends State<MapWidget> {
     return _initialCenter == null
         ? Center(child: CircularProgressIndicator())
         : FlutterMap(
-            options: MapOptions(
-              initialCenter: _initialCenter!,
-              initialZoom: 9.2,
-            ),
+            options: MapOptions(),
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
