@@ -1,3 +1,4 @@
+import 'package:bfarm_mobileapp/home%20pages/deskripsibelumterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailbelumterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailterpetakan.dart';
 import 'package:bfarm_mobileapp/profile/profile.dart' as profile;
@@ -529,7 +530,12 @@ class RecommendedItem1 extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // Implementasi aksi untuk tombol "Terpetakan"
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Deskripsibelumterpetakan(),
+                            ),
+                          );
                         },
                         child: Text(
                           'Belum Terpetakan',

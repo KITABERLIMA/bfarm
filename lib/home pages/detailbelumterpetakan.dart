@@ -1,3 +1,4 @@
+import 'package:bfarm_mobileapp/home%20pages/deskripsibelumterpetakan.dart';
 import 'package:flutter/material.dart';
 import 'Dashboard.dart'; // Sesuaikan dengan path yang sesuai
 
@@ -200,7 +201,14 @@ class RecommendedItem1 extends StatelessWidget {
                   bottom: 8,
                   left: 8,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Deskripsibelumterpetakan(),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 250, 86, 86),
                       shape: RoundedRectangleBorder(

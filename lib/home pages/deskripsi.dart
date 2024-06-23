@@ -1,4 +1,5 @@
 import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
+import 'package:bfarm_mobileapp/home%20pages/tagihan.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -37,7 +38,9 @@ class Deskripsi extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Pengajuan(),
+                        builder: (context) => tagihan(
+                            selectedItems:
+                                0), // Provide a value for selectedItems
                       ),
                     );
                   },
