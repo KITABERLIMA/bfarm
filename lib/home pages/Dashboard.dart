@@ -469,7 +469,6 @@ class Recommended1 extends StatelessWidget {
                 imageUrl: 'assets/images/tanah.png',
                 location: '42 966 Ha, Kalimantan',
                 name: 'Supardi',
-                tgl: 'Terpetakan 12/02/2024',
               ),
             ),
           );
@@ -483,13 +482,11 @@ class RecommendedItem1 extends StatelessWidget {
   final String imageUrl;
   final String location;
   final String name;
-  final String tgl;
 
   RecommendedItem1({
     required this.imageUrl,
     required this.location,
     required this.name,
-    required this.tgl,
   });
 
   @override
@@ -572,16 +569,6 @@ class RecommendedItem1 extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 8),
-                  Text(
-                    tgl,
-                    style: TextStyle(
-                      color: Color(0xFFAAAAAA),
-                      fontSize: 12,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0.06,
-                    ),
-                  ),
                 ],
               ),
             ),

@@ -40,8 +40,7 @@ class _BFarmHomePageState extends State<BFarmHomePage> {
     return Scaffold(
       appBar: _selectedIndex == 0
           ? AppBar(
-              backgroundColor: Color.fromARGB(
-                  255, 236, 52, 52), // Set warna background hijau di sini
+              backgroundColor: Colors.green, // Corrected to use Colors.green
               title: Row(
                 children: [
                   SizedBox(width: 10),
@@ -157,7 +156,6 @@ class Recommended1 extends StatelessWidget {
                 imageUrl: 'assets/images/tanah.png',
                 location: '42 966 Ha, Kalimantan',
                 name: 'Supardi',
-                tgl: 'Belum Terpetakan 12/02/2024',
               ),
             ),
           );
@@ -171,13 +169,11 @@ class RecommendedItem1 extends StatelessWidget {
   final String imageUrl;
   final String location;
   final String name;
-  final String tgl;
 
   const RecommendedItem1({
     required this.imageUrl,
     required this.location,
     required this.name,
-    required this.tgl,
   });
 
   @override
@@ -229,13 +225,6 @@ class RecommendedItem1 extends StatelessWidget {
             ),
             Text(
               name,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
-            ),
-            Text(
-              tgl,
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey,

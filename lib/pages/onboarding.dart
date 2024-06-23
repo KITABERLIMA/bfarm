@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
 import 'package:flutter/material.dart';
-import '../pages/login.dart';
 
 void main() {
   runApp(BFarm());
@@ -45,7 +45,7 @@ class _BFarmState extends State<BFarm> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Login()),
+        MaterialPageRoute(builder: (context) => Dashboard()),
       );
     }
   }

@@ -1,3 +1,5 @@
+import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
+import 'package:bfarm_mobileapp/home%20pages/tagihan.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,7 +13,12 @@ class Pengajuan extends StatelessWidget {
       title: 'Pengajuan Lahan',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Pengajuan Lahan'),
+          title: Text(
+            'Pengajuan Lahan',
+            style:
+                TextStyle(color: Colors.white), // Menambahkan warna teks putih
+          ),
+          backgroundColor: Colors.green, // Menambahkan backgroundColor hijau
         ),
         body: PengajuanMandiriForm(),
         bottomNavigationBar: Padding(
@@ -31,7 +38,7 @@ class Pengajuan extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Pengajuan(),
+                        builder: (context) => Dashboard(),
                       ),
                     );
                   },
@@ -56,7 +63,9 @@ class Pengajuan extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Pengajuan(),
+                        builder: (context) => tagihan(
+                            selectedItems:
+                                0), // Provide a value for selectedItems
                       ),
                     );
                   },
@@ -117,6 +126,8 @@ class _PengajuanMandiriFormState extends State<PengajuanMandiriForm> {
                     ),
                   ],
                 ),
+                SizedBox(height: 8),
+                Divider(color: Colors.grey), // Garis horizontal abu-abu
                 SizedBox(height: 16),
                 Text(
                   'Detail Harga',
@@ -154,9 +165,27 @@ class _PengajuanMandiriFormState extends State<PengajuanMandiriForm> {
                   ],
                 ),
                 SizedBox(height: 16),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '*',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      'Note: ',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4),
                 Text(
-                  '*Note: Harga tersebut belum Termasuk Akomodasi & Informasi Selanjutnya akan dikonfirmasikan admin melalui whatsapp',
-                  style: TextStyle(color: Colors.red),
+                  'Harga tersebut belum Termasuk Akomodasi & Informasi Selanjutnya akan dikonfirmasikan admin melalui whatsapp',
+                  style: TextStyle(color: Colors.black, fontSize: 16),
                 ),
                 SizedBox(height: 16),
               ],
