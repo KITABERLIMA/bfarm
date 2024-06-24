@@ -48,19 +48,21 @@ class _BFarmHomePageState extends State<BFarmHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Image.asset('assets/images/logo.png', height: 40),
-                SizedBox(width: 10),
-              ],
-            ),
-          ],
-        ),
-      ),
+      appBar: _selectedIndex == 0
+          ? AppBar(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Image.asset('assets/images/logo.png', height: 40),
+                      SizedBox(width: 10),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          : null,
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
