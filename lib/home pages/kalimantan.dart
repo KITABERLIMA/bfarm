@@ -1,16 +1,12 @@
-import 'package:bfarm_mobileapp/home%20pages/deskripsibelumterpetakan.dart';
 import 'package:flutter/material.dart';
 import 'Dashboard.dart'; // Sesuaikan dengan path yang sesuai
-import 'package:bfarm_mobileapp/home%20pages/lahan.dart' as lahan;
-import 'package:bfarm_mobileapp/home%20pages/langganan.dart' as langganan;
-import 'package:bfarm_mobileapp/home%20pages/history.dart' as history;
-import 'package:bfarm_mobileapp/profile/profile.dart' as profile;
+import 'Deskripsi.dart'; // Pastikan path menuju file Deskripsi benar
 
 void main() {
-  runApp(detailbelumterpetakan());
+  runApp(kalimantan());
 }
 
-class detailbelumterpetakan extends StatelessWidget {
+class kalimantan extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,10 +30,10 @@ class _BFarmHomePageState extends State<BFarmHomePage> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     BerandaPage(),
-    lahan.LahanPage(),
-    history.riwayat(),
-    langganan.Langganan(),
-    profile.Profile()
+    LahanPage(),
+    Riwayat(),
+    Langganan(),
+    Profile(),
   ];
 
   @override
@@ -45,15 +41,15 @@ class _BFarmHomePageState extends State<BFarmHomePage> {
     return Scaffold(
       appBar: _selectedIndex == 0
           ? AppBar(
-              backgroundColor: Colors.green, // Corrected to use Colors.green
+              backgroundColor: Colors.green,
               title: Row(
                 children: [
                   SizedBox(width: 10),
                   Text(
-                    'Daftar Lahan Belum Terpetakan',
+                    'Kalimantan',
                     style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white, // Set warna teks putih di sini
+                      fontSize: 24,
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -146,21 +142,21 @@ class Recommended1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 600, // Menambah tinggi container
+      height: 600,
       child: ListView.builder(
         shrinkWrap: true,
-        physics: ScrollPhysics(), // ScrollPhysics agar bisa di-scroll
+        physics: ScrollPhysics(),
         scrollDirection: Axis.vertical,
-        itemCount: 10,
+        itemCount: 3,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 20.0),
             child: Center(
-              // Membuat item berada di tengah
               child: RecommendedItem1(
                 imageUrl: 'assets/images/tanah.png',
                 location: '42 966 Ha, Kalimantan',
                 name: 'Supardi',
+                tgl: 'Terpetakan 12/02/2024',
               ),
             ),
           );
@@ -174,17 +170,19 @@ class RecommendedItem1 extends StatelessWidget {
   final String imageUrl;
   final String location;
   final String name;
+  final String tgl;
 
   const RecommendedItem1({
     required this.imageUrl,
     required this.location,
     required this.name,
+    required this.tgl,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 300, // Menentukan lebar item
+      width: 300,
       child: GestureDetector(
         onTap: () {},
         child: Column(
@@ -197,7 +195,7 @@ class RecommendedItem1 extends StatelessWidget {
                   child: Image.asset(
                     imageUrl,
                     height: 180,
-                    width: double.infinity, // Menentukan lebar gambar
+                    width: double.infinity,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -209,18 +207,18 @@ class RecommendedItem1 extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Deskripsibelumterpetakan(),
+                          builder: (context) => Deskripsi(),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 250, 86, 86),
+                      backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: Text(
-                      'Belum Terpetakan',
+                      'Terpetakan',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -237,6 +235,13 @@ class RecommendedItem1 extends StatelessWidget {
             ),
             Text(
               name,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+            Text(
+              tgl,
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey,
