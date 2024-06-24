@@ -816,7 +816,12 @@ class _FilterPage1State extends State<FilterPage1> {
                 SizedBox(height: 16),
                 OutlinedButton(
                   onPressed: () {
-                    // Reset semua nilai isSelected ke false
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Dashboard(),
+                      ),
+                    );
                   },
                   child: Text(
                     'Atur Ulang',
