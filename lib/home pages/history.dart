@@ -45,7 +45,7 @@ class _RiwayatPageState extends State<RiwayatPage> {
             SizedBox(width: 10),
           ],
         ),
-        backgroundColor: const Color.fromARGB(255, 227, 234, 227),
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
