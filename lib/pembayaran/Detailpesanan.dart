@@ -4,6 +4,7 @@ import 'dart:convert'; // Added import
 import 'package:http/http.dart' as http;
 import 'pembayaran.dart'; // Import Pembayaran widget
 import 'pembelian_alat.dart';
+import '../edit/edit_personal.dart';
 
 void main() {
   runApp(const DetailPesanan(selectedItems: 0));
@@ -41,6 +42,11 @@ class _DetailPesananScreenState extends State<DetailPesananScreen> {
   String firstName = '';
   String fullAddress = '';
   String Phone = '';
+  String village = '';
+  String sub_district = '';
+  String city_district = '';
+  String province = '';
+  String postal_code = '';
 
   @override
   void initState() {
@@ -97,6 +103,11 @@ class _DetailPesananScreenState extends State<DetailPesananScreen> {
           firstName = userAdditionalData['first_name'] ?? '';
           fullAddress = address['full_address'] ?? '';
           Phone = userAdditionalData['phone'] ?? '';
+          village = address['village'] ?? '';
+          sub_district = address['sub_district'] ?? '';
+          city_district = address['city_district'] ?? '';
+          province = address['province'] ?? '';
+          postal_code = address['postal_code'] ?? '';
         });
       } else {
         setState(() {
@@ -153,8 +164,8 @@ class _DetailPesananScreenState extends State<DetailPesananScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'PT. Lima Benua Koneksindo, Surabaya',
+                          Text(
+                            fullAddress,
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 12,
@@ -164,19 +175,18 @@ class _DetailPesananScreenState extends State<DetailPesananScreen> {
                           ),
                           const SizedBox(height: 16),
                           Row(
-                            children: const [
+                            children: [
                               Icon(Icons.location_on,
                                   size: 16, color: Colors.red),
                               SizedBox(width: 4),
                               Expanded(
                                 child: Text(
-                                  'xxxxx',
+                                  '${village}, ${sub_district}, ${city_district}, ${province}, ${postal_code}',
                                   style: TextStyle(
                                     color: Color(0xFF616161),
                                     fontSize: 12,
                                     fontFamily: 'Poppins',
                                   ),
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               Icon(Icons.navigate_next,
@@ -201,23 +211,23 @@ class _DetailPesananScreenState extends State<DetailPesananScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    TextButton.icon(
-                      onPressed: () {
-                        Navigator.popUntil(context, ModalRoute.withName('/'));
-                      },
-                      icon: const Icon(Icons.add, color: Color(0xFF6EBF45)),
-                      label: const Text(
-                        'Tambah Pesanan',
-                        style: TextStyle(
-                          color: Color(0xFF6EBF45),
-                          fontSize: 12,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+                    //TextButton.icon(
+                    //onPressed: () {
+                    // Navigator.popUntil(context, ModalRoute.withName('/'));
+                    //},
+                    // icon: const Icon(Icons.add, color: Color(0xFF6EBF45)),
+                    //label: const Text(
+                    // 'Tambah Pesanan',
+                    //style: TextStyle(
+                    //  color: Color(0xFF6EBF45),
+                    //  fontSize: 12,
+                    //  fontFamily: 'Poppins',
+                    //fontWeight: FontWeight.w500,
+                    //),
+                    // ),
+                    //),
                   ],
-                ),
+                ), //
                 const SizedBox(height: 20),
                 Row(
                   children: [
@@ -309,7 +319,12 @@ class _DetailPesananScreenState extends State<DetailPesananScreen> {
                     ),
                     TextButton.icon(
                       onPressed: () {
-                        Navigator.popUntil(context, ModalRoute.withName('/'));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditPersonal(),
+                          ),
+                        );
                       },
                       icon: const Icon(Icons.change_circle,
                           color: Color(0xFF6EBF45)),

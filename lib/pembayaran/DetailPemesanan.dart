@@ -4,21 +4,99 @@ import 'dart:convert'; // Added import
 import 'package:http/http.dart' as http;
 import 'package:bfarm_mobileapp/pembayaran/pembelian_alat.dart';
 
-class DetailPemesanan extends StatelessWidget {
+class DetailPemesanan extends StatefulWidget {
   final int totalAmount;
 
   const DetailPemesanan({Key? key, required this.totalAmount})
       : super(key: key);
 
   @override
+  _DetailPemesananState createState() => _DetailPemesananState();
+}
+
+class _DetailPemesananState extends State<DetailPemesanan> {
+  String firstName = '';
+  String fullAddress = '';
+  String phone = '';
+  String village = '';
+  String sub_district = '';
+  String city_district = '';
+  String province = '';
+  String postal_code = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      // Handle the case where token is not available
+      setState(() {
+        firstName = 'Token not found';
+      });
+      return;
+    }
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/users'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      if (responseData.containsKey('data')) {
+        var userAdditionalData = responseData['data']['user_additional_data'];
+        var address = responseData['data']['address'];
+
+        setState(() {
+          firstName = userAdditionalData['first_name'] ?? '';
+          fullAddress = address['full_address'] ?? '';
+          phone = userAdditionalData['phone'] ?? '';
+          village = address['village'] ?? '';
+          sub_district = address['sub_district'] ?? '';
+          city_district = address['city_district'] ?? '';
+          province = address['province'] ?? '';
+          postal_code = address['postal_code'] ?? '';
+        });
+      } else {
+        setState(() {
+          firstName = 'Data not found';
+        });
+      }
+    } else {
+      setState(() {
+        firstName = 'Failed to load data';
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
         children: [
-          Icon2(),
+          Icon2(
+            fullAddress: fullAddress,
+            village: village,
+            sub_district: sub_district,
+            city_district: city_district,
+            province: province,
+            postal_code: postal_code,
+            totalAmount: widget.totalAmount,
+          ),
           AdditionalContent(),
-          DataPemesan(),
-          Detailharga(totalAmount: totalAmount),
+          DataPemesan(
+            firstName: firstName,
+            fullAddress: fullAddress,
+            phone: phone,
+          ),
+          Detailharga(totalAmount: widget.totalAmount),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -58,14 +136,29 @@ class DetailPemesanan extends StatelessWidget {
 }
 
 class Icon2 extends StatelessWidget {
+  final String fullAddress;
+  final String village;
+  final String sub_district;
+  final String city_district;
+  final String province;
+  final String postal_code;
+  final int totalAmount;
+
+  const Icon2({
+    Key? key,
+    required this.fullAddress,
+    required this.village,
+    required this.sub_district,
+    required this.city_district,
+    required this.province,
+    required this.postal_code,
+    required this.totalAmount,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     const int itemPrice = 60000; // Harga per item
-    int qty = (context
-                .findAncestorWidgetOfExactType<DetailPemesanan>()
-                ?.totalAmount ??
-            0) ~/
-        itemPrice;
+    int qty = totalAmount ~/ itemPrice;
 
     return Column(
       children: [
@@ -113,7 +206,7 @@ class Icon2 extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'PT. Lima Benua Koneksindo, Surabaya',
+                      fullAddress,
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 12,
@@ -133,7 +226,7 @@ class Icon2 extends StatelessWidget {
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
-                            'xxxxx',
+                            '${village}, ${sub_district}, ${city_district}, ${province}, ${postal_code}',
                             style: TextStyle(
                               color: Color(0xFF616161),
                               fontSize: 12,
@@ -180,8 +273,7 @@ class Icon2 extends StatelessWidget {
               height: 80,
               width: 90,
               child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 16), // Tambahkan padding di sebelah kanan gambar
+                padding: const EdgeInsets.only(left: 16),
                 child: Image.asset(
                   'assets/images/ProductAlat.png',
                   fit: BoxFit.cover,
@@ -230,7 +322,6 @@ class Icon2 extends StatelessWidget {
   }
 }
 
-// Dummy widgets for AdditionalContent and DataPemesan
 class AdditionalContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -269,64 +360,17 @@ class AdditionalContent extends StatelessWidget {
   }
 }
 
-class DataPemesan extends StatefulWidget {
-  const DataPemesan({Key? key}) : super(key: key);
+class DataPemesan extends StatelessWidget {
+  final String firstName;
+  final String fullAddress;
+  final String phone;
 
-  @override
-  _DataPemesanState createState() => _DataPemesanState();
-}
-
-class _DataPemesanState extends State<DataPemesan> {
-  String firstName = '';
-  String fullAddress = '';
-  String phone = '';
-
-  @override
-  void initState() {
-    super.initState();
-    fetchData();
-  }
-
-  Future<void> fetchData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
-
-    if (token == null) {
-      // Handle the case where token is not available
-      setState(() {
-        firstName = 'Token not found';
-      });
-      return;
-    }
-
-    final response = await http.get(
-      Uri.parse('http://bfarm.ahmadyaz.my.id/api/users'),
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
-    );
-    if (response.statusCode == 200) {
-      var responseData = json.decode(response.body);
-      if (responseData.containsKey('data')) {
-        var userAdditionalData = responseData['data']['user_additional_data'];
-        var address = responseData['data']['address'];
-
-        setState(() {
-          firstName = userAdditionalData['first_name'] ?? '';
-          fullAddress = address['full_address'] ?? '';
-          phone = userAdditionalData['phone'] ?? '';
-        });
-      } else {
-        setState(() {
-          firstName = 'Data not found';
-        });
-      }
-    } else {
-      setState(() {
-        firstName = 'Failed to load data';
-      });
-    }
-  }
+  const DataPemesan({
+    Key? key,
+    required this.firstName,
+    required this.fullAddress,
+    required this.phone,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
