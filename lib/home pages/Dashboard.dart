@@ -1,6 +1,7 @@
 import 'package:bfarm_mobileapp/home%20pages/deskripsibelumterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailbelumterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailterpetakan.dart';
+import 'package:bfarm_mobileapp/home%20pages/kalimantan.dart';
 import 'package:bfarm_mobileapp/profile/profile.dart' as profile;
 import 'package:bfarm_mobileapp/pembayaran/pembelian_alat.dart';
 import 'package:flutter/material.dart';
@@ -791,7 +792,12 @@ class _FilterPage1State extends State<FilterPage1> {
                 SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle apply action
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => kalimantan(),
+                      ),
+                    );
                   },
                   child: Text(
                     'Pakai',
