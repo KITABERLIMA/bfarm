@@ -1,3 +1,5 @@
+import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
+
 import 'pembelian_alat.dart';
 import 'package:flutter/material.dart';
 
@@ -89,7 +91,7 @@ class ProductHeader extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Beranda()),
+                  MaterialPageRoute(builder: (context) => Dashboard()),
                 );
               },
               child: Icon(
