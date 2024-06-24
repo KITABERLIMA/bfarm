@@ -1,6 +1,61 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
-class EditPassword extends StatelessWidget {
+void main() {
+  runApp(EditPasswordApp());
+}
+
+class EditPassword extends StatefulWidget {
+  @override
+  _EditPasswordState createState() => _EditPasswordState();
+}
+
+class _EditPasswordState extends State<EditPassword> {
+  String imageUrl = '';
+  String firstName = '';
+  String lastName = '';
+  String userType = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      // Handle case when token is not found
+      return;
+    }
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/users'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      if (responseData.containsKey('data')) {
+        var userAdditionalData = responseData['data']['user_additional_data'];
+        var userImage = responseData['data']['user_image'];
+        setState(() {
+          imageUrl = 'http://bfarm.ahmadyaz.my.id/storage/' +
+              (userImage['image'] ?? '');
+          firstName = userAdditionalData['first_name'] ?? '';
+          lastName = userAdditionalData['last_name'] ?? '';
+          userType = responseData['data']['user']['user_type'] ?? '';
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,17 +85,21 @@ class EditPassword extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    'api',
-                  ),
+                  backgroundImage: NetworkImage(imageUrl),
                   radius: 30.0,
+                  backgroundColor: Colors.white,
+                  onBackgroundImageError: (exception, stackTrace) {
+                    setState(() {
+                      imageUrl = '';
+                    });
+                  },
                 ),
                 SizedBox(width: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Jennie Aldebaran',
+                      '$firstName $lastName',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -51,7 +110,7 @@ class EditPassword extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      'Personal',
+                      userType,
                       style: TextStyle(
                         color: Color(0xFFD7D7D7),
                         fontSize: 16,
@@ -68,7 +127,7 @@ class EditPassword extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'Classic',
+                        'Classic', // Anda dapat mengganti teks ini sesuai dengan data yang sebenarnya
                         style: TextStyle(
                           color: Color(0xFF6EBF45),
                           fontSize: 12,
@@ -178,8 +237,4 @@ class EditPasswordApp extends StatelessWidget {
       home: EditPassword(),
     );
   }
-}
-
-void main() {
-  runApp(EditPasswordApp());
 }
