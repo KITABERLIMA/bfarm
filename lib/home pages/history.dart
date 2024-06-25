@@ -4,42 +4,79 @@ void main() {
   runApp(const riwayat());
 }
 
-class riwayat extends StatefulWidget {
+class riwayat extends StatelessWidget {
   const riwayat({super.key});
-
-  @override
-  _RiwayatState createState() => _RiwayatState();
-}
-
-class _RiwayatState extends State<riwayat> {
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Riwayat',
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: Colors.white,
       ),
-      debugShowCheckedModeBanner: false, // Menonaktifkan debug banner
-      home: Scaffold(
-        body: ListView(
-          padding: EdgeInsets.all(16),
+      debugShowCheckedModeBanner: false,
+      home: const RiwayatPage(),
+    );
+  }
+}
+
+class RiwayatPage extends StatefulWidget {
+  const RiwayatPage({super.key});
+
+  @override
+  _RiwayatPageState createState() => _RiwayatPageState();
+}
+
+class _RiwayatPageState extends State<RiwayatPage> {
+  void _onItemTapped(int index) {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
           children: [
-            ExampleWidget(),
-            SizedBox(height: 10),
-            FormulirPengisihanLahan(),
-            SizedBox(height: 15),
-            Frame65(),
-            SizedBox(height: 10),
-            Frame66(),
+            Image.asset(
+              'assets/images/logo.png', // Ganti dengan path logo Anda
+              height: 40,
+            ),
+            SizedBox(width: 10),
           ],
         ),
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ExampleWidget(),
+          SizedBox(height: 2),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Text(
+              'Riwayat Terbaru',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w800,
+                height: 1.5,
+              ),
+            ),
+          ),
+          SizedBox(height: 15),
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.all(16),
+              children: [
+                Frame65(),
+                SizedBox(height: 10),
+                Frame66(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -63,32 +100,6 @@ class ExampleWidget extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class FormulirPengisihanLahan extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            child: Text(
-              'Riwayat Terbaru',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w800,
-                height: 1.5,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

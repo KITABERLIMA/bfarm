@@ -1,3 +1,4 @@
+import 'package:bfarm_mobileapp/pembayaran/pembayaran.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -26,6 +27,19 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/logo.png', // Ganti dengan path logo Anda
+              height: 40,
+            ),
+            SizedBox(width: 10),
+          ],
+        ),
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
@@ -87,7 +101,7 @@ class PilihPaketLangganan extends StatelessWidget {
         'Pilih Paket Langganan',
         style: TextStyle(
           color: Color(0xFF6EBF45),
-          fontSize: 18,
+          fontSize: 25,
           fontFamily: 'Poppins',
           fontWeight: FontWeight.w700,
           letterSpacing: -0.45,
@@ -197,7 +211,14 @@ class SubscriptionPackage extends StatelessWidget {
                   width: double.infinity,
                   height: 36,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Pembayaran(),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF6EBF45),
                       foregroundColor: Colors.white,
