@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
-class KebijakanPrivasiScreen extends StatelessWidget {
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -8,17 +12,45 @@ class KebijakanPrivasiScreen extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: MyHomePage(),
+      home: HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => KebijakanPrivasiScreen()),
+            );
+          },
+          child: Text('Buka Kebijakan Privasi'),
+        ),
+      ),
+    );
+  }
+}
+
+class KebijakanPrivasiScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Kebijakan Privasi'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
@@ -147,8 +179,4 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(KebijakanPrivasiScreen());
 }
