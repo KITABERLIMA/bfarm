@@ -18,6 +18,17 @@ class _TentangApkState extends State<TentangApk> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
         body: LayoutBuilder(
           builder: (context, constraints) {
             return Stack(
@@ -51,9 +62,7 @@ class _TentangApkState extends State<TentangApk> {
                 ),
                 Positioned(
                   bottom: MediaQuery.of(context).size.height * 0.5 - 110,
-                  // Geser ke bawah sebanyak 20 piksel
-                  left: MediaQuery.of(context).size.width * 0.5 -
-                      75, // 75 adalah setengah dari lebar button lisensi
+                  left: MediaQuery.of(context).size.width * 0.5 - 75,
                   child: Container(
                     width: 150,
                     height: 40,
