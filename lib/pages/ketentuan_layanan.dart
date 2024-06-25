@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
 
-class KetentuanLayananScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'bFARM',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: MyHomePage(),
-    );
-  }
+void main() {
+  runApp(MaterialApp(
+    home: KetentuanLayananScreen(),
+  ));
 }
 
-class MyHomePage extends StatelessWidget {
+class KetentuanLayananScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,8 +33,9 @@ class MyHomePage extends StatelessWidget {
             title: RichText(
               text: TextSpan(
                 style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.black), // Change text color to black
+                  fontSize: 16.0,
+                  color: Colors.black, // Change text color to black
+                ),
                 children: [
                   TextSpan(
                     text: '1. Ketersediaan Layanan : ',
@@ -62,8 +56,9 @@ class MyHomePage extends StatelessWidget {
             title: RichText(
               text: TextSpan(
                 style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.black), // Change text color to black
+                  fontSize: 16.0,
+                  color: Colors.black, // Change text color to black
+                ),
                 children: [
                   TextSpan(
                     text: '2. Penggunaan Apliksi : ',
@@ -84,8 +79,9 @@ class MyHomePage extends StatelessWidget {
             title: RichText(
               text: TextSpan(
                 style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.black), // Change text color to black
+                  fontSize: 16.0,
+                  color: Colors.black, // Change text color to black
+                ),
                 children: [
                   TextSpan(
                     text: '3. Kebijakan Privasi : ',
@@ -106,8 +102,9 @@ class MyHomePage extends StatelessWidget {
             title: RichText(
               text: TextSpan(
                 style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.black), // Change text color to black
+                  fontSize: 16.0,
+                  color: Colors.black, // Change text color to black
+                ),
                 children: [
                   TextSpan(
                     text: '4. Ketentuan Tambahan : ',
@@ -128,8 +125,9 @@ class MyHomePage extends StatelessWidget {
             title: RichText(
               text: TextSpan(
                 style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.black), // Change text color to black
+                  fontSize: 16.0,
+                  color: Colors.black, // Change text color to black
+                ),
                 children: [
                   TextSpan(
                     text: '5. Perubahan Syarat dan Ketentuan : ',
@@ -147,8 +145,4 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(KetentuanLayananScreen());
 }
