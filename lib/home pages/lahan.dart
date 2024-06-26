@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'formulir_lahan.dart'; // Ensure this is correctly imported
+import 'formulir_lahan.dart'; // Pastikan ini diimpor dengan benar
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LahanPage extends StatefulWidget {
@@ -24,12 +24,12 @@ class _LahanPageState extends State<LahanPage> {
     String? token = prefs.getString('token');
 
     if (token == null) {
-      // Handle token absence (e.g., redirect to login)
+      // Tangani ketidakadaan token (misalnya, arahkan ke login)
       return;
     }
 
     final response = await http.get(
-      Uri.parse('http://bfarm.ahmadyaz.my.id/api/lands'),
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/user-land'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -38,7 +38,7 @@ class _LahanPageState extends State<LahanPage> {
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
 
-      // Print the full response data for debugging
+      // Cetak data respons lengkap untuk debugging
       print('Response Data: $responseData');
 
       if (responseData is Map<String, dynamic> &&
@@ -48,21 +48,21 @@ class _LahanPageState extends State<LahanPage> {
           _isLoading = false;
         });
       } else {
-        // Handle unexpected response structure
+        // Tangani struktur respons yang tidak diharapkan
         setState(() {
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Unexpected response structure')),
+          SnackBar(content: Text('Struktur respons tidak terduga')),
         );
       }
     } else {
       setState(() {
         _isLoading = false;
       });
-      // Handle API error
+      // Tangani kesalahan API
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to fetch land data')),
+        SnackBar(content: Text('Gagal mendapatkan data lahan')),
       );
     }
   }
@@ -97,9 +97,13 @@ class _LahanPageState extends State<LahanPage> {
                   itemCount: _landData.length,
                   itemBuilder: (context, index) {
                     var land = _landData[index];
-                    String? imageUrl = land['image_url'];
+                    String? imageUrl = land['land_images'] != null &&
+                            land['land_images'].isNotEmpty
+                        ? 'http://bfarm.ahmadyaz.my.id/storage/' +
+                            land['land_images'][0]['image']
+                        : null;
 
-                    // Print the image URL for debugging
+                    // Cetak URL gambar untuk debugging
                     print('Image URL: $imageUrl');
 
                     return Card(
@@ -118,19 +122,19 @@ class _LahanPageState extends State<LahanPage> {
                                 errorBuilder: (context, error, stackTrace) {
                                   print('Error loading image: $error');
                                   return Text(
-                                    'Failed to load image',
+                                    'Gagal memuat gambar',
                                     style: TextStyle(color: Colors.red),
                                   );
                                 },
                               )
                             else
                               Text(
-                                'No Image Available',
+                                'Gambar tidak tersedia',
                                 style: TextStyle(color: Colors.grey),
                               ),
                             SizedBox(height: 10),
                             Text(
-                              land['land_description'] ?? 'No Description',
+                              land['land_description'] ?? 'Tidak ada deskripsi',
                               style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
@@ -138,7 +142,7 @@ class _LahanPageState extends State<LahanPage> {
                             ),
                             SizedBox(height: 10),
                             Text(
-                              'Location: ${land['location']}',
+                              'Lokasi: ${land['location']}',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 color: Colors.grey[600],
@@ -146,7 +150,7 @@ class _LahanPageState extends State<LahanPage> {
                             ),
                             SizedBox(height: 5),
                             Text(
-                              'Area: ${land['land_area']} m2',
+                              'Luas: ${land['land_area']} m2',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 color: Colors.grey[600],
