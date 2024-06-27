@@ -1,10 +1,9 @@
 import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
+import 'package:bfarm_mobileapp/pembayaran/Detailpesanan.dart';
+import 'package:bfarm_mobileapp/pembayaran/Produk.dart';
+import 'package:bfarm_mobileapp/pembayaran/cart_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'Produk.dart';
-import 'cart_item.dart';
-import 'detailpesanan.dart';
 
 void main() {
   runApp(
@@ -37,36 +36,27 @@ class _BerandaState extends State<Beranda> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        alignment: Alignment.topLeft,
+      body: ListView(
         children: [
-          ListView(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.6,
-                child: BFarm(),
-              ),
-              Rectangle6(
-                counter: _counter,
-                onCounterChanged: (value) {
-                  setState(() {
-                    _counter = value;
-                  });
-                },
-              ),
-              SizedBox(height: 8),
-              Tabbing(),
-              SizedBox(height: 15),
-              Dekripsi(),
-              SizedBox(height: 8),
-              Recommended(),
-              ButtonAddToCart(counter: _counter),
-            ],
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: BFarm(),
           ),
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: IconBack(),
+          Rectangle6(
+            counter: _counter,
+            onCounterChanged: (value) {
+              setState(() {
+                _counter = value;
+              });
+            },
           ),
+          SizedBox(height: 8),
+          Tabbing(),
+          SizedBox(height: 15),
+          Dekripsi(),
+          SizedBox(height: 8),
+          Recommended(),
+          ButtonAddToCart(counter: _counter),
         ],
       ),
     );
@@ -107,6 +97,21 @@ class _BFarmState extends State<BFarm> {
                   buildSlide('assets/images/alat.png'),
                   buildSlide('assets/images/alat.png'),
                 ],
+              ),
+              Positioned(
+                left: 16, // Posisi kiri
+                top: 16, // Posisi atas
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Dashboard(),
+                      ),
+                    );
+                  },
+                ),
               ),
               Positioned(
                 left: 0,
@@ -152,38 +157,6 @@ class _BFarmState extends State<BFarm> {
         fit: BoxFit.cover,
         height: imageHeight,
         width: imageWidth,
-      ),
-    );
-  }
-}
-
-class IconBack extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: 0,
-      top: 0,
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => BFarmHomePage()),
-          );
-        },
-        child: Container(
-          width: 36.59,
-          height: 32,
-          decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Center(
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -518,25 +491,16 @@ class RecommendedItem extends StatelessWidget {
 }
 
 class ButtonAddToCart extends StatelessWidget {
-  final int
-      counter; // Tambahkan parameter untuk menyimpan nilai jumlah item yang dipilih
+  final int counter;
 
   const ButtonAddToCart({Key? key, required this.counter}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var cartItem = 'Apple';
-    print('You have added $cartItem to your cart.');
-
     return GestureDetector(
-      onTap: counter >
-              0 // Ubah kondisi untuk mengaktifkan tombol hanya ketika jumlah item lebih besar dari 0
+      onTap: counter > 0
           ? () {
-              // Simpan jumlah item yang dipilih saat tombol diklik
-              int selectedItems =
-                  counter; // Ubah agar menyimpan nilai dari parameter counter
-
-              // Navigasi ke halaman DetailPesanan dan kirimkan parameter selectedItems
+              int selectedItems = counter;
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -556,9 +520,7 @@ class ButtonAddToCart extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
-                  color: counter > 0
-                      ? Color(0xFF6EBF45)
-                      : Colors.grey, // Ubah kondisi untuk warna tombol
+                  color: counter > 0 ? Color(0xFF6EBF45) : Colors.grey,
                   borderRadius: BorderRadius.circular(0),
                 ),
                 child: Center(

@@ -1,6 +1,5 @@
-import 'package:bfarm_mobileapp/pembayaran/pembelian_alat.dart';
+import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
 import 'package:flutter/material.dart';
-import 'total_tagihan.dart';
 
 class PembayaranBerhasil extends StatelessWidget {
   const PembayaranBerhasil({Key? key}) : super(key: key);
@@ -54,7 +53,7 @@ class PembayaranBerhasil extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Beranda()),
+                      MaterialPageRoute(builder: (context) => Dashboard()),
                     );
                   },
                   style: ElevatedButton.styleFrom(

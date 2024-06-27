@@ -1,4 +1,3 @@
-import 'package:bfarm_mobileapp/home%20pages/deskripsibelumterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailbelumterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/kalimantan.dart';
