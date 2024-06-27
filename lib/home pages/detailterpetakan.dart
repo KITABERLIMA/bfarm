@@ -5,6 +5,9 @@ import 'package:bfarm_mobileapp/home%20pages/lahan.dart' as lahan;
 import 'package:bfarm_mobileapp/home%20pages/langganan.dart' as langganan;
 import 'package:bfarm_mobileapp/home%20pages/history.dart' as history;
 import 'package:bfarm_mobileapp/profile/profile.dart' as profile;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(detailterpetakan());
@@ -143,27 +146,66 @@ class BerandaPage extends StatelessWidget {
 }
 
 class Recommended1 extends StatelessWidget {
+  Future<List<dynamic>> fetchLands() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/lands'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      print('Data fetched successfully: $data');
+      return data['data'];
+    } else {
+      print('Failed to load lands. Status code: ${response.statusCode}');
+      throw Exception('Failed to load lands');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 600,
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: ScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
-            child: Center(
-              child: RecommendedItem1(
-                imageUrl: 'assets/images/tanah.png',
-                location: '42 966 Ha, Kalimantan',
-                name: 'Supardi',
-                tgl: 'Terpetakan 12/02/2024',
-              ),
-            ),
-          );
+      child: FutureBuilder<List<dynamic>>(
+        future: fetchLands(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            print('Error: ${snapshot.error}');
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            print('No data found');
+            return Center(child: Text('No data found'));
+          } else {
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final land = snapshot.data![index];
+                final imageUrl = 'http://bfarm.ahmadyaz.my.id/storage/' +
+                    (land['land_images'].isNotEmpty
+                        ? land['land_images'][0]['image']
+                        : 'default.png');
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: RecommendedItem1(
+                    imageUrl: imageUrl,
+                    location:
+                        '${land['land_area']} Ha, ${land['address']['city_district']}',
+                    name:
+                        '${land['address']['city_district']}, ${land['address']['province']}',
+                    tgl: 'Terpetakan ${land['created_at'].substring(0, 10)}',
+                  ),
+                );
+              },
+            );
+          }
         },
       ),
     );
@@ -196,7 +238,7 @@ class RecommendedItem1 extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
+                  child: Image.network(
                     imageUrl,
                     height: 180,
                     width: double.infinity,

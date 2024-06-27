@@ -10,6 +10,9 @@ import 'deskripsi.dart';
 import 'package:bfarm_mobileapp/home%20pages/lahan.dart' as lahan;
 import 'package:bfarm_mobileapp/home%20pages/langganan.dart' as langganan;
 import 'package:bfarm_mobileapp/home%20pages/history.dart' as history;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(Dashboard());
@@ -55,7 +58,7 @@ class _BFarmHomePageState extends State<BFarmHomePage> {
                 children: [
                   Row(
                     children: [
-                      Image.asset('assets/images/logo.png', height: 40),
+                      Image.asset('assets/images/logobaru.png', height: 100),
                       SizedBox(width: 10),
                     ],
                   ),
@@ -210,8 +213,6 @@ class BerandaPage extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        // Implementasi aksi untuk tombol "Lihat Semua"
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -312,26 +313,71 @@ class BerandaPage extends StatelessWidget {
 }
 
 class Recommended extends StatelessWidget {
+  Future<List<dynamic>> fetchLands() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/lands'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      print('Data fetched successfully: $data');
+      return data['data'];
+    } else {
+      print('Failed to load lands. Status code: ${response.statusCode}');
+      throw Exception('Failed to load lands');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300, // Sesuaikan ketinggian dengan konten yang sesuai
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 10, // Ganti dengan jumlah item yang ingin ditampilkan
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: SizedBox(
-              width: 250, // Sesuaikan lebar item dengan kebutuhan Anda
-              child: RecommendedItem(
-                imageUrl: 'assets/images/tanah.png',
-                location: '42 966 Ha, Kalimantan',
-                name: 'Supardi',
-                tgl: 'Terpetakan 12/02/2024',
-              ),
-            ),
-          );
+      height: 300,
+      child: FutureBuilder<List<dynamic>>(
+        future: fetchLands(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            print('Error: ${snapshot.error}');
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            print('No data found');
+            return Center(child: Text('No data found'));
+          } else {
+            // Batasi data yang ditampilkan menjadi 5 item
+            final List<dynamic> limitedData = snapshot.data!.take(5).toList();
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: limitedData.length,
+              itemBuilder: (context, index) {
+                final land = limitedData[index];
+                final imageUrl = 'http://bfarm.ahmadyaz.my.id/storage/' +
+                    (land['land_images'].isNotEmpty
+                        ? land['land_images'][0]['image']
+                        : 'default.png');
+                return Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: SizedBox(
+                    width: 250,
+                    child: RecommendedItem(
+                      imageUrl: imageUrl,
+                      location:
+                          '${land['land_area']} Ha, ${land['address']['city_district']}',
+                      name:
+                          '${land['address']['city_district']}, ${land['address']['province']}',
+                      tgl: 'Terpetakan ${land['created_at'].substring(0, 10)}',
+                    ),
+                  ),
+                );
+              },
+            );
+          }
         },
       ),
     );
@@ -354,36 +400,39 @@ class RecommendedItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0), // Tambahkan padding
+      padding: const EdgeInsets.all(8.0),
       child: Container(
         width: 120,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey), // Menambahkan border
+          border: Border.all(color: Colors.grey),
           boxShadow: [
             BoxShadow(
               color: Color(0x19202020),
               blurRadius: 50,
               offset: Offset(0, 4),
               spreadRadius: -5,
-            )
+            ),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 250, // Sesuaikan lebar dengan kotak
-              height: 120, // Sempitkan tinggi gambar
-              child: Image.asset(
-                imageUrl,
-                fit: BoxFit.cover, // Menyesuaikan gambar dengan ukuran kotak
+            ClipRRect(
+              borderRadius:
+                  BorderRadius.circular(2.0), // Border radius 2px untuk gambar
+              child: Container(
+                width: 250,
+                height: 120,
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(
-                  8.0), // Tambahkan padding dalam container
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -391,7 +440,6 @@ class RecommendedItem extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // Navigasi ke deskripsi lahan terpetakan
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -404,11 +452,9 @@ class RecommendedItem extends StatelessWidget {
                           style: TextStyle(color: Colors.white),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Colors.green, // Warna latar belakang hijau
+                          backgroundColor: Colors.green,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                5), // Set radius menjadi 5
+                            borderRadius: BorderRadius.circular(5),
                           ),
                         ),
                       ),
@@ -419,7 +465,7 @@ class RecommendedItem extends StatelessWidget {
                     location,
                     style: TextStyle(
                       color: Color(0xFF121212),
-                      fontSize: 14,
+                      fontSize: 12,
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.07,
@@ -430,7 +476,7 @@ class RecommendedItem extends StatelessWidget {
                     name,
                     style: TextStyle(
                       color: Color(0xFF121212),
-                      fontSize: 14,
+                      fontSize: 12,
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.07,
@@ -458,25 +504,71 @@ class RecommendedItem extends StatelessWidget {
 }
 
 class Recommended1 extends StatelessWidget {
+  Future<List<dynamic>> fetchLands() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/land/unmapped'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      print('Data fetched successfully: $data');
+      return data['data'];
+    } else {
+      print('Failed to load lands. Status code: ${response.statusCode}');
+      throw Exception('Failed to load lands');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300, // Sesuaikan ketinggian dengan konten yang sesuai
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 10, // Ganti dengan jumlah item yang ingin ditampilkan
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: SizedBox(
-              width: 250, // Sesuaikan lebar item dengan kebutuhan Anda
-              child: RecommendedItem1(
-                imageUrl: 'assets/images/tanah.png',
-                location: '42 966 Ha, Kalimantan',
-                name: 'Supardi',
-              ),
-            ),
-          );
+      height: 300,
+      child: FutureBuilder<List<dynamic>>(
+        future: fetchLands(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            print('Error: ${snapshot.error}');
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            print('No data found');
+            return Center(child: Text('No data found'));
+          } else {
+            // Batasi data yang ditampilkan menjadi 5 item
+            final List<dynamic> limitedData = snapshot.data!.take(5).toList();
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: limitedData.length,
+              itemBuilder: (context, index) {
+                final land = limitedData[index];
+                final imageUrl = 'http://bfarm.ahmadyaz.my.id/storage/' +
+                    (land['land_images'].isNotEmpty
+                        ? land['land_images'][0]['image']
+                        : 'default.png');
+                return Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: SizedBox(
+                    width: 250,
+                    child: RecommendedItem1(
+                      imageUrl: imageUrl,
+                      location:
+                          '${land['land_area']} Ha, ${land['address']['city_district']}',
+                      name:
+                          '${land['address']['city_district']}, ${land['address']['province']}',
+                      tgl: 'Terpetakan ${land['created_at'].substring(0, 10)}',
+                    ),
+                  ),
+                );
+              },
+            );
+          }
         },
       ),
     );
@@ -487,11 +579,13 @@ class RecommendedItem1 extends StatelessWidget {
   final String imageUrl;
   final String location;
   final String name;
+  final String tgl;
 
   RecommendedItem1({
     required this.imageUrl,
     required this.location,
     required this.name,
+    required this.tgl,
   });
 
   @override
@@ -546,8 +640,8 @@ class RecommendedItem1 extends StatelessWidget {
                           style: TextStyle(color: Colors.white),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(
-                              255, 219, 8, 8), // Warna latar belakang hijau
+                          backgroundColor:
+                              Colors.red, // Warna latar belakang merah
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
                                 5), // Set radius menjadi 5
@@ -579,6 +673,16 @@ class RecommendedItem1 extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 8),
+                  Text(
+                    tgl,
+                    style: TextStyle(
+                      color: Color(0xFFAAAAAA),
+                      fontSize: 12,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 0.06,
+                    ),
+                  ),
                 ],
               ),
             ),

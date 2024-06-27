@@ -84,7 +84,7 @@ class _ProfileState extends State<Profile> {
     }
 
     final response = await http.get(
-      Uri.parse('http://bfarm.ahmadyaz.my.id/api/logout'),
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/users/logout'),
       headers: {
         'Authorization': 'Bearer $token',
       },

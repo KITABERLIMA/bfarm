@@ -3,7 +3,7 @@ import 'package:bfarm_mobileapp/home%20pages/detailterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/profile.dart' as profile;
 import 'package:bfarm_mobileapp/pembayaran/pembelian_alat.dart';
 import 'package:flutter/material.dart';
-import 'deskripsi.dart';
+//import 'deskripsi.dart';
 import 'package:bfarm_mobileapp/home%20pages/lahan.dart' as lahan;
 import 'package:bfarm_mobileapp/home%20pages/langganan.dart' as langganan;
 import 'package:bfarm_mobileapp/home%20pages/history.dart' as history;
@@ -386,13 +386,7 @@ class RecommendedItem extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // Navigasi ke deskripsi lahan terpetakan
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Deskripsi(),
-                            ),
-                          );
+                          // Implementasi aksi untuk tombol "Terpetakan"
                         },
                         child: Text(
                           'Terpetakan',
