@@ -1,5 +1,5 @@
-import 'package:bfarm_mobileapp/pembayaran/pembayaran.dart';
 import 'package:flutter/material.dart';
+import 'PembayaranLangganan.dart'; // Import the PembayaranLangganan page
 
 void main() {
   runApp(const Langganan());
@@ -11,7 +11,7 @@ class Langganan extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // Hilangkan banner debug
+      debugShowCheckedModeBanner: false, // Remove debug banner
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
       ),
@@ -27,19 +27,6 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/images/logo.png', // Ganti dengan path logo Anda
-              height: 40,
-            ),
-            SizedBox(width: 10),
-          ],
-        ),
-      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
@@ -95,13 +82,13 @@ class PilihPaketLangganan extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.fromLTRB(16, 16, 16, 0), // Atur padding atas di sini
+      padding: EdgeInsets.fromLTRB(16, 16, 16, 0), // Adjust top padding here
       alignment: Alignment.topCenter,
       child: Text(
         'Pilih Paket Langganan',
         style: TextStyle(
           color: Color(0xFF6EBF45),
-          fontSize: 25,
+          fontSize: 18,
           fontFamily: 'Poppins',
           fontWeight: FontWeight.w700,
           letterSpacing: -0.45,
@@ -130,7 +117,7 @@ class SubscriptionPackage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 250, // Lebar tetap untuk setiap kartu
+      width: 250, // Fixed width for each card
       margin: EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -215,7 +202,7 @@ class SubscriptionPackage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Pembayaran(),
+                          builder: (context) => PembayaranLangganan(),
                         ),
                       );
                     },
