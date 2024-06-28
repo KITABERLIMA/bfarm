@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'Dashboard.dart'; // Sesuaikan dengan path yang sesuai
 import 'Deskripsi.dart'; // Pastikan path menuju file Deskripsi benar
+import 'package:bfarm_mobileapp/home%20pages/lahan.dart' as lahan;
+import 'package:bfarm_mobileapp/home%20pages/langganan.dart' as langganan;
+import 'package:bfarm_mobileapp/home%20pages/history.dart' as history;
+import 'package:bfarm_mobileapp/profile/profile.dart' as profile;
 
 void main() {
   runApp(kalimantan());
@@ -30,10 +34,10 @@ class _BFarmHomePageState extends State<BFarmHomePage> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     BerandaPage(),
-    LahanPage(),
-    Riwayat(),
-    Langganan(),
-    Profile(),
+    lahan.LahanPage(),
+    history.riwayat(),
+    langganan.Langganan(),
+    profile.Profile()
   ];
 
   @override
@@ -48,7 +52,7 @@ class _BFarmHomePageState extends State<BFarmHomePage> {
                   Text(
                     'Kalimantan',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       color: Colors.white,
                     ),
                   ),

@@ -1,15 +1,15 @@
-import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
-
-import 'pembelian_alat.dart';
 import 'package:flutter/material.dart';
+import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
+import 'package:bfarm_mobileapp/home%20pages/lahan.dart' as lahan;
+import 'package:bfarm_mobileapp/home%20pages/langganan.dart' as langganan;
+import 'package:bfarm_mobileapp/home%20pages/history.dart' as history;
+import 'package:bfarm_mobileapp/profile/profile.dart' as profile;
 
 void main() {
-  runApp(const Produk());
+  runApp(Produk());
 }
 
 class Produk extends StatefulWidget {
-  const Produk({Key? key}) : super(key: key);
-
   @override
   _ProdukState createState() => _ProdukState();
 }
@@ -17,20 +17,27 @@ class Produk extends StatefulWidget {
 class _ProdukState extends State<Produk> {
   int _selectedIndex = 0;
 
+  static final List<Widget> _widgetOptions = <Widget>[
+    BerandaPage(),
+    lahan.LahanPage(),
+    history.riwayat(),
+    langganan.Langganan(),
+    profile.Profile()
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: SingleChildScrollView(
-          // Mengganti ListView dengan SingleChildScrollView
-          child: Column(
-            children: [
-              ProductHeader(),
-              SizedBox(height: 32),
-              KontenProduk(),
-              KontenProduk1()
-            ],
-          ),
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _widgetOptions,
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
@@ -68,21 +75,14 @@ class _ProdukState extends State<Produk> {
       ),
     );
   }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 }
 
 class ProductHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: 16), // Menambahkan padding horizontal
-      color: Color(0xFF6EBF45), // Warna latar belakang hijau
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      color: Color(0xFF6EBF45),
       child: Padding(
         padding: const EdgeInsets.only(top: 16, bottom: 16),
         child: Row(
@@ -122,11 +122,8 @@ class KontenProduk1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context)
-          .size
-          .width, // Menggunakan lebar layar secara responsif
-      padding: EdgeInsets.symmetric(
-          horizontal: 16), // Menambahkan padding horizontal
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -194,17 +191,12 @@ class KontenProduk1 extends StatelessWidget {
                 ],
               ),
               Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: 0,
-                    vertical:
-                        16), // Jarak antara pemisah dengan konten sekitarnya
+                margin: EdgeInsets.symmetric(horizontal: 0, vertical: 16),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                      5), // Melengkungkan kedua sisi pemisah
-                  color:
-                      Color(0xFFE0E0E0), // Warna pemisah abu-abu (Hexadecimal)
+                  borderRadius: BorderRadius.circular(5),
+                  color: Color(0xFFE0E0E0),
                 ),
-                height: 1, // Tinggi pemisah
+                height: 1,
               ),
             ],
           ),
@@ -218,11 +210,8 @@ class KontenProduk extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context)
-          .size
-          .width, // Menggunakan lebar layar secara responsif
-      padding: EdgeInsets.symmetric(
-          horizontal: 16), // Menambahkan padding horizontal
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -270,7 +259,8 @@ class KontenProduk extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Beranda()),
+                          MaterialPageRoute(
+                              builder: (context) => BerandaPage()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -293,20 +283,39 @@ class KontenProduk extends StatelessWidget {
                 ],
               ),
               Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: 0,
-                    vertical:
-                        16), // Jarak antara pemisah dengan konten sekitarnya
+                margin: EdgeInsets.symmetric(horizontal: 0, vertical: 16),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                      5), // Melengkungkan kedua sisi pemisah
-                  color:
-                      Color(0xFFE0E0E0), // Warna pemisah abu-abu (Hexadecimal)
+                  borderRadius: BorderRadius.circular(5),
+                  color: Color(0xFFE0E0E0),
                 ),
-                height: 1, // Tinggi pemisah
+                height: 1,
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class BerandaPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        title: Text(
+          'Produk Bfarm',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      body: ListView(
+        padding: EdgeInsets.all(16),
+        children: [
+          SizedBox(height: 16),
+          KontenProduk(),
+          KontenProduk1(),
+          // Tambahkan widget KontenProduk lainnya jika diperlukan
         ],
       ),
     );
