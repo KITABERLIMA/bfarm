@@ -6,15 +6,20 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'pengajuan.dart';
 
 void main() {
   runApp(Deskripsi());
 }
 
-class Deskripsi extends StatelessWidget {
+class Deskripsi extends StatefulWidget {
+  @override
+  _DeskripsiState createState() => _DeskripsiState();
+}
+
+class _DeskripsiState extends State<Deskripsi> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -85,7 +90,120 @@ class Deskripsi extends StatelessWidget {
   }
 }
 
-class PropertyListing extends StatelessWidget {
+class PropertyListing extends StatefulWidget {
+  @override
+  _PropertyListingState createState() => _PropertyListingState();
+}
+
+class _PropertyListingState extends State<PropertyListing> {
+  String imageUrl = '';
+  String firstName = '';
+  String lastName = '';
+  String email = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      setState(() {
+        email = 'Token not found';
+      });
+      return;
+    }
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/users'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      if (responseData.containsKey('data')) {
+        var userData = responseData['data']['user'];
+        var userAdditionalData = responseData['data']['user_additional_data'];
+        var userImage = responseData['data']['user_image'];
+        setState(() {
+          imageUrl = 'http://bfarm.ahmadyaz.my.id/storage/' +
+              (userImage['image'] ?? '');
+          firstName = userAdditionalData['first_name'] ?? '';
+          lastName = userAdditionalData['last_name'] ?? '';
+          email = userData['email'] ?? '';
+        });
+      } else {
+        setState(() {
+          email = 'Data not found';
+        });
+      }
+    } else {
+      setState(() {
+        email = 'Failed to load data';
+      });
+    }
+  }
+
+  void showLargeImage(String url) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.7,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.contain,
+                  image: NetworkImage(url),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildProfileImage() {
+    if (imageUrl.isNotEmpty) {
+      return GestureDetector(
+        onTap: () {
+          showLargeImage(imageUrl);
+        },
+        child: CircleAvatar(
+          radius: 30.0,
+          backgroundImage: NetworkImage(imageUrl),
+          onBackgroundImageError: (exception, stackTrace) {
+            setState(() {
+              imageUrl = '';
+            });
+          },
+        ),
+      );
+    } else {
+      return CircleAvatar(
+        radius: 30.0,
+        backgroundColor: Colors.white,
+        child: Icon(
+          Icons.person,
+          color: Color(0xFF6EBF45),
+          size: 40,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -165,9 +283,9 @@ class PropertyListing extends StatelessWidget {
               ),
               Divider(),
               ListTile(
-                leading: Icon(Icons.account_circle), // Ikon profil
+                leading: buildProfileImage(),
                 title: Text('Pemilik Lahan'),
-                subtitle: Text('Supardi\nsupardimalang@gmail.com'),
+                subtitle: Text('$firstName $lastName\n$email'),
               ),
               Divider(),
               Text(
@@ -233,25 +351,26 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _initialCenter == null
-        ? Center(child: CircularProgressIndicator())
-        : FlutterMap(
-            options: MapOptions(),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.example.app',
-              ),
-              RichAttributionWidget(
-                attributions: [
-                  TextSourceAttribution(
-                    'OpenStreetMap contributors',
-                    onTap: () => launchUrl(
-                        Uri.parse('https://openstreetmap.org/copyright')),
-                  ),
-                ],
-              ),
-            ],
-          );
+    return FlutterMap(
+      options: MapOptions(
+        initialCenter: LatLng(-7.9345428, 112.3087175),
+        initialZoom: 9.2,
+      ),
+      children: [
+        TileLayer(
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.example.app',
+        ),
+        RichAttributionWidget(
+          attributions: [
+            TextSourceAttribution(
+              'OpenStreetMap contributors',
+              onTap: () =>
+                  launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
