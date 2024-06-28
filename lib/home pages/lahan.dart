@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'formulir_lahan.dart'; // Pastikan ini diimpor dengan benar
 import 'package:shared_preferences/shared_preferences.dart';
+import '/../edit/edit_lahan.dart';
 
 class LahanPage extends StatefulWidget {
   @override
@@ -239,8 +240,12 @@ class _LahanPageState extends State<LahanPage> {
                                   icon: Icon(Icons.more_vert),
                                   onSelected: (value) {
                                     if (value == 'edit') {
-                                      // Implement the edit functionality here
-                                      print('Edit selected for ${land['land_description']}');
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditLahanPage(),
+                                        ),
+                                      );
                                     } else if (value == 'delete') {
                                       _confirmDelete(land['id'].toString(), land['land_description']);
                                     }
