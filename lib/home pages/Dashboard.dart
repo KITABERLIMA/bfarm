@@ -322,9 +322,14 @@ class Recommended extends StatelessWidget {
         'Authorization': 'Bearer $token',
       },
     );
-
+    final jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(
+          'id',
+          int.tryParse(jsonData['id'] ?? '') ??
+              0); // Convert to int and store in SharedPreferences
       print('Data fetched successfully: $data');
       return data['data'];
     } else {
@@ -513,9 +518,14 @@ class Recommended1 extends StatelessWidget {
         'Authorization': 'Bearer $token',
       },
     );
-
+    final jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(
+          'id',
+          int.tryParse(jsonData['id'] ?? '') ??
+              0); // Convert to int and store in SharedPreferences
       print('Data fetched successfully: $data');
       return data['data'];
     } else {
