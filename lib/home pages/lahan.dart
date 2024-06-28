@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'formulir_lahan.dart'; // Pastikan ini diimpor dengan benar
 import 'package:shared_preferences/shared_preferences.dart';
 import '/../edit/edit_lahan.dart';
+import 'deskripsi.dart'; // Pastikan ini diimpor dengan benar
 
 class LahanPage extends StatefulWidget {
   @override
@@ -166,102 +167,112 @@ class _LahanPageState extends State<LahanPage> {
                     // Cetak URL gambar untuk debugging
                     print('Image URL: $imageUrl');
 
-                    return Card(
-                      color: Colors.white,
-                      elevation: 5,
-                      margin: EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Stack(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (imageUrl != null && imageUrl.isNotEmpty)
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.network(
-                                      imageUrl,
-                                      height: 200,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        print('Error loading image: $error');
-                                        return Text(
-                                          'Gagal memuat gambar',
-                                          style: TextStyle(color: Colors.red),
-                                        );
-                                      },
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Deskripsi(),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 5,
+                        margin: EdgeInsets.all(10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Stack(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (imageUrl != null && imageUrl.isNotEmpty)
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.network(
+                                        imageUrl,
+                                        height: 200,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          print('Error loading image: $error');
+                                          return Text(
+                                            'Gagal memuat gambar',
+                                            style: TextStyle(color: Colors.red),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  else
+                                    Text(
+                                      'Gambar tidak tersedia',
+                                      style: TextStyle(color: Colors.grey),
                                     ),
-                                  )
-                                else
+                                  SizedBox(height: 10),
                                   Text(
-                                    'Gambar tidak tersedia',
-                                    style: TextStyle(color: Colors.grey),
+                                    land['land_description'] ?? 'Tidak ada deskripsi',
+                                    style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                SizedBox(height: 10),
-                                Text(
-                                  land['land_description'] ?? 'Tidak ada deskripsi',
-                                  style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
+                                  SizedBox(height: 10),
+                                  Text(
+                                    'Lokasi: ${land['location']}',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.grey[600],
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'Lokasi: ${land['location']}',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.grey[600],
+                                  SizedBox(height: 5),
+                                  Text(
+                                    'Luas: ${land['land_area']} m2',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.grey[600],
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  'Luas: ${land['land_area']} m2',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.grey[600],
+                                ],
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.7),
+                                    shape: BoxShape.circle,
                                   ),
-                                ),
-                              ],
-                            ),
-                            Positioned(
-                              top: 0,
-                              right: 0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.7),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: PopupMenuButton<String>(
-                                  icon: Icon(Icons.more_vert),
-                                  onSelected: (value) {
-                                    if (value == 'edit') {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => EditLahanPage(),
-                                        ),
-                                      );
-                                    } else if (value == 'delete') {
-                                      _confirmDelete(land['id'].toString(), land['land_description']);
-                                    }
-                                  },
-                                  itemBuilder: (BuildContext context) {
-                                    return {'Edit', 'Delete'}.map((String choice) {
-                                      return PopupMenuItem<String>(
-                                        value: choice.toLowerCase(),
-                                        child: Text(choice),
-                                      );
-                                    }).toList();
-                                  },
+                                  child: PopupMenuButton<String>(
+                                    icon: Icon(Icons.more_vert),
+                                    onSelected: (value) {
+                                      if (value == 'edit') {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => EditLahanPage(),
+                                          ),
+                                        );
+                                      } else if (value == 'delete') {
+                                        _confirmDelete(land['id'].toString(), land['land_description']);
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return {'Edit', 'Delete'}.map((String choice) {
+                                        return PopupMenuItem<String>(
+                                          value: choice.toLowerCase(),
+                                          child: Text(choice),
+                                        );
+                                      }).toList();
+                                    },
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
