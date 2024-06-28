@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
 import 'package:bfarm_mobileapp/home%20pages/lahan.dart' as lahan;
 import 'package:bfarm_mobileapp/home%20pages/langganan.dart' as langganan;
 import 'package:bfarm_mobileapp/home%20pages/history.dart' as history;
@@ -71,47 +70,6 @@ class _ProdukState extends State<Produk> {
           backgroundColor: Colors.white,
           type: BottomNavigationBarType.fixed,
           showUnselectedLabels: true,
-        ),
-      ),
-    );
-  }
-}
-
-class ProductHeader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      color: Color(0xFF6EBF45),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 16, bottom: 16),
-        child: Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Dashboard()),
-                );
-              },
-              child: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-            SizedBox(width: 16),
-            Text(
-              'Produk',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.none,
-              ),
-            ),
-          ],
         ),
       ),
     );
