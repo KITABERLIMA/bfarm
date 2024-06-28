@@ -55,7 +55,7 @@ class _BFarmHomePageState extends State<BFarmHomePage> {
                   Text(
                     'Daftar Lahan Terpetakan',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 18,
                       color: Colors.white,
                     ),
                   ),

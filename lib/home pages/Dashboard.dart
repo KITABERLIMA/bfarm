@@ -1,4 +1,3 @@
-import 'package:bfarm_mobileapp/home%20pages/deskripsibelumterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailbelumterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/kalimantan.dart';
@@ -509,7 +508,7 @@ class Recommended1 extends StatelessWidget {
     String? token = prefs.getString('token');
 
     final response = await http.get(
-      Uri.parse('http://bfarm.ahmadyaz.my.id/api/land/unmapped'),
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/lands'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -562,7 +561,7 @@ class Recommended1 extends StatelessWidget {
                           '${land['land_area']} Ha, ${land['address']['city_district']}',
                       name:
                           '${land['address']['city_district']}, ${land['address']['province']}',
-                      tgl: 'Terpetakan ${land['created_at'].substring(0, 10)}',
+                      tgl: ' ${land['created_at'].substring(0, 10)}',
                     ),
                   ),
                 );
@@ -591,36 +590,39 @@ class RecommendedItem1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0), // Tambahkan padding
+      padding: const EdgeInsets.all(8.0),
       child: Container(
         width: 120,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey), // Menambahkan border
+          border: Border.all(color: Colors.grey),
           boxShadow: [
             BoxShadow(
               color: Color(0x19202020),
               blurRadius: 50,
               offset: Offset(0, 4),
               spreadRadius: -5,
-            )
+            ),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 250, // Sesuaikan lebar dengan kotak
-              height: 120, // Sempitkan tinggi gambar
-              child: Image.asset(
-                imageUrl,
-                fit: BoxFit.cover, // Menyesuaikan gambar dengan ukuran kotak
+            ClipRRect(
+              borderRadius:
+                  BorderRadius.circular(2.0), // Border radius 2px untuk gambar
+              child: Container(
+                width: 250,
+                height: 120,
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(
-                  8.0), // Tambahkan padding dalam container
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -631,7 +633,7 @@ class RecommendedItem1 extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Deskripsibelumterpetakan(),
+                              builder: (context) => Deskripsi(),
                             ),
                           );
                         },
@@ -640,11 +642,9 @@ class RecommendedItem1 extends StatelessWidget {
                           style: TextStyle(color: Colors.white),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Colors.red, // Warna latar belakang merah
+                          backgroundColor: Colors.red,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                5), // Set radius menjadi 5
+                            borderRadius: BorderRadius.circular(5),
                           ),
                         ),
                       ),
@@ -655,7 +655,7 @@ class RecommendedItem1 extends StatelessWidget {
                     location,
                     style: TextStyle(
                       color: Color(0xFF121212),
-                      fontSize: 14,
+                      fontSize: 12,
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.07,
@@ -666,7 +666,7 @@ class RecommendedItem1 extends StatelessWidget {
                     name,
                     style: TextStyle(
                       color: Color(0xFF121212),
-                      fontSize: 14,
+                      fontSize: 12,
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.07,
