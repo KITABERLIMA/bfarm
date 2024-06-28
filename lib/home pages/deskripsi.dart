@@ -43,9 +43,7 @@ class _DeskripsiState extends State<Deskripsi> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => tagihan(
-                            selectedItems:
-                                0), // Provide a value for selectedItems
+                        builder: (context) => Pengajuan(),
                       ),
                     );
                   },
@@ -69,7 +67,7 @@ class _DeskripsiState extends State<Deskripsi> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Pengajuan(),
+                        builder: (context) => tagihan(selectedItems: 0),
                       ),
                     );
                   },
@@ -204,6 +202,58 @@ class _PropertyListingState extends State<PropertyListing> {
     }
   }
 
+  Future<void> fectLahan() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    int? id = prefs.getInt('id');
+
+    if (id == null) {
+      setState(() {
+        id = 'id not found' as int?;
+      });
+      return;
+    }
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/lans'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      if (responseData.containsKey('data')) {
+        var deskripsi = responseData['data']['land_description'];
+        var terpetakan = responseData['data']['created_at'];
+        var luas = responseData['data']['land_area'];
+        var lokasi = responseData['address']
+            ['village\nsub_district\ncity_district\nprovince\npostal_code'];
+        var map = responseData['data']['location'];
+        var landImage = responseData['land_images']['land_image'];
+        setState(() {
+          imageUrl = 'http://bfarm.ahmadyaz.my.id/storage/' +
+              (landImage['image'] ?? '');
+          deskripsi = responseData['data']['land_description'] ?? '';
+          terpetakan = responseData['data']['created_at'] ?? '';
+          luas = responseData['data']['land_area'] ?? '';
+          lokasi = responseData['address'][
+                  'village\nsub_district\ncity_district\nprovince\npostal_code'] ??
+              '';
+          map = responseData['data']['location'] ?? '';
+        });
+      } else {
+        setState(() {
+          email = 'Data not found';
+        });
+      }
+    } else {
+      setState(() {
+        email = 'Failed to load data';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -319,26 +369,6 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void initState() {
     super.initState();
-    _fetchLandData();
-  }
-
-  Future<void> _fetchLandData() async {
-    final response =
-        await http.get(Uri.parse('http://bfarm.ahmadyaz.my.id/api/lands/list'));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final land = data['data'][0];
-      final location = land['location'].split(',');
-      final latitude = double.parse(location[0]);
-      final longitude = double.parse(location[1]);
-
-      setState(() {
-        _initialCenter = LatLng(latitude, longitude);
-      });
-    } else {
-      throw Exception('Failed to load land data');
-    }
   }
 
   void launchUrl(Uri uri) async {

@@ -1,5 +1,4 @@
 import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
-import 'package:bfarm_mobileapp/home%20pages/tagihan.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -60,20 +59,29 @@ class Pengajuan extends StatelessWidget {
                 ),
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => tagihan(
-                            selectedItems:
-                                0), // Provide a value for selectedItems
-                      ),
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Berhasil'),
+                          content: Text('Pengajuan berhasil diajukan.'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: Text('OK'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
                     );
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   ),
                   child: Text(
-                    'Bayar',
+                    'Ajukan',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
