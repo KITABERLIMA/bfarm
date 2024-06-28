@@ -1,4 +1,5 @@
 import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
+import 'package:bfarm_mobileapp/home%20pages/deskripsi.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -69,7 +70,14 @@ class Pengajuan extends StatelessWidget {
                             TextButton(
                               child: Text('OK'),
                               onPressed: () {
-                                Navigator.of(context).pop();
+                                Navigator.of(context).pop(); // Close the dialog
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        Deskripsi(), // Navigate to Deskripsi page
+                                  ),
+                                );
                               },
                             ),
                           ],
