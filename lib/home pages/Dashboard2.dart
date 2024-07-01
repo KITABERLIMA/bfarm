@@ -9,10 +9,10 @@ import 'package:bfarm_mobileapp/home%20pages/langganan.dart' as langganan;
 import 'package:bfarm_mobileapp/home%20pages/history.dart' as history;
 
 void main() {
-  runApp(Dashboard());
+  runApp(Dashboard2());
 }
 
-class Dashboard extends StatelessWidget {
+class Dashboard2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
+import 'package:bfarm_mobileapp/home%20pages/Dashboard2.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '/../home pages/dashboard.dart';
+
 import 'daftarsebagai.dart';
 import 'kebijakan_privasi.dart';
 import 'ketentuan_layanan.dart';
@@ -20,23 +22,62 @@ class _LoginState extends State<Login> {
 
   Future<void> loginUser(BuildContext context) async {
     final String apiUrl = 'http://bfarm.ahmadyaz.my.id/api/login'; //kantor
-    //final String apiUrl = '192.168.1.5:8000/api/login'; //rumah
+    // final String apiUrl = '192.168.1.5:8000/api/login'; //rumah
     final response = await http.post(Uri.parse(apiUrl), body: {
       'email': emailController.text,
       'password': passwordController.text,
     });
 
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
     final jsonData = json.decode(response.body);
 
     // Handle response here, for example, you can check the status code
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 && jsonData['success'] == true) {
       // Save token to SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', jsonData['token']);
 
-      // If login is successful, navigate to dashboard
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Dashboard()));
+      // Get user data
+      final userResponse = await http.get(
+        Uri.parse('http://bfarm.ahmadyaz.my.id/api/users'),
+        headers: {
+          'Authorization': 'Bearer ${jsonData['token']}',
+        },
+      );
+
+      final userResponseData = json.decode(userResponse.body);
+      var userData = userResponseData['data']['user'];
+      var userType = userData['user_type'] ?? '';
+
+      // Navigate based on usertype
+      if (userType == 'individual') {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Dashboard()));
+      } else if (userType == 'company') {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Dashboard2()));
+      } else {
+        // Handle unknown or missing usertype
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Login Failed'),
+              content: Text('Unknown or missing user type'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
     } else {
       // If login fails, show error message
       showDialog(
@@ -195,6 +236,7 @@ class _LoginState extends State<Login> {
                     SizedBox(height: 20.0),
                     ElevatedButton(
                       onPressed: () {
+                        print('Login button pressed');
                         loginUser(context);
                       },
                       child: Text(
