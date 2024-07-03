@@ -1,3 +1,4 @@
+import 'package:bfarm_mobileapp/profile/profile.dart';
 import 'package:flutter/material.dart';
 
 class LisensiScreen extends StatelessWidget {
@@ -18,6 +19,18 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon:
+              Icon(Icons.arrow_back, color: const Color.fromARGB(255, 0, 0, 0)),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Profile(),
+              ),
+            );
+          },
+        ),
         title: Text('Pemberian Lisensi bFarm'),
       ),
       body: ListView(
@@ -122,26 +135,27 @@ class MyHomePage extends StatelessWidget {
             ),
           ),
           ListTile(
-              leading: Container(
-                width: 30.0,
+            leading: Container(
+              width: 30.0,
+            ),
+            title: RichText(
+              text: TextSpan(
+                style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.black), // Change text color to black
+                children: [
+                  TextSpan(
+                    text: '5. Perubahan dan Pembatalan : ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text:
+                        '[Nama Perusahaan/Individu] berhak untuk mengubah atau membatalkan lisensi ini sewaktu-waktu tanpa pemberitahuan terlebih dahulu jika diperlukan.',
+                  ),
+                ],
               ),
-              title: RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.black), // Change text color to black
-                  children: [
-                    TextSpan(
-                      text: '5. Perubahan dan Pembatalan : ',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    TextSpan(
-                      text:
-                          '[Nama Perusahaan/Individu] berhak untuk mengubah atau membatalkan lisensi ini sewaktu-waktu tanpa pemberitahuan terlebih dahulu jika diperlukan.',
-                    ),
-                  ],
-                ),
-              )),
+            ),
+          ),
           ListTile(
             leading: Container(
               width: 30.0,

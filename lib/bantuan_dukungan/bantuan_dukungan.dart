@@ -73,39 +73,6 @@ class _BantuanDukungan extends State<BantuanDukungan> {
             ],
           ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Beranda',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.eco),
-              label: 'Lahan',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.history),
-              label: 'Riwayat',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.subscriptions),
-              label: 'Langganan',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle),
-              label: 'Akun',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.green[800],
-          unselectedItemColor: Colors.grey,
-          onTap: _onItemTapped,
-          unselectedLabelStyle: TextStyle(color: Colors.grey),
-          selectedLabelStyle: TextStyle(color: Colors.white),
-          backgroundColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          showUnselectedLabels: true,
-        ),
       ),
     );
   }
