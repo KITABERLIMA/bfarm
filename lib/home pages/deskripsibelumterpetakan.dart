@@ -1,4 +1,5 @@
 import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
+import 'package:bfarm_mobileapp/home%20pages/pengajuan1.dart';
 import 'package:bfarm_mobileapp/home%20pages/tagihan.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -6,15 +7,20 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'pengajuan.dart';
 
 void main() {
-  runApp(Deskripsibelumterpetakan());
+  runApp(Deskripsi2());
 }
 
-class Deskripsibelumterpetakan extends StatelessWidget {
+class Deskripsi2 extends StatefulWidget {
+  @override
+  _DeskripsiState createState() => _DeskripsiState();
+}
+
+class _DeskripsiState extends State<Deskripsi2> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,9 +44,7 @@ class Deskripsibelumterpetakan extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => tagihan(
-                            selectedItems:
-                                0), // Provide a value for selectedItems
+                        builder: (context) => Pengajuan1(),
                       ),
                     );
                   },
@@ -64,7 +68,7 @@ class Deskripsibelumterpetakan extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Pengajuan(),
+                        builder: (context) => tagihan(selectedItems: 0),
                       ),
                     );
                   },
@@ -85,7 +89,172 @@ class Deskripsibelumterpetakan extends StatelessWidget {
   }
 }
 
-class PropertyListing extends StatelessWidget {
+class PropertyListing extends StatefulWidget {
+  @override
+  _PropertyListingState createState() => _PropertyListingState();
+}
+
+class _PropertyListingState extends State<PropertyListing> {
+  String imageUrl = '';
+  String firstName = '';
+  String lastName = '';
+  String email = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      setState(() {
+        email = 'Token not found';
+      });
+      return;
+    }
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/users'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      if (responseData.containsKey('data')) {
+        var userData = responseData['data']['user'];
+        var userAdditionalData = responseData['data']['user_additional_data'];
+        var userImage = responseData['data']['user_image'];
+        setState(() {
+          imageUrl = 'http://bfarm.ahmadyaz.my.id/storage/' +
+              (userImage['image'] ?? '');
+          firstName = userAdditionalData['first_name'] ?? '';
+          lastName = userAdditionalData['last_name'] ?? '';
+          email = userData['email'] ?? '';
+        });
+      } else {
+        setState(() {
+          email = 'Data not found';
+        });
+      }
+    } else {
+      setState(() {
+        email = 'Failed to load data';
+      });
+    }
+  }
+
+  void showLargeImage(String url) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.7,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.contain,
+                  image: NetworkImage(url),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildProfileImage() {
+    if (imageUrl.isNotEmpty) {
+      return GestureDetector(
+        onTap: () {
+          showLargeImage(imageUrl);
+        },
+        child: CircleAvatar(
+          radius: 30.0,
+          backgroundImage: NetworkImage(imageUrl),
+          onBackgroundImageError: (exception, stackTrace) {
+            setState(() {
+              imageUrl = '';
+            });
+          },
+        ),
+      );
+    } else {
+      return CircleAvatar(
+        radius: 30.0,
+        backgroundColor: Colors.white,
+        child: Icon(
+          Icons.person,
+          color: Color(0xFF6EBF45),
+          size: 40,
+        ),
+      );
+    }
+  }
+
+  Future<void> fectLahan() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    int? id = prefs.getInt('id');
+
+    if (id == null) {
+      setState(() {
+        id = 'id not found' as int?;
+      });
+      return;
+    }
+
+    final response = await http.get(
+      Uri.parse('http://bfarm.ahmadyaz.my.id/api/lans'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      if (responseData.containsKey('data')) {
+        var deskripsi = responseData['data']['land_description'];
+        var terpetakan = responseData['data']['created_at'];
+        var luas = responseData['data']['land_area'];
+        var lokasi = responseData['address']
+            ['village\nsub_district\ncity_district\nprovince\npostal_code'];
+        var map = responseData['data']['location'];
+        var landImage = responseData['land_images']['land_image'];
+        setState(() {
+          imageUrl = 'http://bfarm.ahmadyaz.my.id/storage/' +
+              (landImage['image'] ?? '');
+          deskripsi = responseData['data']['land_description'] ?? '';
+          terpetakan = responseData['data']['created_at'] ?? '';
+          luas = responseData['data']['land_area'] ?? '';
+          lokasi = responseData['address'][
+                  'village\nsub_district\ncity_district\nprovince\npostal_code'] ??
+              '';
+          map = responseData['data']['location'] ?? '';
+        });
+      } else {
+        setState(() {
+          email = 'Data not found';
+        });
+      }
+    } else {
+      setState(() {
+        email = 'Failed to load data';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -162,9 +331,9 @@ class PropertyListing extends StatelessWidget {
 
               Divider(),
               ListTile(
-                leading: Icon(Icons.account_circle), // Ikon profil
+                leading: buildProfileImage(),
                 title: Text('Pemilik Lahan'),
-                subtitle: Text('Supardi\nsupardimalang@gmail.com'),
+                subtitle: Text('$firstName $lastName\n$email'),
               ),
               Divider(),
               Text(
@@ -198,26 +367,6 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void initState() {
     super.initState();
-    _fetchLandData();
-  }
-
-  Future<void> _fetchLandData() async {
-    final response =
-        await http.get(Uri.parse('http://bfarm.ahmadyaz.my.id/api/lands/list'));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final land = data['data'][0];
-      final location = land['location'].split(',');
-      final latitude = double.parse(location[0]);
-      final longitude = double.parse(location[1]);
-
-      setState(() {
-        _initialCenter = LatLng(latitude, longitude);
-      });
-    } else {
-      throw Exception('Failed to load land data');
-    }
   }
 
   void launchUrl(Uri uri) async {
@@ -230,25 +379,26 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _initialCenter == null
-        ? Center(child: CircularProgressIndicator())
-        : FlutterMap(
-            options: MapOptions(),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.example.app',
-              ),
-              RichAttributionWidget(
-                attributions: [
-                  TextSourceAttribution(
-                    'OpenStreetMap contributors',
-                    onTap: () => launchUrl(
-                        Uri.parse('https://openstreetmap.org/copyright')),
-                  ),
-                ],
-              ),
-            ],
-          );
+    return FlutterMap(
+      options: MapOptions(
+        initialCenter: LatLng(-7.9345428, 112.3087175),
+        initialZoom: 9.2,
+      ),
+      children: [
+        TileLayer(
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.example.app',
+        ),
+        RichAttributionWidget(
+          attributions: [
+            TextSourceAttribution(
+              'OpenStreetMap contributors',
+              onTap: () =>
+                  launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }

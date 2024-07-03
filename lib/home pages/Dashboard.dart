@@ -1,3 +1,4 @@
+import 'package:bfarm_mobileapp/home%20pages/deskripsibelumterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailbelumterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/kalimantan.dart';
@@ -249,7 +250,6 @@ class BerandaPage extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         // Implementasi aksi untuk tombol "Lihat Semua"
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -643,7 +643,7 @@ class RecommendedItem1 extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Deskripsi(),
+                              builder: (context) => Deskripsi2(),
                             ),
                           );
                         },
