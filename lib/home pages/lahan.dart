@@ -107,7 +107,8 @@ class _LahanPageState extends State<LahanPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Konfirmasi Penghapusan'),
-          content: Text('Apakah Anda yakin ingin menghapus lahan "$landDescription"?'),
+          content: Text(
+              'Apakah Anda yakin ingin menghapus lahan "$landDescription"?'),
           actions: <Widget>[
             TextButton(
               child: Text('Tidak'),
@@ -134,6 +135,7 @@ class _LahanPageState extends State<LahanPage> {
       appBar: AppBar(
         title: Text('Lahan Anda'),
       ),
+      backgroundColor: Colors.white, // Set background color to white
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : _landData.isEmpty
@@ -198,7 +200,8 @@ class _LahanPageState extends State<LahanPage> {
                                         height: 200,
                                         width: double.infinity,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
                                           print('Error loading image: $error');
                                           return Text(
                                             'Gagal memuat gambar',
@@ -214,7 +217,8 @@ class _LahanPageState extends State<LahanPage> {
                                     ),
                                   SizedBox(height: 10),
                                   Text(
-                                    land['land_description'] ?? 'Tidak ada deskripsi',
+                                    land['land_description'] ??
+                                        'Tidak ada deskripsi',
                                     style: TextStyle(
                                       fontSize: 20.0,
                                       fontWeight: FontWeight.bold,
@@ -253,15 +257,18 @@ class _LahanPageState extends State<LahanPage> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => EditLahanPage(),
+                                            builder: (context) =>
+                                                EditLahanPage(),
                                           ),
                                         );
                                       } else if (value == 'delete') {
-                                        _confirmDelete(land['id'].toString(), land['land_description']);
+                                        _confirmDelete(land['id'].toString(),
+                                            land['land_description']);
                                       }
                                     },
                                     itemBuilder: (BuildContext context) {
-                                      return {'Edit', 'Delete'}.map((String choice) {
+                                      return {'Edit', 'Delete'}
+                                          .map((String choice) {
                                         return PopupMenuItem<String>(
                                           value: choice.toLowerCase(),
                                           child: Text(choice),

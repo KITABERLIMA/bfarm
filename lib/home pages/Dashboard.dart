@@ -31,6 +31,8 @@ class Dashboard extends StatelessWidget {
       home: BFarmHomePage(),
     );
   }
+
+  static beranda() {}
 }
 
 class BFarmHomePage extends StatefulWidget {

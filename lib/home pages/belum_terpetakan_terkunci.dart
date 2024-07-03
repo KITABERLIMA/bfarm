@@ -1,4 +1,5 @@
 import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
+import 'package:bfarm_mobileapp/home%20pages/subscrabe.dart';
 import 'package:bfarm_mobileapp/home%20pages/tagihan.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -51,12 +52,13 @@ class BelumTerpetakanTerkunci extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Langganan(),
+                              builder: (context) => Subscrabe(),
                             ),
                           );
                         },
                         style: TextButton.styleFrom(
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
                           backgroundColor: Colors.green,
                         ),
                         child: Text(
