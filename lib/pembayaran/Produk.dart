@@ -1,3 +1,5 @@
+import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
+import 'package:bfarm_mobileapp/pembayaran/pembelian_alat.dart';
 import 'package:flutter/material.dart';
 import 'package:bfarm_mobileapp/home%20pages/lahan.dart' as lahan;
 import 'package:bfarm_mobileapp/home%20pages/langganan.dart' as langganan;
@@ -217,8 +219,7 @@ class KontenProduk extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => BerandaPage()),
+                          MaterialPageRoute(builder: (context) => Beranda()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -262,6 +263,17 @@ class BerandaPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Dashboard(),
+              ),
+            );
+          },
+        ),
         title: Text(
           'Produk Bfarm',
           style: TextStyle(color: Colors.white),
