@@ -1,5 +1,6 @@
 import 'package:bfarm_mobileapp/home%20pages/deskripsibelumterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailbelumterpetakan.dart';
+import 'package:bfarm_mobileapp/home%20pages/belum_terpetakan_terkunci.dart';
 import 'package:bfarm_mobileapp/home%20pages/detailterpetakan.dart';
 import 'package:bfarm_mobileapp/home%20pages/kalimantan.dart';
 import 'package:bfarm_mobileapp/pembayaran/Produk.dart';
@@ -253,7 +254,7 @@ class BerandaPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => detailbelumterpetakan(),
+                            builder: (context) => BelumTerpetakanTerkunci(),
                           ),
                         );
                       },
@@ -643,7 +644,7 @@ class RecommendedItem1 extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Deskripsi2(),
+                              builder: (context) => BelumTerpetakanTerkunci(),
                             ),
                           );
                         },

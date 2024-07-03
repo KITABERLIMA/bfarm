@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'langganan.dart';
+import 'deskripsibelumterpetakan.dart';
 
 class PembayaranBerhasil1 extends StatelessWidget {
   const PembayaranBerhasil1({Key? key}) : super(key: key);
@@ -53,7 +54,7 @@ class PembayaranBerhasil1 extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Langganan()),
+                      MaterialPageRoute(builder: (context) => Deskripsi2()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
