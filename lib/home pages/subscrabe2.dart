@@ -1,10 +1,6 @@
-import 'package:bfarm_mobileapp/home%20pages/PembayaranLangganan1.dart';
+import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart';
 import 'package:flutter/material.dart';
-import 'package:bfarm_mobileapp/home%20pages/lahan.dart' as lahan;
-import 'package:bfarm_mobileapp/home%20pages/subscrabe2.dart' as langganan;
-import 'package:bfarm_mobileapp/home%20pages/history.dart' as history;
-import 'package:bfarm_mobileapp/profile/profile.dart' as profile;
-import 'package:bfarm_mobileapp/home%20pages/Dashboard.dart' as beranda;
+import 'package:bfarm_mobileapp/home%20pages/PembayaranLangganan1.dart';
 
 void main() {
   runApp(const BFarmHomePage());
@@ -18,69 +14,14 @@ class BFarmHomePage extends StatefulWidget {
 }
 
 class _BFarmHomePageState extends State<BFarmHomePage> {
-  int _selectedIndex = 3; // Set initial index to 'Langganan'
-
-  static final List<Widget> _widgetOptions = <Widget>[
-    beranda.Dashboard(), // Index 0: Dashboard page
-    lahan.LahanPage(), // Index 1: Lahan page
-    history.riwayat(), // Index 2: Riwayat page
-    langganan.BFarmHomePage(), // Index 3: Langganan page
-    profile.Profile(), // Index 4: Profile page
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          _widgetOptions.elementAt(_selectedIndex),
-          if (_selectedIndex != 0) // Hide BottomNavigationBar on Dashboard page
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: BottomNavigationBar(
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    label: 'Beranda',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.eco),
-                    label: 'Lahan',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.history),
-                    label: 'Riwayat',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.subscriptions),
-                    label: 'Langganan',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.account_circle),
-                    label: 'Akun',
-                  ),
-                ],
-                currentIndex: _selectedIndex,
-                selectedItemColor: Colors.green[800],
-                unselectedItemColor: Colors.grey,
-                onTap: _onItemTapped,
-                unselectedLabelStyle: const TextStyle(color: Colors.grey),
-                selectedLabelStyle: const TextStyle(color: Colors.white),
-                backgroundColor: Colors.white,
-                type: BottomNavigationBarType.fixed,
-                showUnselectedLabels: true,
-              ),
-            ),
-        ],
+    return MaterialApp(
+      title: 'BFarm',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
       ),
+      home: MyHomePage(),
     );
   }
 }
@@ -92,6 +33,35 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Dashboard(), // Navigate to Dashboard
+              ),
+            );
+          },
+        ),
+        title: Text(
+          'Pilih Paket Langganan',
+          style: TextStyle(
+            color: const Color(0xFF6EBF45),
+            fontSize: 18,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.45,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
@@ -149,19 +119,8 @@ class PilihPaketLangganan extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      padding:
-          const EdgeInsets.fromLTRB(16, 16, 16, 0), // Adjust top padding here
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       alignment: Alignment.topCenter,
-      child: const Text(
-        'Pilih Paket Langganan 2',
-        style: TextStyle(
-          color: Color(0xFF6EBF45),
-          fontSize: 18,
-          fontFamily: 'Poppins',
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.45,
-        ),
-      ),
     );
   }
 }
@@ -185,7 +144,7 @@ class SubscriptionPackage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 250, // Fixed width for each card
+      width: 250,
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
